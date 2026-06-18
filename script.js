@@ -209,10 +209,9 @@ function renderCheckout() {
     container.innerHTML = html;
 
     const total = getCartTotal();
-    const delivery = total >= 50000 ? 0 : 2000;
     document.getElementById('summarySubtotal').textContent = 'Rs. ' + total.toLocaleString();
-    document.getElementById('summaryDelivery').textContent = delivery === 0 ? 'Free' : 'Rs. ' + delivery.toLocaleString();
-    document.getElementById('summaryTotal').textContent = 'Rs. ' + (total + delivery).toLocaleString();
+    document.getElementById('summaryDelivery').textContent = 'Contact for rates';
+    document.getElementById('summaryTotal').textContent = 'Rs. ' + total.toLocaleString();
 }
 
 // Payment method - Meezan Bank only, always show transaction ID
@@ -233,7 +232,6 @@ function placeOrder(e) {
     const address = document.getElementById('custAddress').value;
     const payment = document.querySelector('input[name="payment"]:checked').value;
     const total = getCartTotal();
-    const delivery = total >= 50000 ? 0 : 2000;
 
     const paymentNames = { meezan:'Meezan Bank' };
 
@@ -250,8 +248,7 @@ function placeOrder(e) {
         if (p) msg += `- ${p.name} x${item.qty} = Rs.${(p.price * item.qty).toLocaleString()}%0A`;
     });
     msg += `%0A*Subtotal:* Rs.${total.toLocaleString()}%0A`;
-    msg += `*Delivery:* ${delivery === 0 ? 'Free' : 'Rs.' + delivery.toLocaleString()}%0A`;
-    msg += `*Total:* Rs.${(total + delivery).toLocaleString()}%0A`;
+    msg += `*Total:* Rs.${total.toLocaleString()}%0A`;
     msg += `*Payment:* ${paymentNames[payment]}`;
 
     // Show success
