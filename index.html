@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -76,95 +76,86 @@
     <div id="page-home" class="page active">
         <!-- Hero -->
         <section class="hero">
-            <div class="hero-bg-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-            </div>
-            <div class="container hero-grid">
-                <div class="hero-content">
-                    <div class="hero-tag">
-                        <span class="tag-dot"></span> iTel Solar Products in Pakistan
+            <div class="hero-grid-bg"></div>
+            <div class="hero-glow-1"></div>
+            <div class="hero-glow-2"></div>
+            <div class="container hero-content-grid">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <span class="hero-badge-dot"></span> iTel Solar Products in Pakistan
                     </div>
-                    <h1>Power Your Home with <span class="highlight-glow">Solar Energy</span></h1>
-                    <p>Premium iTel solar panels, hybrid inverters & lithium batteries. Shop online with Pakistan's most trusted solar store.</p>
-                    <div class="hero-buttons">
-                        <a href="#" class="btn btn-glow btn-lg" onclick="showPage('panels')">Shop Now</a>
-                        <a href="#" class="btn btn-glass btn-lg" onclick="showPage('contact')">Get Free Quote</a>
+                    <h1>Switch to <span class="gradient-text">Solar Energy</span> Today</h1>
+                    <p class="hero-desc">Premium solar panels, hybrid inverters & lithium batteries from iTel. Pakistan's smartest way to shop solar online.</p>
+                    <div class="hero-cta">
+                        <a href="#" class="btn btn-primary btn-lg" onclick="showPage('panels')">Explore Products</a>
+                        <a href="#" class="btn btn-outline btn-lg" onclick="showPage('contact')">Talk to Us</a>
                     </div>
-                    <div class="hero-trust">
-                        <div class="trust-item"><span class="trust-check">&#10003;</span> 100% Genuine</div>
-                        <div class="trust-item"><span class="trust-check">&#10003;</span> Fast Shipping</div>
-                        <div class="trust-item"><span class="trust-check">&#10003;</span> Official Warranty</div>
-                        <div class="trust-item"><span class="trust-check">&#10003;</span> Meezan Bank Pay</div>
+                    <div class="hero-features">
+                        <div class="hero-feat"><div class="hero-feat-icon">&#9889;</div> Official Warranty</div>
+                        <div class="hero-feat"><div class="hero-feat-icon">&#128274;</div> Meezan Bank Pay</div>
+                        <div class="hero-feat"><div class="hero-feat-icon">&#128230;</div> 18+ Products</div>
                     </div>
                 </div>
-                <div class="hero-showcase">
-                    <div class="showcase-card">
+                <div class="hero-product">
+                    <div class="hero-product-card">
                         <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg" alt="iTel 6kW Inverter">
-                        <div class="showcase-label">
-                            <span class="showcase-name">iTel 6kW Pro Inverter</span>
-                            <span class="showcase-price">Rs. 145,000</span>
+                        <div class="hero-product-name">iTel 6kW Pro Hybrid Inverter</div>
+                        <div class="hero-product-price">Rs. 145,000</div>
+                    </div>
+                    <div class="hero-mini-card mini-1">
+                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/iTel-550W-Solar-Panel-21.29-module-efficiency-with-144-N-Type-Mono-cells-11.jpg" alt="Panel">
+                        <div class="hero-mini-info">
+                            <span>Solar Panel</span>
+                            <strong>iTel 550W</strong>
                         </div>
                     </div>
-                    <div class="showcase-float showcase-float-1">
-                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/iTel-550W-Solar-Panel-21.29-module-efficiency-with-144-N-Type-Mono-cells-11.jpg" alt="Solar Panel" class="float-img">
-                        <span>550W Panel</span>
-                    </div>
-                    <div class="showcase-float showcase-float-2">
-                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg" alt="Battery" class="float-img">
-                        <span>5.12kWh Battery</span>
+                    <div class="hero-mini-card mini-2">
+                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg" alt="Battery">
+                        <div class="hero-mini-info">
+                            <span>Lithium Battery</span>
+                            <strong>5.12kWh</strong>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Marquee Trust Bar -->
-        <section class="marquee-bar">
-            <div class="marquee-track">
-                <div class="marquee-content">
-                    <span class="marquee-item">&#9889; Official iTel Products</span>
-                    <span class="marquee-item">&#128666; Fast Nationwide Shipping</span>
-                    <span class="marquee-item">&#128274; Meezan Bank Payment</span>
-                    <span class="marquee-item">&#9888; 3+5 Years Warranty</span>
-                    <span class="marquee-item">&#128722; Easy Online Shopping</span>
-                    <span class="marquee-item">&#128222; 24/7 WhatsApp Support</span>
-                    <span class="marquee-item">&#9889; Official iTel Products</span>
-                    <span class="marquee-item">&#128666; Fast Nationwide Shipping</span>
-                    <span class="marquee-item">&#128274; Meezan Bank Payment</span>
-                    <span class="marquee-item">&#9888; 3+5 Years Warranty</span>
-                    <span class="marquee-item">&#128722; Easy Online Shopping</span>
-                    <span class="marquee-item">&#128222; 24/7 WhatsApp Support</span>
-                </div>
+        <!-- Scrolling Banner -->
+        <section class="scroll-banner">
+            <div class="scroll-track">
+                <div class="scroll-item"><span class="dot"></span> Official iTel Products</div>
+                <div class="scroll-item"><span class="dot"></span> Nationwide Shipping</div>
+                <div class="scroll-item"><span class="dot"></span> Meezan Bank Payment</div>
+                <div class="scroll-item"><span class="dot"></span> 3+5 Years Warranty</div>
+                <div class="scroll-item"><span class="dot"></span> Easy Online Shopping</div>
+                <div class="scroll-item"><span class="dot"></span> WhatsApp Support</div>
+                <div class="scroll-item"><span class="dot"></span> Official iTel Products</div>
+                <div class="scroll-item"><span class="dot"></span> Nationwide Shipping</div>
+                <div class="scroll-item"><span class="dot"></span> Meezan Bank Payment</div>
+                <div class="scroll-item"><span class="dot"></span> 3+5 Years Warranty</div>
+                <div class="scroll-item"><span class="dot"></span> Easy Online Shopping</div>
+                <div class="scroll-item"><span class="dot"></span> WhatsApp Support</div>
             </div>
         </section>
 
-        <!-- Stats Counter -->
+        <!-- Stats -->
         <section class="stats-section">
             <div class="container">
-                <div class="stats-grid-new">
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap">&#9728;</div>
-                        <span class="stat-counter" data-target="500">0</span>
-                        <span class="stat-plus">+</span>
-                        <p>Installations Done</p>
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <span class="stat-counter" data-target="500">0</span><span class="stat-plus">+</span>
+                        <p>Happy Customers</p>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap">&#128230;</div>
-                        <span class="stat-counter" data-target="18">0</span>
-                        <span class="stat-plus">+</span>
+                    <div class="stat-box">
+                        <span class="stat-counter" data-target="18">0</span><span class="stat-plus">+</span>
                         <p>iTel Products</p>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap">&#11088;</div>
-                        <span class="stat-counter" data-target="100">0</span>
-                        <span class="stat-plus">%</span>
+                    <div class="stat-box">
+                        <span class="stat-counter" data-target="100">0</span><span class="stat-plus">%</span>
                         <p>Genuine Products</p>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap">&#128737;</div>
-                        <span class="stat-counter" data-target="8">0</span>
-                        <span class="stat-plus">Yr</span>
+                    <div class="stat-box">
+                        <span class="stat-counter" data-target="8">0</span><span class="stat-plus">Yr</span>
                         <p>Max Warranty</p>
                     </div>
                 </div>
@@ -174,8 +165,11 @@
         <!-- Categories -->
         <section class="categories">
             <div class="container">
-                <h2 class="section-title">Shop by <span class="highlight">Category</span></h2>
-                <p class="section-sub">Browse our complete range of iTel solar energy products</p>
+                <div class="section-header">
+                    <div class="section-tag">Categories</div>
+                    <h2 class="section-title">Shop by <span class="highlight">Category</span></h2>
+                    <p class="section-sub">Browse our complete range of iTel solar energy products</p>
+                </div>
                 <div class="cat-grid">
                     <a href="#" class="cat-card-new" onclick="showPage('panels')">
                         <div class="cat-icon-bg"></div>
@@ -211,8 +205,11 @@
         <!-- Featured Products -->
         <section class="featured">
             <div class="container">
-                <h2 class="section-title">Best Selling <span class="highlight">Products</span></h2>
-                <p class="section-sub">Our most popular iTel products trusted by customers across Pakistan</p>
+                <div class="section-header">
+                    <div class="section-tag">Best Sellers</div>
+                    <h2 class="section-title">Most Popular <span class="highlight">Products</span></h2>
+                    <p class="section-sub">Trusted by customers across Pakistan</p>
+                </div>
                 <div class="products-grid" id="featuredProducts"></div>
             </div>
         </section>
@@ -220,8 +217,11 @@
         <!-- Why Choose Us -->
         <section class="why-us">
             <div class="container">
-                <h2 class="section-title">Why Choose <span class="highlight">Solar Cart?</span></h2>
-                <p class="section-sub">We make going solar simple, affordable and reliable</p>
+                <div class="section-header">
+                    <div class="section-tag">Why Us</div>
+                    <h2 class="section-title">Why Choose <span class="highlight">Solar Cart?</span></h2>
+                    <p class="section-sub">We make going solar simple, affordable and reliable</p>
+                </div>
                 <div class="features-grid">
                     <div class="feature-card-new">
                         <div class="feature-number">01</div>
