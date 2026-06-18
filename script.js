@@ -265,6 +265,30 @@ function placeOrder(e) {
     msg += `*Total:* Rs.${total.toLocaleString()}%0A`;
     msg += `*Payment:* ${paymentNames[payment]}`;
 
+    // Build order data for admin dashboard
+    const orderData = {
+        orderId: orderId,
+        name: name,
+        phone: phone,
+        city: city,
+        address: address,
+        notes: document.getElementById('custNotes').value,
+        payment: paymentNames[payment],
+        total: total.toLocaleString(),
+        products: cart.map(item => {
+            const p = products.find(pr => pr.id === item.id);
+            return p ? { name: p.name, qty: item.qty, total: (p.price * item.qty).toLocaleString() } : null;
+        }).filter(Boolean),
+        status: 'new'
+    };
+
+    // Send to ntfy.sh for admin notification + storage
+    fetch('https://ntfy.sh/solarcart-orders-hadi1452', {
+        method: 'POST',
+        headers: { 'Title': 'New Order: ' + orderId, 'Tags': 'shopping_cart,moneybag' },
+        body: JSON.stringify(orderData)
+    }).catch(() => {});
+
     // Show success
     document.getElementById('orderIdDisplay').textContent = 'Order ID: ' + orderId;
     document.getElementById('successDetails').innerHTML = `
@@ -272,7 +296,7 @@ function placeOrder(e) {
         <p><strong>Phone:</strong> ${phone}</p>
         <p><strong>City:</strong> ${city}</p>
         <p><strong>Payment:</strong> ${paymentNames[payment]}</p>
-        <p><strong>Total:</strong> Rs. ${(total + delivery).toLocaleString()}</p>
+        <p><strong>Total:</strong> Rs. ${total.toLocaleString()}</p>
     `;
 
     // Clear cart
