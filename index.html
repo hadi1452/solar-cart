@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Cart - iTel Solar Products | Shop Online</title>
-    <meta name="description" content="Solar Cart - Shop iTel solar panels & lithium batteries online. Add to cart, checkout with Meezan Bank.">
+    <meta name="description" content="Solar Cart - Shop iTel solar panels, hybrid inverters & lithium batteries online. Add to cart, checkout with Meezan Bank.">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +33,7 @@
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" class="active" onclick="showPage('home')">Home</a></li>
                 <li><a href="#" onclick="showPage('panels')">Solar Panels</a></li>
+                <li><a href="#" onclick="showPage('inverters')">Inverters</a></li>
                 <li><a href="#" onclick="showPage('batteries')">Batteries</a></li>
                 <li><a href="#" onclick="showPage('contact')">Contact</a></li>
             </ul>
@@ -84,7 +85,7 @@
                         <span class="hero-badge-dot"></span> iTel Solar Products in Pakistan
                     </div>
                     <h1>Your Solar Journey<br>Starts <span class="gradient-text">Here</span></h1>
-                    <p class="hero-desc">Panels. Batteries. Everything you need to go solar - all from iTel, all in one place.</p>
+                    <p class="hero-desc">Panels. Inverters. Batteries. Everything you need to go solar - all from iTel, all in one place.</p>
                     <div class="hero-cta">
                         <a href="#" class="btn btn-primary btn-lg" onclick="showPage('panels')">Explore Products</a>
                         <a href="#" class="btn btn-outline btn-lg" onclick="showPage('contact')">Talk to Us</a>
@@ -101,13 +102,13 @@
                             <strong>From Rs. 14,350</strong>
                         </div>
                     </div>
-                    <div class="trio-card trio-featured" onclick="showPage('batteries')">
+                    <div class="trio-card trio-featured" onclick="showPage('inverters')">
                         <div class="trio-img">
-                            <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg" alt="iTel Battery">
+                            <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg" alt="iTel Inverter">
                         </div>
                         <div class="trio-info">
-                            <span class="trio-label">Lithium Batteries</span>
-                            <strong>From Rs. 68,000</strong>
+                            <span class="trio-label">Hybrid Inverters</span>
+                            <strong>From Rs. 80,000</strong>
                         </div>
                     </div>
                     <div class="trio-card" onclick="showPage('batteries')">
@@ -158,7 +159,18 @@
                     <h2 class="section-title">What Are You <span class="highlight">Looking For?</span></h2>
                 </div>
                 <div class="bento-grid">
-                    <a href="#" class="bento-card bento-big" onclick="showPage('panels')">
+                    <a href="#" class="bento-card bento-big" onclick="showPage('inverters')">
+                        <div class="bento-img">
+                            <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-4kW-Hybrid-Solar-Inverter-%E2%80%93-Powers-ACs-Fridges-TVs-24V-IP54-Rated-1.jpg" alt="Inverters">
+                        </div>
+                        <div class="bento-content">
+                            <span class="bento-tag">7 Products</span>
+                            <h3>Hybrid Inverters</h3>
+                            <p>3kW to 12kW - Power your entire home</p>
+                            <span class="bento-link">Shop Inverters &rarr;</span>
+                        </div>
+                    </a>
+                    <a href="#" class="bento-card" onclick="showPage('panels')">
                         <div class="bento-img">
                             <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-410W-Monocrystalline-Solar-Panel-%E2%80%93-Rooftop-Solar-for-Homes-Shops-Offices-High-Efficiency-IP68-Rated-2.jpg" alt="Panels">
                         </div>
@@ -212,7 +224,7 @@
                         <div class="step-line"></div>
                         <div class="step-icon">&#128270;</div>
                         <h3>Browse Products</h3>
-                        <p>Explore our range of iTel solar panels & batteries.</p>
+                        <p>Explore our range of iTel solar panels, inverters & batteries.</p>
                     </div>
                     <div class="step-card">
                         <div class="step-num">02</div>
@@ -264,7 +276,7 @@
         </section>
         <section class="shop-section">
             <div class="container">
-                <p style="text-align:center;color:var(--gray-500);padding:40px 0;">No inverter products available at the moment.</p>
+                <div class="products-grid" id="inverterProducts"></div>
             </div>
         </section>
     </div>
@@ -297,6 +309,7 @@
                 <div class="search-filters">
                     <button class="filter-btn active" onclick="filterSearch('all')">All</button>
                     <button class="filter-btn" onclick="filterSearch('panel')">Panels</button>
+                    <button class="filter-btn" onclick="filterSearch('inverter')">Inverters</button>
                     <button class="filter-btn" onclick="filterSearch('battery')">Batteries</button>
                 </div>
                 <div class="products-grid" id="searchResults"></div>
@@ -306,6 +319,7 @@
                     <p>Try a different search term or browse our categories</p>
                     <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
                         <a href="#" class="btn btn-primary btn-sm" onclick="showPage('panels')">Panels</a>
+                        <a href="#" class="btn btn-primary btn-sm" onclick="showPage('inverters')">Inverters</a>
                         <a href="#" class="btn btn-primary btn-sm" onclick="showPage('batteries')">Batteries</a>
                     </div>
                 </div>
@@ -474,6 +488,7 @@
                     <h4>Shop</h4>
                     <ul>
                         <li><a href="#" onclick="showPage('panels')">Solar Panels</a></li>
+                        <li><a href="#" onclick="showPage('inverters')">Inverters</a></li>
                         <li><a href="#" onclick="showPage('batteries')">Batteries</a></li>
                     </ul>
                 </div>
