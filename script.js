@@ -414,6 +414,34 @@ zoomBody.addEventListener('touchmove', function(e) {
     }
 });
 
+// ==================== ANIMATED COUNTER ====================
+const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const counters = entry.target.querySelectorAll('.stat-counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+            counterObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 });
+
+const statsSection = document.querySelector('.stats-section');
+if (statsSection) counterObserver.observe(statsSection);
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();
