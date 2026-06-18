@@ -1,17 +1,19 @@
 :root {
-    --primary: #f59e0b;
-    --primary-dark: #d97706;
-    --primary-light: #fbbf24;
-    --secondary: #1e3a5f;
-    --secondary-dark: #0f2137;
-    --dark: #111827;
+    --primary: #e87a1e;
+    --primary-dark: #d06810;
+    --primary-light: #f5943e;
+    --secondary: #1e3a6e;
+    --secondary-dark: #132952;
+    --accent: #2d8bab;
+    --accent-light: #e6f4f8;
+    --dark: #0e1b30;
     --gray-900: #1f2937;
     --gray-700: #374151;
     --gray-500: #6b7280;
     --gray-300: #d1d5db;
     --gray-100: #f3f4f6;
     --white: #ffffff;
-    --success: #10b981;
+    --success: #2ecc71;
     --danger: #ef4444;
     --radius: 12px;
     --shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -71,24 +73,42 @@ a { text-decoration:none; color:inherit; }
 .highlight { color:var(--primary); }
 
 /* Hero */
-.hero { min-height:80vh; display:flex; align-items:center; background:linear-gradient(135deg,rgba(15,33,55,0.88),rgba(26,54,93,0.82)),url('https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/03/12kw-complete-solar-system-with-16kwh-lithium-battery-and-with-solar-panel.webp') center/cover no-repeat; color:var(--white); padding:60px 0; }
-.hero-content { max-width:650px; }
-.hero h1 { font-size:3rem; font-weight:800; margin-bottom:20px; line-height:1.2; }
-.hero p { font-size:1.1rem; color:rgba(255,255,255,0.8); margin-bottom:30px; }
-.hero-buttons { display:flex; gap:15px; margin-bottom:40px; flex-wrap:wrap; }
-.hero-badges { display:flex; gap:20px; flex-wrap:wrap; }
-.badge-item { background:rgba(255,255,255,0.1); padding:8px 16px; border-radius:50px; font-size:0.85rem; font-weight:500; }
+.hero { min-height:90vh; display:flex; align-items:center; background:linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 60%, var(--accent) 100%); color:var(--white); padding:80px 0 60px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; top:-100px; right:-100px; width:500px; height:500px; background:radial-gradient(circle,rgba(232,122,30,0.15),transparent 70%); border-radius:50%; }
+.hero::after { content:''; position:absolute; bottom:-150px; left:-80px; width:400px; height:400px; background:radial-gradient(circle,rgba(45,139,171,0.15),transparent 70%); border-radius:50%; }
+.hero-grid { display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center; position:relative; z-index:2; }
+.hero-content { max-width:600px; }
+.hero-tag { display:inline-block; background:rgba(232,122,30,0.2); border:1px solid rgba(232,122,30,0.4); color:var(--primary-light); padding:6px 18px; border-radius:50px; font-size:0.8rem; font-weight:600; margin-bottom:20px; letter-spacing:0.5px; }
+.hero h1 { font-size:3.2rem; font-weight:800; margin-bottom:20px; line-height:1.15; }
+.hero p { font-size:1.05rem; color:rgba(255,255,255,0.75); margin-bottom:30px; line-height:1.8; }
+.hero-buttons { display:flex; gap:15px; margin-bottom:35px; flex-wrap:wrap; }
+.hero-trust { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.trust-item { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:rgba(255,255,255,0.8); }
+.trust-icon { color:var(--success); font-weight:700; font-size:1rem; }
+.hero-image { position:relative; }
+.hero-image img { width:100%; border-radius:var(--radius); box-shadow:0 20px 60px rgba(0,0,0,0.3); border:3px solid rgba(255,255,255,0.1); }
+.hero-image::before { content:''; position:absolute; top:-15px; right:-15px; width:100%; height:100%; border:2px solid var(--primary); border-radius:var(--radius); z-index:-1; }
+
+/* Stats Bar */
+.stats-bar { background:var(--primary); padding:30px 0; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; text-align:center; }
+.stat-item { color:var(--white); }
+.stat-num { display:block; font-size:2rem; font-weight:800; }
+.stat-text { font-size:0.85rem; opacity:0.9; }
 
 /* Categories */
 .categories { padding:80px 0; }
+.section-sub { text-align:center; color:var(--gray-500); margin-top:-30px; margin-bottom:45px; font-size:0.95rem; }
 .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:30px; }
-.cat-card { position:relative; border-radius:var(--radius); overflow:hidden; height:250px; transition:var(--transition); }
-.cat-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); }
-.cat-card img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
-.cat-card:hover img { transform:scale(1.08); }
-.cat-info { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,0.8)); padding:25px 20px 20px; color:var(--white); }
-.cat-info h3 { font-size:1.2rem; margin-bottom:3px; }
-.cat-info p { font-size:0.85rem; opacity:0.8; }
+.cat-card { border-radius:var(--radius); overflow:hidden; transition:var(--transition); background:var(--white); border:1px solid var(--gray-100); box-shadow:var(--shadow); }
+.cat-card:hover { transform:translateY(-8px); box-shadow:var(--shadow-lg); border-color:var(--primary-light); }
+.cat-img-wrap { height:220px; overflow:hidden; background:var(--accent-light); display:flex; align-items:center; justify-content:center; padding:20px; }
+.cat-img-wrap img { width:100%; height:100%; object-fit:contain; transition:transform 0.4s ease; }
+.cat-card:hover .cat-img-wrap img { transform:scale(1.08); }
+.cat-info { padding:20px; text-align:center; }
+.cat-info h3 { font-size:1.15rem; margin-bottom:5px; color:var(--secondary-dark); }
+.cat-info p { font-size:0.85rem; color:var(--gray-500); margin-bottom:10px; }
+.cat-link { color:var(--primary); font-weight:600; font-size:0.85rem; }
 
 /* Products Grid */
 .products-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:25px; }
@@ -119,13 +139,14 @@ a { text-decoration:none; color:inherit; }
 
 /* Featured & Shop */
 .featured { padding:80px 0; background:var(--gray-100); }
-.why-us { padding:80px 0; }
+.why-us { padding:80px 0; background:var(--white); }
 .features-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:25px; }
-.feature-card { text-align:center; padding:30px 20px; border-radius:var(--radius); border:1px solid var(--gray-100); background:var(--white); transition:var(--transition); }
-.feature-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--primary-light); }
-.feature-icon { font-size:2.2rem; margin-bottom:15px; }
+.feature-card { text-align:center; padding:35px 22px; border-radius:var(--radius); border:2px solid var(--gray-100); background:var(--white); transition:var(--transition); }
+.feature-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:var(--accent); }
+.feature-icon-wrap { width:60px; height:60px; background:var(--accent-light); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+.feature-icon { font-size:1.8rem; }
 .feature-card h3 { font-size:1rem; margin-bottom:8px; color:var(--secondary-dark); }
-.feature-card p { font-size:0.85rem; color:var(--gray-500); }
+.feature-card p { font-size:0.85rem; color:var(--gray-500); line-height:1.6; }
 
 /* Page Headers */
 .page-header { background:linear-gradient(135deg,var(--secondary-dark),#1a365d); color:var(--white); padding:50px 0 40px; margin-bottom:40px; }
@@ -261,6 +282,11 @@ a { text-decoration:none; color:inherit; }
     .nav-links.active { display:flex; }
     .search-box { display:none; }
     .hero h1 { font-size:2rem; }
+    .hero-grid { grid-template-columns:1fr; }
+    .hero-image { display:none; }
+    .hero-trust { grid-template-columns:1fr; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); gap:15px; }
+    .stat-num { font-size:1.5rem; }
     .cat-grid { grid-template-columns:1fr; }
     .products-grid { grid-template-columns:repeat(2,1fr); }
     .features-grid { grid-template-columns:1fr 1fr; }
@@ -277,7 +303,7 @@ a { text-decoration:none; color:inherit; }
     .features-grid { grid-template-columns:1fr; }
     .contact-info-cards { grid-template-columns:1fr; }
     .hero h1 { font-size:1.7rem; }
-    .hero-badges { flex-direction:column; gap:8px; }
+    .stats-grid { grid-template-columns:1fr 1fr; }
     .whatsapp-float .wa-text { display:none; }
     .whatsapp-float { padding:14px; border-radius:50%; }
     .success-buttons { flex-direction:column; }
