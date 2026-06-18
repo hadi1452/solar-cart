@@ -282,12 +282,19 @@ function placeOrder(e) {
         status: 'new'
     };
 
-    // Send to ntfy.sh for admin notification + storage
-    fetch('https://ntfy.sh/solarcart-orders-hadi1452', {
-        method: 'POST',
-        headers: { 'Title': 'New Order: ' + orderId, 'Tags': 'shopping_cart,moneybag' },
-        body: JSON.stringify(orderData)
-    }).catch(() => {});
+    // Save order to cloud for admin dashboard
+    orderData.timestamp = Date.now();
+    const BLOB_ID = '019edb05-e87f-7360-8c1e-b6e82e509b83';
+    fetch('https://jsonblob.com/api/jsonBlob/' + BLOB_ID)
+        .then(r => r.json())
+        .then(data => {
+            data.orders.unshift(orderData);
+            return fetch('https://jsonblob.com/api/jsonBlob/' + BLOB_ID, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }).catch(() => {});
 
     // Show success
     document.getElementById('orderIdDisplay').textContent = 'Order ID: ' + orderId;

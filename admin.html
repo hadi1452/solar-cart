@@ -155,8 +155,8 @@
 
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
-        const NTFY_TOPIC = 'solarcart-orders-hadi1452';
-        const ORDERS_KEY = 'solarcart_orders';
+        const BLOB_ID = '019edb05-e87f-7360-8c1e-b6e82e509b83';
+        const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/' + BLOB_ID;
 
         // Login
         function adminLogin() {
@@ -187,31 +187,18 @@
             startLiveListener();
         }
 
-        // Load orders from ntfy cache
+        // Load orders from cloud storage
         function loadOrders() {
             document.getElementById('lastRefresh').textContent = 'Updated: ' + new Date().toLocaleTimeString();
 
-            fetch('https://ntfy.sh/' + NTFY_TOPIC + '/json?poll=1&since=720h')
-                .then(r => r.text())
-                .then(text => {
-                    const lines = text.trim().split('\n').filter(l => l);
-                    const orders = [];
-                    lines.forEach(line => {
-                        try {
-                            const msg = JSON.parse(line);
-                            if (msg.message) {
-                                const orderData = JSON.parse(msg.message);
-                                if (orderData.orderId) {
-                                    orderData.timestamp = msg.time * 1000;
-                                    const saved = getSavedStatus(orderData.orderId);
-                                    if (saved) orderData.status = saved;
-                                    orders.push(orderData);
-                                }
-                            }
-                        } catch(e) {}
+            fetch(BLOB_URL)
+                .then(r => r.json())
+                .then(data => {
+                    const orders = (data.orders || []).map(order => {
+                        const saved = getSavedStatus(order.orderId);
+                        if (saved) order.status = saved;
+                        return order;
                     });
-
-                    orders.reverse();
                     renderOrders(orders);
                 })
                 .catch(err => {
@@ -316,21 +303,24 @@
         let lastOrderCount = 0;
         function startLiveListener() {
             setInterval(() => {
-                fetch('https://ntfy.sh/' + NTFY_TOPIC + '/json?poll=1&since=720h')
-                    .then(r => r.text())
-                    .then(text => {
-                        const lines = text.trim().split('\n').filter(l => l);
-                        let count = 0;
-                        lines.forEach(line => {
-                            try { const m = JSON.parse(line); if(m.message && JSON.parse(m.message).orderId) count++; } catch(e){}
-                        });
+                fetch(BLOB_URL)
+                    .then(r => r.json())
+                    .then(data => {
+                        const count = (data.orders || []).length;
                         if (count > lastOrderCount && lastOrderCount > 0) {
-                            new Audio('data:audio/wav;base64,UklGRl9vT19teleHbWZtIBAAAAABAAEARKwAAIhYAQACABAAZGF0YQ').play().catch(()=>{});
+                            if (Notification.permission === 'granted') {
+                                new Notification('Solar Cart - New Order!', { body: 'A new order has been placed.', icon: 'logo.png' });
+                            }
                             loadOrders();
                         }
                         lastOrderCount = count;
                     }).catch(()=>{});
             }, 30000);
+
+            // Request browser notification permission
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
         }
     </script>
 </body>
