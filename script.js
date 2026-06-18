@@ -283,7 +283,7 @@ function placeOrder(e) {
     showPage('success');
 
     // Open WhatsApp with order details
-    window.open('https://wa.me/92300XXXXXXX?text=' + msg, '_blank');
+    window.open('https://wa.me/923237927923?text=' + msg, '_blank');
 }
 
 // ==================== SEARCH ====================
