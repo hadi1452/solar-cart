@@ -117,7 +117,8 @@ function toggleCart() {
 // ==================== PRODUCT CARDS ====================
 function createProductCard(product) {
     const badgeHTML = product.badge ? `<div class="product-badge ${product.badgeClass || ''}">${product.badge}</div>` : '';
-    const specsHTML = product.specs.map(s => `<li><strong>${s.split(':')[0]}:</strong>${s.split(':')[1]}</li>`).join('');
+    const topSpecs = product.specs.slice(0, 3);
+    const specsHTML = topSpecs.map(s => `<li><strong>${s.split(':')[0]}:</strong>${s.split(':')[1]}</li>`).join('');
     const perWattHTML = product.perWatt ? `<span class="price-per-watt">${product.perWatt}</span>` : '';
 
     return `
@@ -137,22 +138,35 @@ function createProductCard(product) {
                 </div>
                 ${perWattHTML}
                 <div class="qty-row">
-                    <button class="qty-btn" onclick="changeQty(${product.id}, -1)">-</button>
-                    <input type="number" class="qty-input" id="qty-${product.id}" value="1" min="1" max="99">
-                    <button class="qty-btn" onclick="changeQty(${product.id}, 1)">+</button>
+                    <button class="qty-btn" onclick="changeQtyBtn(this, -1)">-</button>
+                    <input type="number" class="qty-input" data-pid="${product.id}" value="1" min="1" max="99">
+                    <button class="qty-btn" onclick="changeQtyBtn(this, 1)">+</button>
                 </div>
-                <button class="btn-add-cart" onclick="addToCart(${product.id})">Add to Cart &#128722;</button>
+                <button class="btn-add-cart" onclick="addToCartBtn(this, ${product.id})">Add to Cart &#128722;</button>
             </div>
         </div>
     `;
 }
 
-function changeQty(id, change) {
-    const input = document.getElementById('qty-' + id);
+function changeQtyBtn(btn, change) {
+    const input = btn.parentElement.querySelector('.qty-input');
     let val = parseInt(input.value) + change;
     if (val < 1) val = 1;
     if (val > 99) val = 99;
     input.value = val;
+}
+
+function addToCartBtn(btn, productId) {
+    const input = btn.parentElement.querySelector('.qty-input');
+    const qty = parseInt(input.value) || 1;
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.qty += qty;
+    } else {
+        cart.push({ id: productId, qty: qty });
+    }
+    saveCart();
+    showToast('Product added to cart!');
 }
 
 // ==================== RENDER PAGES ====================
