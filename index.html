@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Cart - iTel Solar Products | Shop Online</title>
+    <meta name="description" content="Solar Cart - Shop iTel solar panels, hybrid inverters & lithium batteries online. Add to cart, checkout with JazzCash, Easypaisa or Meezan Bank.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <span>Free Delivery on Orders Above Rs. 50,000</span>
+            <div class="top-bar-right">
+                <span>Call: 0300-XXXXXXX</span>
+                <span>|</span>
+                <span>WhatsApp: 0300-XXXXXXX</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <img src="logo.png" alt="Solar Cart" class="logo-img">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="active" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('panels')">Solar Panels</a></li>
+                <li><a href="#" onclick="showPage('inverters')">Inverters</a></li>
+                <li><a href="#" onclick="showPage('batteries')">Batteries</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+                </div>
+                <button class="cart-btn" onclick="toggleCart()">
+                    <span class="cart-icon">&#128722;</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="cart-close" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty">Your cart is empty</p>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display:none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">Rs. 0</span>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="showPage('checkout'); toggleCart();">Proceed to Checkout</button>
+            <button class="btn btn-outline-dark btn-full" onclick="toggleCart()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- ============ HOME PAGE ============ -->
+    <div id="page-home" class="page active">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Pakistan's #1 <span class="highlight">Solar Store</span></h1>
+                <p>Shop genuine iTel solar panels, hybrid inverters & lithium batteries online. Fast delivery across Pakistan.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary" onclick="showPage('panels')">Shop Now</a>
+                    <a href="#" class="btn btn-outline" onclick="showPage('contact')">Contact Us</a>
+                </div>
+                <div class="hero-badges">
+                    <div class="badge-item">&#10003; 100% Genuine</div>
+                    <div class="badge-item">&#10003; Free Delivery</div>
+                    <div class="badge-item">&#10003; Official Warranty</div>
+                    <div class="badge-item">&#10003; COD Available</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Shop by <span class="highlight">Category</span></h2>
+                <div class="cat-grid">
+                    <a href="#" class="cat-card" onclick="showPage('panels')">
+                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-410W-Monocrystalline-Solar-Panel-%E2%80%93-Rooftop-Solar-for-Homes-Shops-Offices-High-Efficiency-IP68-Rated-2.jpg" alt="iTel Solar Panels">
+                        <div class="cat-info">
+                            <h3>Solar Panels</h3>
+                            <p>3 Products</p>
+                        </div>
+                    </a>
+                    <a href="#" class="cat-card" onclick="showPage('inverters')">
+                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg" alt="iTel Solar Inverters">
+                        <div class="cat-info">
+                            <h3>Solar Inverters</h3>
+                            <p>7 Products</p>
+                        </div>
+                    </a>
+                    <a href="#" class="cat-card" onclick="showPage('batteries')">
+                        <img src="https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg" alt="iTel Solar Batteries">
+                        <div class="cat-info">
+                            <h3>Solar Batteries</h3>
+                            <p>7 Products</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="featured">
+            <div class="container">
+                <h2 class="section-title">Best Selling <span class="highlight">Products</span></h2>
+                <div class="products-grid" id="featuredProducts"></div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="why-us">
+            <div class="container">
+                <h2 class="section-title">Why Choose <span class="highlight">Solar Cart?</span></h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128722;</div>
+                        <h3>Easy Online Shopping</h3>
+                        <p>Add to cart, checkout & pay online. Simple and fast ordering.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128176;</div>
+                        <h3>Best Prices</h3>
+                        <p>Prices direct from iTel rate list. No hidden charges.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128666;</div>
+                        <h3>Free Delivery</h3>
+                        <p>Free delivery on orders above Rs. 50,000 across Pakistan.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128274;</div>
+                        <h3>Secure Payment</h3>
+                        <p>Pay via JazzCash, Easypaisa, Meezan Bank or COD.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ PANELS PAGE ============ -->
+    <div id="page-panels" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>iTel Solar Panels</h1>
+                <p>High-efficiency N-Type monocrystalline solar panels</p>
+            </div>
+        </section>
+        <section class="shop-section">
+            <div class="container">
+                <div class="products-grid" id="panelProducts"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ INVERTERS PAGE ============ -->
+    <div id="page-inverters" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>iTel Solar Inverters</h1>
+                <p>Advanced hybrid inverters with MPPT technology</p>
+            </div>
+        </section>
+        <section class="shop-section">
+            <div class="container">
+                <div class="products-grid" id="inverterProducts"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ BATTERIES PAGE ============ -->
+    <div id="page-batteries" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>iTel Solar Batteries</h1>
+                <p>Long-lasting LiFePO4 lithium batteries for reliable energy storage</p>
+            </div>
+        </section>
+        <section class="shop-section">
+            <div class="container">
+                <div class="products-grid" id="batteryProducts"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ CHECKOUT PAGE ============ -->
+    <div id="page-checkout" class="page">
+        <section class="checkout-section">
+            <div class="container">
+                <h1 class="section-title">Checkout</h1>
+                <div class="checkout-grid">
+                    <!-- Order Form -->
+                    <div class="checkout-form">
+                        <h3>Delivery Information</h3>
+                        <form id="checkoutForm" onsubmit="placeOrder(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" id="custName" required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number *</label>
+                                    <input type="tel" id="custPhone" required placeholder="03XX-XXXXXXX">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="custEmail" placeholder="your@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" id="custCity" required placeholder="Your city">
+                            </div>
+                            <div class="form-group">
+                                <label>Full Address *</label>
+                                <textarea id="custAddress" required placeholder="Complete delivery address" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Order Notes (Optional)</label>
+                                <textarea id="custNotes" placeholder="Any special instructions" rows="2"></textarea>
+                            </div>
+
+                            <h3>Payment Method</h3>
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="jazzcash" required>
+                                    <div class="payment-card">
+                                        <span class="payment-name">JazzCash</span>
+                                        <span class="payment-detail">Send to: 0300-XXXXXXX</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="easypaisa">
+                                    <div class="payment-card">
+                                        <span class="payment-name">Easypaisa</span>
+                                        <span class="payment-detail">Send to: 0300-XXXXXXX</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="meezan">
+                                    <div class="payment-card">
+                                        <span class="payment-name">Meezan Bank</span>
+                                        <span class="payment-detail">IBAN: PK00MEZN0000000000000</span>
+                                    </div>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment" value="cod">
+                                    <div class="payment-card">
+                                        <span class="payment-name">Cash on Delivery</span>
+                                        <span class="payment-detail">Pay when you receive</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-group" id="trxIdGroup" style="display:none;">
+                                <label>Transaction ID / Screenshot Reference *</label>
+                                <input type="text" id="trxId" placeholder="Enter transaction ID after payment">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full btn-lg">Place Order</button>
+                        </form>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        <div id="checkoutItems"></div>
+                        <div class="summary-line">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">Rs. 0</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Delivery</span>
+                            <span id="summaryDelivery">Free</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total</span>
+                            <span id="summaryTotal">Rs. 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ ORDER SUCCESS PAGE ============ -->
+    <div id="page-success" class="page">
+        <section class="success-section">
+            <div class="container">
+                <div class="success-card">
+                    <div class="success-icon">&#10004;</div>
+                    <h1>Order Placed Successfully!</h1>
+                    <p class="order-id-display" id="orderIdDisplay"></p>
+                    <p>Thank you for your order. We will contact you shortly to confirm.</p>
+                    <div class="success-details" id="successDetails"></div>
+                    <div class="success-buttons">
+                        <a href="#" class="btn btn-primary" onclick="showPage('home')">Continue Shopping</a>
+                        <a href="https://wa.me/92300XXXXXXX" target="_blank" class="btn btn-whatsapp">WhatsApp Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ CONTACT PAGE ============ -->
+    <div id="page-contact" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Contact Us</h1>
+                <p>Get in touch for orders, quotes or any questions</p>
+            </div>
+        </section>
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="contact-info-cards">
+                        <div class="contact-card">
+                            <div class="contact-icon">&#128222;</div>
+                            <h3>Call Us</h3>
+                            <p>0300-XXXXXXX</p>
+                            <p>0321-XXXXXXX</p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">&#128231;</div>
+                            <h3>Email</h3>
+                            <p>info@solarcart.pk</p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">&#128205;</div>
+                            <h3>Address</h3>
+                            <p>Shop #XX, Main Market</p>
+                            <p>Your City, Pakistan</p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">&#128337;</div>
+                            <h3>Hours</h3>
+                            <p>Mon-Sat: 9AM - 8PM</p>
+                            <p>Sun: 10AM - 4PM</p>
+                        </div>
+                    </div>
+                    <form class="contact-form" onsubmit="submitContact(event)">
+                        <h3>Send us a Message</h3>
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email Address">
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/92300XXXXXXX" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+        <span class="wa-icon">W</span>
+        <span class="wa-text">WhatsApp</span>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><img src="logo.png" alt="Solar Cart" class="logo-img"></h3>
+                    <p>Your trusted online store for iTel solar energy products in Pakistan.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Shop</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPage('panels')">Solar Panels</a></li>
+                        <li><a href="#" onclick="showPage('inverters')">Inverters</a></li>
+                        <li><a href="#" onclick="showPage('batteries')">Batteries</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Help</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPage('contact')">Contact Us</a></li>
+                        <li><a href="#">Delivery Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Payment Methods</h4>
+                    <div class="payment-icons">
+                        <span class="pay-badge">JazzCash</span>
+                        <span class="pay-badge">Easypaisa</span>
+                        <span class="pay-badge">Meezan Bank</span>
+                        <span class="pay-badge">COD</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Solar Cart. All Rights Reserved. | Authorized iTel Solar Dealer</p>
+                <p class="price-disclaimer">* Prices based on iTel rate list (June 2026). Subject to change without notice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Zoom Modal -->
+    <div class="zoom-modal" id="zoomModal">
+        <div class="zoom-header">
+            <span class="zoom-title" id="zoomTitle"></span>
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+                <button class="zoom-btn" onclick="zoomOut()">-</button>
+                <button class="zoom-btn" onclick="resetZoom()">Reset</button>
+                <button class="zoom-close" onclick="closeZoom()">&times;</button>
+            </div>
+        </div>
+        <div class="zoom-body" id="zoomBody">
+            <img src="" alt="" id="zoomImage" draggable="false">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
