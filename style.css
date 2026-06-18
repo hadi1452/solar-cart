@@ -154,6 +154,7 @@ a { text-decoration:none; color:inherit; }
 .product-info { padding:20px; }
 .product-info h3 { font-size:0.92rem; color:var(--white); margin-bottom:4px; line-height:1.4; }
 .product-model { font-size:0.75rem; color:var(--text-dim); margin-bottom:12px; }
+.warranty-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(46,204,113,0.1); border:1px solid rgba(46,204,113,0.2); color:#2ecc71; padding:5px 12px; border-radius:6px; font-size:0.72rem; font-weight:600; margin-bottom:12px; }
 .product-specs { list-style:none; margin-bottom:16px; }
 .product-specs li { font-size:0.78rem; padding:4px 0; color:var(--text-dim); border-bottom:1px solid var(--card-border); }
 .product-specs li:last-child { border-bottom:none; }
