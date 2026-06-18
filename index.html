@@ -296,6 +296,37 @@
         </section>
     </div>
 
+    <!-- ============ SEARCH RESULTS PAGE ============ -->
+    <div id="page-search" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1 id="searchTitle">Search Results</h1>
+                <p id="searchSubtitle">Showing results for your search</p>
+            </div>
+        </section>
+        <section class="shop-section">
+            <div class="container">
+                <div class="search-filters">
+                    <button class="filter-btn active" onclick="filterSearch('all')">All</button>
+                    <button class="filter-btn" onclick="filterSearch('panel')">Panels</button>
+                    <button class="filter-btn" onclick="filterSearch('inverter')">Inverters</button>
+                    <button class="filter-btn" onclick="filterSearch('battery')">Batteries</button>
+                </div>
+                <div class="products-grid" id="searchResults"></div>
+                <div class="search-empty" id="searchEmpty" style="display:none;">
+                    <div class="empty-icon">&#128270;</div>
+                    <h3>No products found</h3>
+                    <p>Try a different search term or browse our categories</p>
+                    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+                        <a href="#" class="btn btn-primary btn-sm" onclick="showPage('panels')">Panels</a>
+                        <a href="#" class="btn btn-primary btn-sm" onclick="showPage('inverters')">Inverters</a>
+                        <a href="#" class="btn btn-primary btn-sm" onclick="showPage('batteries')">Batteries</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <!-- ============ CHECKOUT PAGE ============ -->
     <div id="page-checkout" class="page">
         <section class="checkout-section">

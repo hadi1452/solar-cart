@@ -287,6 +287,9 @@ function placeOrder(e) {
 }
 
 // ==================== SEARCH ====================
+let lastSearchQuery = '';
+let lastSearchResults = [];
+
 function searchProducts() {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
     if (!query) {
@@ -294,21 +297,55 @@ function searchProducts() {
         return;
     }
 
-    const results = products.filter(p =>
+    lastSearchQuery = query;
+    lastSearchResults = products.filter(p =>
         p.name.toLowerCase().includes(query) ||
         p.model.toLowerCase().includes(query) ||
-        p.category.includes(query)
+        p.category.includes(query) ||
+        p.specs.some(s => s.toLowerCase().includes(query)) ||
+        String(p.price).includes(query)
     );
 
-    const featured = document.getElementById('featuredProducts');
-    if (results.length > 0) {
-        featured.innerHTML = results.map(createProductCard).join('');
-    } else {
-        featured.innerHTML = '<p style="text-align:center;color:var(--gray-500);grid-column:1/-1;padding:40px;">No products found for "' + query + '"</p>';
-    }
-    showPage('home');
-    document.querySelector('.featured .section-title').innerHTML = 'Search Results for "<span class="highlight">' + query + '</span>"';
+    document.getElementById('searchTitle').textContent = 'Search: "' + query + '"';
+    document.getElementById('searchSubtitle').textContent = lastSearchResults.length + ' product(s) found';
+
+    renderSearchResults(lastSearchResults);
+    showPage('search');
+
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn').classList.add('active');
 }
+
+function renderSearchResults(results) {
+    const container = document.getElementById('searchResults');
+    const empty = document.getElementById('searchEmpty');
+
+    if (results.length > 0) {
+        container.innerHTML = results.map(createProductCard).join('');
+        container.style.display = 'grid';
+        empty.style.display = 'none';
+    } else {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        empty.style.display = 'block';
+    }
+}
+
+function filterSearch(category) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    if (category === 'all') {
+        renderSearchResults(lastSearchResults);
+    } else {
+        const filtered = lastSearchResults.filter(p => p.category === category);
+        renderSearchResults(filtered);
+    }
+}
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') searchProducts();
+});
 
 // ==================== CONTACT FORM ====================
 function submitContact(e) {

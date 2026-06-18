@@ -287,6 +287,16 @@ a { text-decoration:none; color:inherit; }
 .footer-bottom p { font-size:0.8rem; color:var(--text-dim); }
 .price-disclaimer { margin-top:8px; font-size:0.7rem !important; color:rgba(255,255,255,0.25); }
 
+/* ===== SEARCH ===== */
+.search-filters { display:flex; gap:8px; margin-bottom:30px; flex-wrap:wrap; }
+.filter-btn { background:var(--card-bg); border:1px solid var(--card-border); color:var(--text-dim); padding:8px 20px; border-radius:50px; font-size:0.82rem; font-weight:600; cursor:pointer; font-family:inherit; transition:var(--transition); }
+.filter-btn:hover { border-color:var(--orange); color:var(--white); }
+.filter-btn.active { background:var(--orange); border-color:var(--orange); color:var(--white); }
+.search-empty { text-align:center; padding:60px 20px; }
+.empty-icon { font-size:3rem; margin-bottom:16px; opacity:0.5; }
+.search-empty h3 { color:var(--white); margin-bottom:8px; font-size:1.2rem; }
+.search-empty p { color:var(--text-dim); font-size:0.9rem; }
+
 /* ===== TOAST ===== */
 .toast { position:fixed; top:90px; right:20px; background:var(--green); color:var(--white); padding:14px 24px; border-radius:var(--radius-sm); font-size:0.88rem; font-weight:500; z-index:300; transform:translateX(120%); transition:transform 0.3s ease; box-shadow:0 8px 24px rgba(46,204,113,0.3); }
 .toast.show { transform:translateX(0); }
