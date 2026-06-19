@@ -605,7 +605,7 @@ function shareWhatsApp(productId) {
     const canvas = document.getElementById('solarCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let w, h, particles = [], rays = [];
+    let w, h, bolts = [], sparks = [], t = 0;
 
     function resize() {
         const hero = canvas.parentElement;
@@ -615,83 +615,82 @@ function shareWhatsApp(productId) {
     resize();
     window.addEventListener('resize', resize);
 
-    // Sun position
-    const sun = { x: 0.85, y: 0.15 };
-
-    // Energy particles floating upward
-    for (let i = 0; i < 40; i++) {
-        particles.push({
-            x: Math.random() * 1,
-            y: Math.random() * 1,
-            size: Math.random() * 2.5 + 0.5,
-            speed: Math.random() * 0.0008 + 0.0003,
-            opacity: Math.random() * 0.4 + 0.1,
-            drift: Math.random() * 0.0004 - 0.0002
+    // Electric energy lines
+    for (let i = 0; i < 8; i++) {
+        bolts.push({
+            x1: Math.random(), y1: Math.random(),
+            x2: Math.random(), y2: Math.random(),
+            speed: Math.random() * 0.02 + 0.01,
+            life: Math.random() * 100,
+            maxLife: Math.random() * 80 + 60,
+            color: Math.random() > 0.5 ? [232,122,30] : [45,139,171]
         });
     }
 
-    // Sun rays
-    for (let i = 0; i < 6; i++) {
-        rays.push({
-            angle: (Math.PI * 2 / 6) * i,
-            length: Math.random() * 0.15 + 0.1,
-            width: Math.random() * 0.02 + 0.005,
-            speed: Math.random() * 0.003 + 0.001
+    // Fast sparks
+    for (let i = 0; i < 60; i++) {
+        sparks.push({
+            x: Math.random(), y: Math.random(),
+            vx: (Math.random() - 0.5) * 0.004,
+            vy: (Math.random() - 0.5) * 0.004,
+            size: Math.random() * 2 + 0.5,
+            opacity: 0,
+            maxOp: Math.random() * 0.6 + 0.2,
+            pulse: Math.random() * 0.1 + 0.03,
+            phase: Math.random() * Math.PI * 2,
+            color: Math.random() > 0.4 ? [232,122,30] : [45,200,220]
         });
     }
 
     function draw() {
         ctx.clearRect(0, 0, w, h);
-        const sx = sun.x * w, sy = sun.y * h;
+        t++;
 
-        // Glowing sun
-        const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 120);
-        glow.addColorStop(0, 'rgba(232,122,30,0.15)');
-        glow.addColorStop(0.5, 'rgba(232,122,30,0.05)');
-        glow.addColorStop(1, 'transparent');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(sx, sy, 120, 0, Math.PI * 2);
-        ctx.fill();
+        // Electric bolt connections
+        bolts.forEach(b => {
+            b.life++;
+            if (b.life > b.maxLife) {
+                b.x1 = b.x2; b.y1 = b.y2;
+                b.x2 = Math.random(); b.y2 = Math.random();
+                b.life = 0; b.maxLife = Math.random() * 80 + 60;
+            }
+            const progress = b.life / b.maxLife;
+            const fade = progress < 0.2 ? progress * 5 : progress > 0.8 ? (1 - progress) * 5 : 1;
+            const cx = (b.x1 + b.x2) / 2 + Math.sin(t * b.speed) * 0.05;
+            const cy = (b.y1 + b.y2) / 2 + Math.cos(t * b.speed) * 0.05;
 
-        // Sun core
-        const core = ctx.createRadialGradient(sx, sy, 0, sx, sy, 20);
-        core.addColorStop(0, 'rgba(255,200,50,0.3)');
-        core.addColorStop(1, 'rgba(232,122,30,0.1)');
-        ctx.fillStyle = core;
-        ctx.beginPath();
-        ctx.arc(sx, sy, 20, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Rotating rays
-        rays.forEach(ray => {
-            ray.angle += ray.speed;
-            const len = ray.length * Math.min(w, h);
-            const ex = sx + Math.cos(ray.angle) * len;
-            const ey = sy + Math.sin(ray.angle) * len;
-            const grad = ctx.createLinearGradient(sx, sy, ex, ey);
-            grad.addColorStop(0, 'rgba(232,122,30,0.12)');
-            grad.addColorStop(1, 'transparent');
-            ctx.strokeStyle = grad;
-            ctx.lineWidth = ray.width * w;
+            ctx.strokeStyle = `rgba(${b.color[0]},${b.color[1]},${b.color[2]},${0.06 * fade})`;
+            ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(sx, sy);
-            ctx.lineTo(ex, ey);
+            ctx.moveTo(b.x1 * w, b.y1 * h);
+            ctx.quadraticCurveTo(cx * w, cy * h, b.x2 * w, b.y2 * h);
             ctx.stroke();
         });
 
-        // Floating energy particles
-        particles.forEach(p => {
-            p.y -= p.speed;
-            p.x += p.drift;
-            if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
-            if (p.x < 0) p.x = 1;
-            if (p.x > 1) p.x = 0;
+        // Pulsing sparks
+        sparks.forEach(s => {
+            s.x += s.vx;
+            s.y += s.vy;
+            s.opacity = s.maxOp * (0.5 + 0.5 * Math.sin(t * s.pulse + s.phase));
 
-            const px = p.x * w, py = p.y * h;
-            ctx.fillStyle = `rgba(232,122,30,${p.opacity})`;
+            if (s.x < 0 || s.x > 1) s.vx *= -1;
+            if (s.y < 0 || s.y > 1) s.vy *= -1;
+
+            const px = s.x * w, py = s.y * h;
+
+            // Glow
+            const g = ctx.createRadialGradient(px, py, 0, px, py, s.size * 4);
+            g.addColorStop(0, `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${s.opacity * 0.3})`);
+            g.addColorStop(1, 'transparent');
+            ctx.fillStyle = g;
             ctx.beginPath();
-            ctx.arc(px, py, p.size, 0, Math.PI * 2);
+            ctx.arc(px, py, s.size * 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core
+            ctx.fillStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${s.opacity})`;
+            ctx.beginPath();
+            ctx.arc(px, py, s.size, 0, Math.PI * 2);
             ctx.fill();
         });
 
