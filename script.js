@@ -605,7 +605,7 @@ function shareWhatsApp(productId) {
     const canvas = document.getElementById('solarCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let w, h, bolts = [], sparks = [], t = 0;
+    let w, h, t = 0, mouse = { x: -1, y: -1 };
 
     function resize() {
         const hero = canvas.parentElement;
@@ -614,83 +614,130 @@ function shareWhatsApp(productId) {
     }
     resize();
     window.addEventListener('resize', resize);
+    canvas.parentElement.addEventListener('mousemove', e => {
+        const r = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    });
+    canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -1; });
 
-    // Electric energy lines
-    for (let i = 0; i < 8; i++) {
-        bolts.push({
-            x1: Math.random(), y1: Math.random(),
-            x2: Math.random(), y2: Math.random(),
-            speed: Math.random() * 0.02 + 0.01,
-            life: Math.random() * 100,
-            maxLife: Math.random() * 80 + 60,
-            color: Math.random() > 0.5 ? [232,122,30] : [45,139,171]
-        });
+    // Grid nodes
+    const cols = 18, rows = 10;
+    let nodes = [];
+    function initNodes() {
+        nodes = [];
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                nodes.push({
+                    baseX: (c + 0.5) / cols,
+                    baseY: (r + 0.5) / rows,
+                    x: 0, y: 0,
+                    energy: 0,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+        }
     }
+    initNodes();
 
-    // Fast sparks
-    for (let i = 0; i < 60; i++) {
-        sparks.push({
-            x: Math.random(), y: Math.random(),
-            vx: (Math.random() - 0.5) * 0.004,
-            vy: (Math.random() - 0.5) * 0.004,
-            size: Math.random() * 2 + 0.5,
-            opacity: 0,
-            maxOp: Math.random() * 0.6 + 0.2,
-            pulse: Math.random() * 0.1 + 0.03,
-            phase: Math.random() * Math.PI * 2,
-            color: Math.random() > 0.4 ? [232,122,30] : [45,200,220]
+    // Energy waves
+    let waves = [];
+    setInterval(() => {
+        waves.push({
+            cx: Math.random(), cy: Math.random(),
+            radius: 0, maxRadius: 0.5 + Math.random() * 0.3,
+            speed: 0.008 + Math.random() * 0.005,
+            strength: 0.6 + Math.random() * 0.4
         });
-    }
+        if (waves.length > 5) waves.shift();
+    }, 2000);
 
     function draw() {
         ctx.clearRect(0, 0, w, h);
-        t++;
+        t += 0.016;
 
-        // Electric bolt connections
-        bolts.forEach(b => {
-            b.life++;
-            if (b.life > b.maxLife) {
-                b.x1 = b.x2; b.y1 = b.y2;
-                b.x2 = Math.random(); b.y2 = Math.random();
-                b.life = 0; b.maxLife = Math.random() * 80 + 60;
+        // Update waves
+        waves.forEach(wv => { wv.radius += wv.speed; });
+        waves = waves.filter(wv => wv.radius < wv.maxRadius);
+
+        // Update nodes
+        nodes.forEach(n => {
+            n.x = n.baseX * w;
+            n.y = n.baseY * h;
+            n.energy = 0.1 + 0.1 * Math.sin(t * 2 + n.pulse);
+
+            // Wave energy
+            waves.forEach(wv => {
+                const dx = n.baseX - wv.cx, dy = n.baseY - wv.cy;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const ring = Math.abs(dist - wv.radius);
+                if (ring < 0.06) {
+                    const boost = (1 - ring / 0.06) * wv.strength * (1 - wv.radius / wv.maxRadius);
+                    n.energy += boost;
+                    n.x += dx * boost * 8;
+                    n.y += dy * boost * 8;
+                }
+            });
+
+            // Mouse interaction
+            if (mouse.x > 0) {
+                const dx = n.x - mouse.x, dy = n.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    const force = (1 - dist / 150) * 0.8;
+                    n.energy += force;
+                    n.x += dx * force * 0.15;
+                    n.y += dy * force * 0.15;
+                }
             }
-            const progress = b.life / b.maxLife;
-            const fade = progress < 0.2 ? progress * 5 : progress > 0.8 ? (1 - progress) * 5 : 1;
-            const cx = (b.x1 + b.x2) / 2 + Math.sin(t * b.speed) * 0.05;
-            const cy = (b.y1 + b.y2) / 2 + Math.cos(t * b.speed) * 0.05;
-
-            ctx.strokeStyle = `rgba(${b.color[0]},${b.color[1]},${b.color[2]},${0.06 * fade})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(b.x1 * w, b.y1 * h);
-            ctx.quadraticCurveTo(cx * w, cy * h, b.x2 * w, b.y2 * h);
-            ctx.stroke();
+            n.energy = Math.min(n.energy, 1);
         });
 
-        // Pulsing sparks
-        sparks.forEach(s => {
-            s.x += s.vx;
-            s.y += s.vy;
-            s.opacity = s.maxOp * (0.5 + 0.5 * Math.sin(t * s.pulse + s.phase));
+        // Draw connections
+        for (let i = 0; i < nodes.length; i++) {
+            const a = nodes[i];
+            for (let j = i + 1; j < nodes.length; j++) {
+                const b = nodes[j];
+                const dx = a.x - b.x, dy = a.y - b.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxDist = w / cols * 1.8;
+                if (dist < maxDist) {
+                    const energy = (a.energy + b.energy) / 2;
+                    const alpha = (1 - dist / maxDist) * energy * 0.4;
+                    const r = Math.round(232 * energy + 45 * (1 - energy));
+                    const g = Math.round(122 * energy + 139 * (1 - energy));
+                    const bl = Math.round(30 * energy + 171 * (1 - energy));
+                    ctx.strokeStyle = `rgba(${r},${g},${bl},${alpha})`;
+                    ctx.lineWidth = energy * 2 + 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
 
-            if (s.x < 0 || s.x > 1) s.vx *= -1;
-            if (s.y < 0 || s.y > 1) s.vy *= -1;
+        // Draw nodes
+        nodes.forEach(n => {
+            const size = 2 + n.energy * 4;
+            const r = Math.round(232 * n.energy + 45 * (1 - n.energy));
+            const g = Math.round(122 * n.energy + 139 * (1 - n.energy));
+            const bl = Math.round(30 * n.energy + 171 * (1 - n.energy));
 
-            const px = s.x * w, py = s.y * h;
+            // Outer glow
+            if (n.energy > 0.3) {
+                const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, size * 5);
+                glow.addColorStop(0, `rgba(${r},${g},${bl},${n.energy * 0.2})`);
+                glow.addColorStop(1, 'transparent');
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, size * 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
-            // Glow
-            const g = ctx.createRadialGradient(px, py, 0, px, py, s.size * 4);
-            g.addColorStop(0, `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${s.opacity * 0.3})`);
-            g.addColorStop(1, 'transparent');
-            ctx.fillStyle = g;
+            // Core dot
+            ctx.fillStyle = `rgba(${r},${g},${bl},${0.3 + n.energy * 0.7})`;
             ctx.beginPath();
-            ctx.arc(px, py, s.size * 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Core
-            ctx.fillStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${s.opacity})`;
-            ctx.beginPath();
-            ctx.arc(px, py, s.size, 0, Math.PI * 2);
+            ctx.arc(n.x, n.y, size, 0, Math.PI * 2);
             ctx.fill();
         });
 
