@@ -174,6 +174,10 @@ function renderProducts() {
 
     if (featured) featured.innerHTML = products.filter(p => p.featured).map(createProductCard).join('');
     if (panels) panels.innerHTML = products.filter(p => p.category === 'panel').map(createProductCard).join('');
+    const longi = document.getElementById('longiProducts');
+    const jinko = document.getElementById('jinkoProducts');
+    if (longi) longi.innerHTML = products.filter(p => p.category === 'longi').map(createProductCard).join('');
+    if (jinko) jinko.innerHTML = products.filter(p => p.category === 'jinko').map(createProductCard).join('');
     if (inverters) inverters.innerHTML = products.filter(p => p.category === 'inverter').map(createProductCard).join('');
     if (batteries) batteries.innerHTML = products.filter(p => p.category === 'battery').map(createProductCard).join('');
 }
