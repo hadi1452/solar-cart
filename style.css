@@ -377,3 +377,21 @@ a { text-decoration:none; color:inherit; }
     .success-buttons { flex-direction:column; }
     .section-title { font-size:1.4rem; }
 }
+
+/* Social Media Dashboard */
+.social-controls { display:flex; gap:12px; margin-bottom:30px; flex-wrap:wrap; align-items:center; }
+.social-controls select { padding:10px 16px; border-radius:var(--radius); border:1px solid var(--card-border); background:var(--card-bg); color:var(--white); font-size:0.9rem; cursor:pointer; }
+.social-posts-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:20px; }
+.social-post-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius); overflow:hidden; }
+.social-post-card .post-img { width:100%; height:200px; overflow:hidden; }
+.social-post-card .post-img img { width:100%; height:100%; object-fit:cover; }
+.social-post-card .post-body { padding:16px; }
+.social-post-card .post-platform { font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--orange); font-weight:700; margin-bottom:8px; }
+.social-post-card .post-caption { color:var(--gray-300); font-size:0.85rem; line-height:1.6; white-space:pre-wrap; margin-bottom:12px; max-height:200px; overflow-y:auto; }
+.social-post-card .post-actions { display:flex; gap:8px; }
+.social-post-card .post-actions button { flex:1; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:600; transition:var(--transition); }
+.btn-copy { background:var(--orange); color:var(--white); }
+.btn-copy:hover { background:var(--orange-dark); }
+.btn-copy.copied { background:var(--green); }
+.btn-share { background:var(--navy-light); color:var(--white); border:1px solid var(--card-border) !important; }
+.btn-share:hover { background:var(--teal); }

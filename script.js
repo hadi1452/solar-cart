@@ -533,6 +533,73 @@ const counterObserver = new IntersectionObserver((entries) => {
 const statsSection = document.querySelector('.stats-section');
 if (statsSection) counterObserver.observe(statsSection);
 
+// ==================== SOCIAL MEDIA DASHBOARD ====================
+function generateSocialPosts() {
+    const platform = document.getElementById('socialPlatform').value;
+    const category = document.getElementById('socialCategory').value;
+    const container = document.getElementById('socialPosts');
+
+    let filtered = category === 'all' ? products : products.filter(p => p.category === category);
+    if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--gray-500);padding:20px;">No products in this category.</p>'; return; }
+
+    container.innerHTML = filtered.map(p => {
+        const caption = generateCaption(p, platform);
+        return `
+            <div class="social-post-card">
+                <div class="post-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+                <div class="post-body">
+                    <div class="post-platform">${platform.toUpperCase()}</div>
+                    <div class="post-caption" id="caption-${p.id}">${caption}</div>
+                    <div class="post-actions">
+                        <button class="btn-copy" onclick="copyCaption(${p.id}, this)">Copy Caption</button>
+                        <button class="btn-share" onclick="shareWhatsApp(${p.id})">WhatsApp Share</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function generateCaption(product, platform) {
+    const price = 'Rs. ' + product.price.toLocaleString();
+    const specs = product.specs.map(s => s).join(' | ');
+    const hashtags = getHashtags(product);
+
+    if (platform === 'instagram') {
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at www.solarcart.com\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
+    } else if (platform === 'facebook') {
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: www.solarcart.com\nCall/WhatsApp: 0323-7927923\nDelivery across Pakistan!`;
+    } else {
+        return `*${product.name}*\n\nPrice: *${price}*\n${specs}\nWarranty: ${product.warranty}\n\nOrder now: www.solarcart.com\nWhatsApp: 0323-7927923`;
+    }
+}
+
+function getHashtags(product) {
+    const base = '#SolarCart #SolarPakistan #GoSolar #SolarEnergy #Karachi #Pakistan';
+    const catTags = {
+        longi: '#Longi #SolarPanel #LongiSolar #HiMo',
+        jinko: '#Jinko #JinkoSolar #SolarPanel #TigerNeo',
+        inverter: '#Inverter #HybridInverter #iTel #SolarInverter',
+        battery: '#LithiumBattery #LiFePO4 #SolarBattery #iTel',
+        ess: '#ESS #EnergyStorage #SolarSystem #AllInOne #iTel'
+    };
+    return base + ' ' + (catTags[product.category] || '');
+}
+
+function copyCaption(productId, btn) {
+    const caption = document.getElementById('caption-' + productId).textContent;
+    navigator.clipboard.writeText(caption).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy Caption'; btn.classList.remove('copied'); }, 2000);
+    });
+}
+
+function shareWhatsApp(productId) {
+    const caption = document.getElementById('caption-' + productId).textContent;
+    window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+}
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();

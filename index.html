@@ -504,6 +504,37 @@
         </section>
     </div>
 
+    <!-- ============ SOCIAL MEDIA DASHBOARD (Hidden Admin) ============ -->
+    <div id="page-social" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Social Media Dashboard</h1>
+                <p>Auto-generated posts for Facebook, Instagram & WhatsApp</p>
+            </div>
+        </section>
+        <section class="shop-section">
+            <div class="container">
+                <div class="social-controls">
+                    <select id="socialPlatform" onchange="generateSocialPosts()">
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="whatsapp">WhatsApp</option>
+                    </select>
+                    <select id="socialCategory" onchange="generateSocialPosts()">
+                        <option value="all">All Products</option>
+                        <option value="longi">Longi Panels</option>
+                        <option value="jinko">Jinko Panels</option>
+                        <option value="inverter">Inverters</option>
+                        <option value="battery">Batteries</option>
+                        <option value="ess">ESS Solution</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="generateSocialPosts()">Generate Posts</button>
+                </div>
+                <div id="socialPosts" class="social-posts-grid"></div>
+            </div>
+        </section>
+    </div>
+
     <!-- WhatsApp Float -->
     <a href="https://wa.me/923237927923" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
         <span class="wa-icon">W</span>
