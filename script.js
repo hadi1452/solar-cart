@@ -620,16 +620,28 @@ function shareWhatsApp(productId) {
     });
     canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -1; });
 
-    // Grid nodes
-    const cols = 18, rows = 10;
+    // Touch support for mobile
+    canvas.parentElement.addEventListener('touchmove', e => {
+        const r = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        mouse.x = touch.clientX - r.left; mouse.y = touch.clientY - r.top;
+    }, { passive: true });
+    canvas.parentElement.addEventListener('touchend', () => { mouse.x = -1; });
+
+    // Grid nodes - fewer on mobile
+    const isMobile = w < 768;
+    const cols = isMobile ? 8 : 18, rows = isMobile ? 6 : 10;
     let nodes = [];
+    window.addEventListener('resize', () => { resize(); initNodes(); });
+
     function initNodes() {
         nodes = [];
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
+        const c2 = w < 768 ? 8 : 18, r2 = w < 768 ? 6 : 10;
+        for (let r = 0; r < r2; r++) {
+            for (let c = 0; c < c2; c++) {
                 nodes.push({
-                    baseX: (c + 0.5) / cols,
-                    baseY: (r + 0.5) / rows,
+                    baseX: (c + 0.5) / c2,
+                    baseY: (r + 0.5) / r2,
                     x: 0, y: 0,
                     energy: 0,
                     pulse: Math.random() * Math.PI * 2
