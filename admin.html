@@ -80,6 +80,32 @@
         .no-orders { text-align:center; padding:60px 20px; color:var(--dim); }
         .no-orders h3 { margin-bottom:8px; color:var(--text); }
 
+        /* Tabs */
+        .dash-tabs { display:flex; gap:8px; margin-bottom:24px; }
+        .dash-tab { padding:10px 24px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--dim); font-size:0.85rem; font-weight:600; cursor:pointer; font-family:inherit; }
+        .dash-tab:hover { border-color:var(--orange); color:var(--orange); }
+        .dash-tab.active { background:var(--orange); border-color:var(--orange); color:#fff; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+
+        /* Social Media Dashboard */
+        .social-controls { display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center; }
+        .social-controls select { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
+        .social-posts-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px; }
+        .social-post-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+        .social-post-card .post-img { width:100%; height:180px; overflow:hidden; }
+        .social-post-card .post-img img { width:100%; height:100%; object-fit:cover; }
+        .social-post-card .post-body { padding:14px; }
+        .social-post-card .post-platform { font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--orange); font-weight:700; margin-bottom:6px; }
+        .social-post-card .post-caption { color:var(--dim); font-size:0.82rem; line-height:1.6; white-space:pre-wrap; margin-bottom:10px; max-height:180px; overflow-y:auto; }
+        .social-post-card .post-actions { display:flex; gap:8px; }
+        .social-post-card .post-actions button { flex:1; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:0.78rem; font-weight:600; font-family:inherit; }
+        .btn-copy { background:var(--orange); color:#fff; }
+        .btn-copy:hover { background:#d06810; }
+        .btn-copy.copied { background:var(--green); }
+        .btn-share { background:var(--navy); color:var(--dim); border:1px solid var(--border) !important; }
+        .btn-share:hover { color:var(--orange); border-color:var(--orange) !important; }
+
         /* Notification sound indicator */
         .notif-indicator { display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--green); }
         .notif-dot { width:8px; height:8px; background:var(--green); border-radius:50%; animation:pulse-notif 2s infinite; }
@@ -141,37 +167,69 @@
             </div>
         </div>
         <div class="dash-content">
-            <div class="dash-stats">
-                <div class="dash-stat">
-                    <div class="dash-stat-label">Total Orders</div>
-                    <div class="dash-stat-value orange" id="statTotal">0</div>
+            <!-- Tabs -->
+            <div class="dash-tabs">
+                <button class="dash-tab active" onclick="switchTab('orders', this)">Orders</button>
+                <button class="dash-tab" onclick="switchTab('social', this)">Social Media</button>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-content active" id="tab-orders">
+                <div class="dash-stats">
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Total Orders</div>
+                        <div class="dash-stat-value orange" id="statTotal">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">New Orders</div>
+                        <div class="dash-stat-value blue" id="statNew">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Confirmed</div>
+                        <div class="dash-stat-value yellow" id="statConfirmed">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Delivered</div>
+                        <div class="dash-stat-value green" id="statDelivered">0</div>
+                    </div>
                 </div>
-                <div class="dash-stat">
-                    <div class="dash-stat-label">New Orders</div>
-                    <div class="dash-stat-value blue" id="statNew">0</div>
+                <div class="orders-header">
+                    <h2>Orders</h2>
+                    <button class="refresh-btn" onclick="loadOrders()">Refresh</button>
                 </div>
-                <div class="dash-stat">
-                    <div class="dash-stat-label">Confirmed</div>
-                    <div class="dash-stat-value yellow" id="statConfirmed">0</div>
-                </div>
-                <div class="dash-stat">
-                    <div class="dash-stat-label">Delivered</div>
-                    <div class="dash-stat-value green" id="statDelivered">0</div>
+                <div id="ordersList">
+                    <div class="no-orders">
+                        <h3>No orders yet</h3>
+                        <p>Orders will appear here when customers place them</p>
+                    </div>
                 </div>
             </div>
-            <div class="orders-header">
-                <h2>Orders</h2>
-                <button class="refresh-btn" onclick="loadOrders()">Refresh</button>
-            </div>
-            <div id="ordersList">
-                <div class="no-orders">
-                    <h3>No orders yet</h3>
-                    <p>Orders will appear here when customers place them</p>
+
+            <!-- Social Media Tab -->
+            <div class="tab-content" id="tab-social">
+                <h2 style="margin-bottom:20px;">Social Media Post Generator</h2>
+                <div class="social-controls">
+                    <select id="socialPlatform" onchange="generateSocialPosts()">
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="whatsapp">WhatsApp</option>
+                    </select>
+                    <select id="socialCategory" onchange="generateSocialPosts()">
+                        <option value="all">All Products</option>
+                        <option value="longi">Longi Panels</option>
+                        <option value="jinko">Jinko Panels</option>
+                        <option value="inverter">Inverters</option>
+                        <option value="battery">Batteries</option>
+                        <option value="ess">ESS Solution</option>
+                    </select>
+                    <button class="refresh-btn" onclick="generateSocialPosts()">Generate</button>
                 </div>
+                <div id="socialPosts" class="social-posts-grid"></div>
             </div>
         </div>
     </div>
 
+    <script src="script.js"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
         const BLOB_ID = '019edb05-e87f-7360-8c1e-b6e82e509b83';
@@ -316,6 +374,15 @@
             badge.className = 'order-status status-' + status;
             badge.textContent = status;
             loadOrders();
+        }
+
+        // Tab switching
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            btn.classList.add('active');
+            if (tab === 'social') generateSocialPosts();
         }
 
         // Live listener - check for new orders every 30 seconds
