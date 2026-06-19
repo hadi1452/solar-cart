@@ -184,6 +184,8 @@ function renderProducts() {
     if (longi) longi.innerHTML = products.filter(p => p.category === 'longi').map(createProductCard).join('');
     if (jinko) jinko.innerHTML = products.filter(p => p.category === 'jinko').map(createProductCard).join('');
     if (inverters) inverters.innerHTML = products.filter(p => p.category === 'inverter').map(createProductCard).join('');
+    const ess = document.getElementById('essProducts');
+    if (ess) ess.innerHTML = products.filter(p => p.category === 'ess').map(createProductCard).join('');
     if (batteries) batteries.innerHTML = products.filter(p => p.category === 'battery').map(createProductCard).join('');
 }
 
@@ -193,7 +195,7 @@ function showPage(page) {
     document.getElementById('page-' + page).classList.add('active');
 
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    const navMap = { home:0, panels:1, inverters:2, batteries:3, contact:4 };
+    const navMap = { home:0, panels:1, inverters:2, batteries:3, ess:4, contact:5 };
     const links = document.querySelectorAll('.nav-links a');
     if (links[navMap[page]]) links[navMap[page]].classList.add('active');
 
