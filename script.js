@@ -1,9 +1,6 @@
 // ==================== PRODUCT DATA ====================
 const products = [
-    // Solar Panels (Official iTel images from itelsolar.com)
-    { id:1, name:"iTel 410W N-Type Mono Solar Panel", model:"108 N-Type Mono Cells", category:"panel", price:14350, badge:"", warranty:"12 Yr Product / 25 Yr Performance", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-410W-Monocrystalline-Solar-Panel-%E2%80%93-Rooftop-Solar-for-Homes-Shops-Offices-High-Efficiency-IP68-Rated-2.jpg", specs:["Power: 410W","Type: N-Type Mono","Efficiency: 20.97%"], perWatt:"~Rs. 35/watt", featured:false },
-    { id:2, name:"iTel 550W N-Type Mono Solar Panel", model:"144 N-Type Mono Cells", category:"panel", price:19250, badge:"Best Seller", badgeClass:"best", warranty:"12 Yr Product / 25 Yr Performance", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/iTel-550W-Solar-Panel-21.29-module-efficiency-with-144-N-Type-Mono-cells-11.jpg", specs:["Power: 550W","Type: N-Type Mono","Efficiency: 21.29%"], perWatt:"~Rs. 35/watt", featured:true },
-    { id:3, name:"iTel 590W N-Type Bifacial Solar Panel", model:"N-Type Bifacial Cells", category:"panel", price:23600, badge:"Premium", badgeClass:"premium", warranty:"15 Yr Product / 30 Yr Performance", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/iTel-550W-Solar-Panel-21.29-module-efficiency-with-144-N-Type-Mono-cells-1-3.jpg", specs:["Power: 590W","Type: N-Type Bifacial","Efficiency: 21.29%"], perWatt:"~Rs. 40/watt", featured:true },
+    // Solar Panels
 
     // Inverters (Official iTel images from itelsolar.com)
     { id:4, name:"iTel 3KW Pro IP54 Hybrid Solar Inverter", model:"IPV-3K24UPRO", category:"inverter", price:80000, badge:"", warranty:"3 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-3kW-Hybrid-Solar-Inverter-%E2%80%93-24V-Pure-Sine-Wave-Powers-ACs-TVs-Fridge-1.jpg", specs:["Capacity: 3kW / 4.5kVA","Type: Hybrid IP54","Voltage: 24V"], featured:false },
