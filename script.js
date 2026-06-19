@@ -600,6 +600,106 @@ function shareWhatsApp(productId) {
     window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
 }
 
+// ==================== SOLAR ANIMATION ====================
+(function() {
+    const canvas = document.getElementById('solarCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [], rays = [];
+
+    function resize() {
+        const hero = canvas.parentElement;
+        w = canvas.width = hero.offsetWidth;
+        h = canvas.height = hero.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Sun position
+    const sun = { x: 0.85, y: 0.15 };
+
+    // Energy particles floating upward
+    for (let i = 0; i < 40; i++) {
+        particles.push({
+            x: Math.random() * 1,
+            y: Math.random() * 1,
+            size: Math.random() * 2.5 + 0.5,
+            speed: Math.random() * 0.0008 + 0.0003,
+            opacity: Math.random() * 0.4 + 0.1,
+            drift: Math.random() * 0.0004 - 0.0002
+        });
+    }
+
+    // Sun rays
+    for (let i = 0; i < 6; i++) {
+        rays.push({
+            angle: (Math.PI * 2 / 6) * i,
+            length: Math.random() * 0.15 + 0.1,
+            width: Math.random() * 0.02 + 0.005,
+            speed: Math.random() * 0.003 + 0.001
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        const sx = sun.x * w, sy = sun.y * h;
+
+        // Glowing sun
+        const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 120);
+        glow.addColorStop(0, 'rgba(232,122,30,0.15)');
+        glow.addColorStop(0.5, 'rgba(232,122,30,0.05)');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 120, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sun core
+        const core = ctx.createRadialGradient(sx, sy, 0, sx, sy, 20);
+        core.addColorStop(0, 'rgba(255,200,50,0.3)');
+        core.addColorStop(1, 'rgba(232,122,30,0.1)');
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rotating rays
+        rays.forEach(ray => {
+            ray.angle += ray.speed;
+            const len = ray.length * Math.min(w, h);
+            const ex = sx + Math.cos(ray.angle) * len;
+            const ey = sy + Math.sin(ray.angle) * len;
+            const grad = ctx.createLinearGradient(sx, sy, ex, ey);
+            grad.addColorStop(0, 'rgba(232,122,30,0.12)');
+            grad.addColorStop(1, 'transparent');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = ray.width * w;
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(ex, ey);
+            ctx.stroke();
+        });
+
+        // Floating energy particles
+        particles.forEach(p => {
+            p.y -= p.speed;
+            p.x += p.drift;
+            if (p.y < -0.05) { p.y = 1.05; p.x = Math.random(); }
+            if (p.x < 0) p.x = 1;
+            if (p.x > 1) p.x = 0;
+
+            const px = p.x * w, py = p.y * h;
+            ctx.fillStyle = `rgba(232,122,30,${p.opacity})`;
+            ctx.beginPath();
+            ctx.arc(px, py, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();

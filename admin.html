@@ -150,6 +150,9 @@
             <p>Enter password to access orders</p>
             <div class="login-error" id="loginError">Wrong password. Try again.</div>
             <input type="password" id="adminPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--dim);margin-bottom:14px;cursor:pointer;justify-content:flex-start;">
+                <input type="checkbox" onchange="document.getElementById('adminPassword').type=this.checked?'text':'password'" style="width:auto;margin:0;"> Show Password
+            </label>
             <button onclick="adminLogin()">Login</button>
         </div>
     </div>
