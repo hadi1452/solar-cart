@@ -605,7 +605,7 @@ function shareWhatsApp(productId) {
     const canvas = document.getElementById('solarCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let w, h, t = 0, mouse = { x: -1, y: -1 };
+    let w, h, t = 0;
 
     function resize() {
         const hero = canvas.parentElement;
@@ -614,144 +614,252 @@ function shareWhatsApp(productId) {
     }
     resize();
     window.addEventListener('resize', resize);
-    canvas.parentElement.addEventListener('mousemove', e => {
-        const r = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-    });
-    canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -1; });
 
-    // Touch support for mobile
-    canvas.parentElement.addEventListener('touchmove', e => {
-        const r = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        mouse.x = touch.clientX - r.left; mouse.y = touch.clientY - r.top;
-    }, { passive: true });
-    canvas.parentElement.addEventListener('touchend', () => { mouse.x = -1; });
+    const mob = () => w < 768;
 
-    // Grid nodes - fewer on mobile
-    const isMobile = w < 768;
-    const cols = isMobile ? 8 : 18, rows = isMobile ? 6 : 10;
-    let nodes = [];
-    window.addEventListener('resize', () => { resize(); initNodes(); });
+    // Sun
+    function drawSun(x, y, r) {
+        // Outer glow
+        const g1 = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+        g1.addColorStop(0, 'rgba(255,200,50,0.12)');
+        g1.addColorStop(0.5, 'rgba(232,122,30,0.04)');
+        g1.addColorStop(1, 'transparent');
+        ctx.fillStyle = g1;
+        ctx.beginPath(); ctx.arc(x, y, r * 3, 0, Math.PI * 2); ctx.fill();
 
-    function initNodes() {
-        nodes = [];
-        const c2 = w < 768 ? 8 : 18, r2 = w < 768 ? 6 : 10;
-        for (let r = 0; r < r2; r++) {
-            for (let c = 0; c < c2; c++) {
-                nodes.push({
-                    baseX: (c + 0.5) / c2,
-                    baseY: (r + 0.5) / r2,
-                    x: 0, y: 0,
-                    energy: 0,
-                    pulse: Math.random() * Math.PI * 2
-                });
-            }
+        // Core
+        const g2 = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g2.addColorStop(0, 'rgba(255,220,80,0.9)');
+        g2.addColorStop(0.6, 'rgba(232,150,30,0.7)');
+        g2.addColorStop(1, 'rgba(232,122,30,0.3)');
+        ctx.fillStyle = g2;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+
+        // Rays
+        for (let i = 0; i < 12; i++) {
+            const angle = (Math.PI * 2 / 12) * i + t * 0.3;
+            const len = r * (1.8 + 0.5 * Math.sin(t * 2 + i));
+            const grad = ctx.createLinearGradient(x, y, x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+            grad.addColorStop(0, 'rgba(255,200,50,0.3)');
+            grad.addColorStop(1, 'transparent');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + Math.cos(angle) * r * 1.1, y + Math.sin(angle) * r * 1.1);
+            ctx.lineTo(x + Math.cos(angle) * len, y + Math.sin(angle) * len);
+            ctx.stroke();
         }
     }
-    initNodes();
 
-    // Energy waves
-    let waves = [];
-    setInterval(() => {
-        waves.push({
-            cx: Math.random(), cy: Math.random(),
-            radius: 0, maxRadius: 0.5 + Math.random() * 0.3,
-            speed: 0.008 + Math.random() * 0.005,
-            strength: 0.6 + Math.random() * 0.4
+    // Solar panel shape
+    function drawPanel(x, y, pw, ph, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        // Panel frame
+        ctx.fillStyle = 'rgba(20,40,80,0.7)';
+        ctx.strokeStyle = 'rgba(100,150,200,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(-pw/2, -ph/2, pw, ph);
+        ctx.strokeRect(-pw/2, -ph/2, pw, ph);
+
+        // Grid cells
+        const cellsX = 4, cellsY = 6;
+        const cw = pw / cellsX, ch = ph / cellsY;
+        ctx.strokeStyle = 'rgba(80,130,180,0.3)';
+        ctx.lineWidth = 0.5;
+        for (let r = 1; r < cellsY; r++) {
+            ctx.beginPath(); ctx.moveTo(-pw/2, -ph/2 + r * ch); ctx.lineTo(pw/2, -ph/2 + r * ch); ctx.stroke();
+        }
+        for (let c = 1; c < cellsX; c++) {
+            ctx.beginPath(); ctx.moveTo(-pw/2 + c * cw, -ph/2); ctx.lineTo(-pw/2 + c * cw, ph/2); ctx.stroke();
+        }
+
+        // Reflection shine
+        const shine = ctx.createLinearGradient(-pw/2, -ph/2, pw/2, ph/2);
+        shine.addColorStop(0, `rgba(255,255,255,${0.03 + 0.03 * Math.sin(t * 1.5)})`);
+        shine.addColorStop(0.5, 'transparent');
+        shine.addColorStop(1, `rgba(100,180,255,${0.02 + 0.02 * Math.sin(t * 1.5 + 1)})`);
+        ctx.fillStyle = shine;
+        ctx.fillRect(-pw/2, -ph/2, pw, ph);
+
+        ctx.restore();
+    }
+
+    // Inverter box
+    function drawInverter(x, y, bw, bh) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        // Box
+        ctx.fillStyle = 'rgba(30,50,80,0.7)';
+        ctx.strokeStyle = 'rgba(100,150,200,0.4)';
+        ctx.lineWidth = 1.5;
+        const r = 6;
+        ctx.beginPath();
+        ctx.moveTo(-bw/2 + r, -bh/2);
+        ctx.lineTo(bw/2 - r, -bh/2); ctx.quadraticCurveTo(bw/2, -bh/2, bw/2, -bh/2 + r);
+        ctx.lineTo(bw/2, bh/2 - r); ctx.quadraticCurveTo(bw/2, bh/2, bw/2 - r, bh/2);
+        ctx.lineTo(-bw/2 + r, bh/2); ctx.quadraticCurveTo(-bw/2, bh/2, -bw/2, bh/2 - r);
+        ctx.lineTo(-bw/2, -bh/2 + r); ctx.quadraticCurveTo(-bw/2, -bh/2, -bw/2 + r, -bh/2);
+        ctx.closePath();
+        ctx.fill(); ctx.stroke();
+
+        // Screen
+        const sw = bw * 0.6, sh = bh * 0.3;
+        ctx.fillStyle = `rgba(0,${Math.round(180 + 40 * Math.sin(t * 3))},100,0.15)`;
+        ctx.fillRect(-sw/2, -bh/4, sw, sh);
+        ctx.strokeStyle = 'rgba(0,255,100,0.3)';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(-sw/2, -bh/4, sw, sh);
+
+        // LED dots
+        const colors = ['rgba(0,255,100,0.8)', 'rgba(232,122,30,0.8)', `rgba(0,200,255,${0.4 + 0.4 * Math.sin(t * 4)})`];
+        colors.forEach((c, i) => {
+            ctx.fillStyle = c;
+            ctx.beginPath(); ctx.arc(-bw/4 + i * (bw/4), bh/4, 3, 0, Math.PI * 2); ctx.fill();
         });
-        if (waves.length > 5) waves.shift();
-    }, 2000);
+
+        ctx.restore();
+    }
+
+    // Battery
+    function drawBattery(x, y, bw, bh) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        // Body
+        ctx.fillStyle = 'rgba(30,50,80,0.7)';
+        ctx.strokeStyle = 'rgba(100,150,200,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(-bw/2, -bh/2, bw, bh);
+        ctx.strokeRect(-bw/2, -bh/2, bw, bh);
+
+        // Terminal
+        ctx.fillStyle = 'rgba(100,150,200,0.5)';
+        ctx.fillRect(-bw/6, -bh/2 - 6, bw/3, 6);
+
+        // Charge level animated
+        const charge = 0.5 + 0.4 * Math.sin(t * 0.8);
+        const chargeH = (bh - 8) * charge;
+        const cGrad = ctx.createLinearGradient(0, bh/2 - 4, 0, bh/2 - 4 - chargeH);
+        cGrad.addColorStop(0, 'rgba(0,255,100,0.4)');
+        cGrad.addColorStop(1, 'rgba(0,200,255,0.2)');
+        ctx.fillStyle = cGrad;
+        ctx.fillRect(-bw/2 + 4, bh/2 - 4 - chargeH, bw - 8, chargeH);
+
+        // Percentage text
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = `bold ${Math.round(bw * 0.25)}px Inter`;
+        ctx.textAlign = 'center';
+        ctx.fillText(Math.round(charge * 100) + '%', 0, 4);
+
+        ctx.restore();
+    }
+
+    // Energy flow particles
+    let flowParticles = [];
+    for (let i = 0; i < (mob() ? 15 : 30); i++) {
+        flowParticles.push({ progress: Math.random(), path: Math.floor(Math.random() * 3), speed: 0.003 + Math.random() * 0.004 });
+    }
 
     function draw() {
         ctx.clearRect(0, 0, w, h);
         t += 0.016;
 
-        // Update waves
-        waves.forEach(wv => { wv.radius += wv.speed; });
-        waves = waves.filter(wv => wv.radius < wv.maxRadius);
+        const m = mob();
+        const sunX = m ? w * 0.8 : w * 0.88;
+        const sunY = m ? h * 0.08 : h * 0.1;
+        const sunR = m ? 18 : 30;
+        const panelX = m ? w * 0.2 : w * 0.15;
+        const panelY = m ? h * 0.25 : h * 0.35;
+        const panelW = m ? 55 : 90;
+        const panelH = m ? 75 : 120;
+        const invX = m ? w * 0.75 : w * 0.82;
+        const invY = m ? h * 0.7 : h * 0.65;
+        const invW = m ? 40 : 60;
+        const invH = m ? 55 : 80;
+        const batX = m ? w * 0.45 : w * 0.5;
+        const batY = m ? h * 0.75 : h * 0.75;
+        const batW = m ? 30 : 45;
+        const batH = m ? 50 : 70;
 
-        // Update nodes
-        nodes.forEach(n => {
-            n.x = n.baseX * w;
-            n.y = n.baseY * h;
-            n.energy = 0.1 + 0.1 * Math.sin(t * 2 + n.pulse);
+        // Draw sun
+        drawSun(sunX, sunY, sunR);
 
-            // Wave energy
-            waves.forEach(wv => {
-                const dx = n.baseX - wv.cx, dy = n.baseY - wv.cy;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const ring = Math.abs(dist - wv.radius);
-                if (ring < 0.06) {
-                    const boost = (1 - ring / 0.06) * wv.strength * (1 - wv.radius / wv.maxRadius);
-                    n.energy += boost;
-                    n.x += dx * boost * 8;
-                    n.y += dy * boost * 8;
-                }
-            });
-
-            // Mouse interaction
-            if (mouse.x > 0) {
-                const dx = n.x - mouse.x, dy = n.y - mouse.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 150) {
-                    const force = (1 - dist / 150) * 0.8;
-                    n.energy += force;
-                    n.x += dx * force * 0.15;
-                    n.y += dy * force * 0.15;
-                }
-            }
-            n.energy = Math.min(n.energy, 1);
-        });
-
-        // Draw connections
-        for (let i = 0; i < nodes.length; i++) {
-            const a = nodes[i];
-            for (let j = i + 1; j < nodes.length; j++) {
-                const b = nodes[j];
-                const dx = a.x - b.x, dy = a.y - b.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const maxDist = w / cols * 1.8;
-                if (dist < maxDist) {
-                    const energy = (a.energy + b.energy) / 2;
-                    const alpha = (1 - dist / maxDist) * energy * 0.4;
-                    const r = Math.round(232 * energy + 45 * (1 - energy));
-                    const g = Math.round(122 * energy + 139 * (1 - energy));
-                    const bl = Math.round(30 * energy + 171 * (1 - energy));
-                    ctx.strokeStyle = `rgba(${r},${g},${bl},${alpha})`;
-                    ctx.lineWidth = energy * 2 + 0.5;
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.stroke();
-                }
-            }
+        // Sun rays hitting panel
+        for (let i = 0; i < 5; i++) {
+            const offset = (i - 2) * (m ? 8 : 15);
+            const sx = sunX + offset * 0.5;
+            const sy = sunY + Math.abs(offset) * 0.3;
+            const grad = ctx.createLinearGradient(sx, sy, panelX + offset, panelY - panelH/2);
+            grad.addColorStop(0, `rgba(255,200,50,${0.08 + 0.04 * Math.sin(t * 2 + i)})`);
+            grad.addColorStop(1, 'transparent');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 8]);
+            ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(panelX + offset, panelY - panelH/2); ctx.stroke();
+            ctx.setLineDash([]);
         }
 
-        // Draw nodes
-        nodes.forEach(n => {
-            const size = 2 + n.energy * 4;
-            const r = Math.round(232 * n.energy + 45 * (1 - n.energy));
-            const g = Math.round(122 * n.energy + 139 * (1 - n.energy));
-            const bl = Math.round(30 * n.energy + 171 * (1 - n.energy));
+        // Draw panel tilted
+        drawPanel(panelX, panelY, panelW, panelH, -0.15 + 0.02 * Math.sin(t * 0.5));
 
-            // Outer glow
-            if (n.energy > 0.3) {
-                const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, size * 5);
-                glow.addColorStop(0, `rgba(${r},${g},${bl},${n.energy * 0.2})`);
-                glow.addColorStop(1, 'transparent');
-                ctx.fillStyle = glow;
-                ctx.beginPath();
-                ctx.arc(n.x, n.y, size * 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
+        // Draw inverter
+        drawInverter(invX, invY, invW, invH);
 
-            // Core dot
-            ctx.fillStyle = `rgba(${r},${g},${bl},${0.3 + n.energy * 0.7})`;
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, size, 0, Math.PI * 2);
-            ctx.fill();
+        // Draw battery
+        drawBattery(batX, batY, batW, batH);
+
+        // Energy flow paths: panel->inverter, inverter->battery, panel->battery
+        const paths = [
+            { from: { x: panelX + panelW/2, y: panelY }, to: { x: invX - invW/2, y: invY }, color: [232,180,30] },
+            { from: { x: invX, y: invY + invH/2 }, to: { x: batX, y: batY - batH/2 }, color: [0,220,150] },
+            { from: { x: panelX, y: panelY + panelH/2 }, to: { x: batX - batW/2, y: batY }, color: [50,180,255] }
+        ];
+
+        // Draw flow lines
+        paths.forEach((p, idx) => {
+            const mx = (p.from.x + p.to.x) / 2;
+            const my = (p.from.y + p.to.y) / 2 - 20;
+            ctx.strokeStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.1)`;
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 6]);
+            ctx.beginPath(); ctx.moveTo(p.from.x, p.from.y); ctx.quadraticCurveTo(mx, my, p.to.x, p.to.y); ctx.stroke();
+            ctx.setLineDash([]);
         });
+
+        // Animated energy dots along paths
+        flowParticles.forEach(fp => {
+            fp.progress += fp.speed;
+            if (fp.progress > 1) { fp.progress = 0; fp.path = Math.floor(Math.random() * 3); }
+            const p = paths[fp.path];
+            const mx = (p.from.x + p.to.x) / 2;
+            const my = (p.from.y + p.to.y) / 2 - 20;
+            const tt = fp.progress;
+            const x = (1-tt)*(1-tt)*p.from.x + 2*(1-tt)*tt*mx + tt*tt*p.to.x;
+            const y = (1-tt)*(1-tt)*p.from.y + 2*(1-tt)*tt*my + tt*tt*p.to.y;
+
+            // Glow
+            const glow = ctx.createRadialGradient(x, y, 0, x, y, 8);
+            glow.addColorStop(0, `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.4)`);
+            glow.addColorStop(1, 'transparent');
+            ctx.fillStyle = glow;
+            ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fill();
+
+            // Dot
+            ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},0.9)`;
+            ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2); ctx.fill();
+        });
+
+        // Labels
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = `${m ? 9 : 11}px Inter`;
+        ctx.textAlign = 'center';
+        ctx.fillText('SOLAR PANEL', panelX, panelY + panelH/2 + (m ? 14 : 18));
+        ctx.fillText('INVERTER', invX, invY + invH/2 + (m ? 14 : 18));
+        ctx.fillText('BATTERY', batX, batY + batH/2 + (m ? 14 : 18));
 
         requestAnimationFrame(draw);
     }
