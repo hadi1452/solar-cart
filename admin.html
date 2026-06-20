@@ -119,31 +119,50 @@
         @keyframes pulse-notif { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
         @media(max-width:768px) {
-            .dash-stats { grid-template-columns:1fr 1fr; gap:10px; }
-            .dash-stat { padding:14px; }
-            .dash-stat-value { font-size:1.4rem; }
-            .detail-grid { grid-template-columns:1fr; }
-            .order-meta { flex-wrap:wrap; gap:8px; }
-            .order-top { flex-direction:column; align-items:flex-start; gap:10px; }
-            .dash-header { flex-direction:column; gap:10px; padding:12px 16px; }
-            .dash-header-right { width:100%; justify-content:space-between; }
-            .dash-content { padding:16px 12px; }
-            .orders-header { flex-direction:column; gap:10px; align-items:flex-start; }
-            .login-box { padding:24px 20px; margin:10px; }
-            .login-box h2 { font-size:1.1rem; }
-            .status-buttons { flex-wrap:wrap; }
-            .status-btn { padding:6px 10px; font-size:0.7rem; }
-        }
-        @media(max-width:480px) {
             .dash-stats { grid-template-columns:1fr 1fr; gap:8px; }
             .dash-stat { padding:12px 10px; }
-            .dash-stat-label { font-size:0.65rem; }
-            .dash-stat-value { font-size:1.2rem; }
+            .dash-stat-value { font-size:1.3rem; }
+            .dash-stat-label { font-size:0.65rem; letter-spacing:0.5px; }
+            .detail-grid { grid-template-columns:1fr; }
+            .order-meta { flex-wrap:wrap; gap:6px; }
+            .order-top { flex-direction:column; align-items:flex-start; gap:8px; }
+            .dash-header { flex-direction:column; gap:8px; padding:12px 14px; }
+            .dash-header-right { width:100%; justify-content:space-between; }
+            .dash-header img { height:28px; }
+            .dash-content { padding:14px 10px; }
+            .dash-tabs { gap:4px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
+            .dash-tab { padding:8px 14px; font-size:0.75rem; white-space:nowrap; flex-shrink:0; }
+            .orders-header { flex-direction:column; gap:8px; align-items:flex-start; }
+            .orders-header h2 { font-size:1rem; }
+            .login-box { padding:24px 18px; margin:10px; }
+            .login-box h2 { font-size:1.1rem; }
+            .status-buttons { flex-wrap:wrap; gap:5px; }
+            .status-btn { padding:5px 8px; font-size:0.65rem; }
+            .order-card { margin-bottom:8px; }
+            .order-top { padding:12px 14px; }
             .order-id { font-size:0.82rem; }
             .order-amount { font-size:0.82rem; }
-            .order-card { margin-bottom:10px; }
-            .order-detail.open { padding:12px 14px 14px; }
-            .bento-content h3 { font-size:1rem; }
+            .order-time { font-size:0.7rem; }
+            .order-detail.open { padding:12px 14px; }
+            .social-posts-grid { grid-template-columns:1fr; }
+            .social-controls { flex-direction:column; gap:8px; }
+            .social-controls select { width:100%; }
+            .refresh-btn { width:100%; text-align:center; }
+            .notif-indicator { font-size:0.7rem; }
+            .logout-btn { padding:5px 12px; font-size:0.72rem; }
+        }
+        @media(max-width:400px) {
+            .dash-stats { grid-template-columns:1fr 1fr; gap:6px; }
+            .dash-stat { padding:10px 8px; }
+            .dash-stat-value { font-size:1.1rem; }
+            .dash-stat-label { font-size:0.6rem; }
+            .dash-tabs { gap:3px; }
+            .dash-tab { padding:7px 10px; font-size:0.7rem; }
+            .dash-content { padding:10px 8px; }
+            .order-top { padding:10px 12px; }
+            .order-id { font-size:0.75rem; }
+            .order-status { font-size:0.6rem; padding:3px 8px; }
+            .status-btn { padding:4px 7px; font-size:0.6rem; }
         }
     </style>
 </head>
