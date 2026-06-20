@@ -36,7 +36,8 @@
 
         /* Stats */
         .dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px; }
-        .dash-stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+        .dash-stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; transition:all 0.2s ease; }
+        .dash-stat[onclick]:hover { border-color:var(--orange); transform:translateY(-2px); box-shadow:0 6px 20px rgba(232,122,30,0.15); }
         .dash-stat-label { font-size:0.75rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
         .dash-stat-value { font-size:1.8rem; font-weight:800; }
         .dash-stat-value.orange { color:var(--orange); }
@@ -187,19 +188,19 @@
             <!-- Dashboard Tab -->
             <div class="tab-content active" id="tab-dashboard">
                 <div class="dash-stats">
-                    <div class="dash-stat">
+                    <div class="dash-stat" onclick="openStatusSection('all')" style="cursor:pointer;">
                         <div class="dash-stat-label">Total Orders</div>
                         <div class="dash-stat-value orange" id="statTotal">0</div>
                     </div>
-                    <div class="dash-stat">
+                    <div class="dash-stat" onclick="openStatusSection('new')" style="cursor:pointer;">
                         <div class="dash-stat-label">New Orders</div>
                         <div class="dash-stat-value blue" id="statNew">0</div>
                     </div>
-                    <div class="dash-stat">
+                    <div class="dash-stat" onclick="openStatusSection('confirmed')" style="cursor:pointer;">
                         <div class="dash-stat-label">Confirmed</div>
                         <div class="dash-stat-value yellow" id="statConfirmed">0</div>
                     </div>
-                    <div class="dash-stat">
+                    <div class="dash-stat" onclick="openStatusSection('delivered')" style="cursor:pointer;">
                         <div class="dash-stat-label">Delivered</div>
                         <div class="dash-stat-value green" id="statDelivered">0</div>
                     </div>
@@ -214,7 +215,38 @@
                         <div class="dash-stat-value blue" id="statTopCity" style="font-size:1.4rem;">-</div>
                     </div>
                 </div>
-                <h2 style="margin:30px 0 16px;">Recent Orders</h2>
+
+                <!-- New Orders Section -->
+                <div class="status-section" id="section-new" style="display:none;margin-top:30px;">
+                    <div class="orders-header"><h2 style="color:var(--blue);">New Orders</h2><button class="refresh-btn" onclick="closeStatusSection()" style="background:var(--dim);">Close</button></div>
+                    <div id="newOrdersList"></div>
+                </div>
+
+                <!-- Confirmed Section -->
+                <div class="status-section" id="section-confirmed" style="display:none;margin-top:30px;">
+                    <div class="orders-header"><h2 style="color:var(--yellow);">Confirmed Orders</h2><button class="refresh-btn" onclick="closeStatusSection()" style="background:var(--dim);">Close</button></div>
+                    <div id="confirmedOrdersList"></div>
+                </div>
+
+                <!-- Shipped Section -->
+                <div class="status-section" id="section-shipped" style="display:none;margin-top:30px;">
+                    <div class="orders-header"><h2 style="color:var(--orange);">Shipped Orders</h2><button class="refresh-btn" onclick="closeStatusSection()" style="background:var(--dim);">Close</button></div>
+                    <div id="shippedOrdersList"></div>
+                </div>
+
+                <!-- Delivered Section -->
+                <div class="status-section" id="section-delivered" style="display:none;margin-top:30px;">
+                    <div class="orders-header"><h2 style="color:var(--green);">Delivered Orders</h2><button class="refresh-btn" onclick="closeStatusSection()" style="background:var(--dim);">Close</button></div>
+                    <div id="deliveredOrdersList"></div>
+                </div>
+
+                <!-- All Orders Section -->
+                <div class="status-section" id="section-all" style="display:none;margin-top:30px;">
+                    <div class="orders-header"><h2>All Orders</h2><button class="refresh-btn" onclick="closeStatusSection()" style="background:var(--dim);">Close</button></div>
+                    <div id="allOrdersList"></div>
+                </div>
+
+                <h2 style="margin:30px 0 16px;" id="recentTitle">Recent Orders</h2>
                 <div id="recentOrdersList"></div>
             </div>
 
@@ -428,6 +460,59 @@
             }).join('');
 
             renderAdminProducts();
+        }
+
+        function renderOrderCards(orders) {
+            if (orders.length === 0) return '<div class="no-orders"><h3>No orders</h3></div>';
+            return orders.map(o => {
+                const status = o.status || 'new';
+                const date = new Date(o.timestamp);
+                const timeStr = date.toLocaleDateString('en-PK') + ' ' + date.toLocaleTimeString('en-PK', {hour:'2-digit',minute:'2-digit'});
+                let productsHTML = '';
+                if (o.products) o.products.forEach(p => { productsHTML += '<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.82rem;border-bottom:1px solid var(--border);">' + '<span>' + p.name + ' x' + p.qty + '</span><span>Rs. ' + p.total + '</span></div>'; });
+                return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+                        '<span style="font-weight:700;font-size:0.9rem;">' + o.orderId + '</span>' +
+                        '<span class="order-status status-' + status + '">' + status + '</span>' +
+                    '</div>' +
+                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;color:var(--dim);margin-bottom:10px;">' +
+                        '<div><strong style="color:var(--text);">Customer:</strong> ' + o.name + '</div>' +
+                        '<div><strong style="color:var(--text);">Phone:</strong> ' + o.phone + '</div>' +
+                        '<div><strong style="color:var(--text);">City:</strong> ' + o.city + '</div>' +
+                        '<div><strong style="color:var(--text);">Payment:</strong> ' + o.payment + '</div>' +
+                    '</div>' +
+                    '<div style="font-size:0.8rem;color:var(--dim);margin-bottom:8px;"><strong style="color:var(--text);">Address:</strong> ' + o.address + '</div>' +
+                    productsHTML +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">' +
+                        '<span style="font-size:0.75rem;color:var(--dim);">' + timeStr + '</span>' +
+                        '<span style="font-weight:700;color:var(--orange);font-size:0.95rem;">Rs. ' + o.total + '</span>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function openStatusSection(status) {
+            document.querySelectorAll('.status-section').forEach(s => s.style.display = 'none');
+            document.getElementById('recentTitle').style.display = 'none';
+            document.getElementById('recentOrdersList').style.display = 'none';
+
+            const section = document.getElementById('section-' + status);
+            section.style.display = 'block';
+
+            let filtered;
+            if (status === 'all') {
+                filtered = allOrders;
+                document.getElementById('allOrdersList').innerHTML = renderOrderCards(filtered);
+            } else {
+                filtered = allOrders.filter(o => (o.status||'new') === status);
+                document.getElementById(status + 'OrdersList').innerHTML = renderOrderCards(filtered);
+            }
+        }
+
+        function closeStatusSection() {
+            document.querySelectorAll('.status-section').forEach(s => s.style.display = 'none');
+            document.getElementById('recentTitle').style.display = 'block';
+            document.getElementById('recentOrdersList').style.display = 'block';
         }
 
         function filterOrders() {
