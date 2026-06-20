@@ -5,7 +5,7 @@
 <h2>Testing Orders Load...</h2>
 <div id="result">Loading...</div>
 <script>
-fetch('https://jsonblob.com/api/jsonBlob/019ee599-7990-7f2c-ac68-f9eb2bf47601')
+fetch('orders.json')
     .then(r => r.json())
     .then(data => {
         const orders = data.orders || [];

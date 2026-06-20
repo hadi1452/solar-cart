@@ -241,8 +241,7 @@
     <script src="script.js?v=20260620"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
-        const BLOB_ID = '019ee599-7990-7f2c-ac68-f9eb2bf47601';
-        const BLOB_URL = 'https://jsonblob.com/api/jsonBlob/' + BLOB_ID;
+        const ORDERS_URL = 'orders.json';
 
         // Login
         function adminLogin() {
@@ -277,7 +276,7 @@
         function loadOrders() {
             document.getElementById('lastRefresh').textContent = 'Updated: ' + new Date().toLocaleTimeString();
 
-            fetch(BLOB_URL)
+            fetch(ORDERS_URL)
                 .then(r => r.json())
                 .then(data => {
                     const orders = (data.orders || []).map(order => {
@@ -398,7 +397,7 @@
         let lastOrderCount = 0;
         function startLiveListener() {
             setInterval(() => {
-                fetch(BLOB_URL)
+                fetch(ORDERS_URL)
                     .then(r => r.json())
                     .then(data => {
                         const count = (data.orders || []).length;
