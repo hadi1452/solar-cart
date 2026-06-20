@@ -597,7 +597,31 @@ function copyCaption(productId, btn) {
 
 function shareWhatsApp(productId) {
     const caption = document.getElementById('caption-' + productId).textContent;
-    window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+    const product = products.find(p => p.id === productId);
+
+    if (product && navigator.canShare) {
+        fetch(product.image)
+            .then(res => res.blob())
+            .then(blob => {
+                const ext = blob.type.split('/')[1] || 'jpg';
+                const file = new File([blob], product.model + '.' + ext, { type: blob.type });
+                if (navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        text: caption,
+                        files: [file]
+                    }).catch(() => {
+                        window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+                    });
+                } else {
+                    window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+                }
+            })
+            .catch(() => {
+                window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+            });
+    } else {
+        window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+    }
 }
 
 // ==================== SOLAR ANIMATION ====================
