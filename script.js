@@ -660,7 +660,7 @@ function shareWhatsApp(productId) {
             dy: -Math.random() * 0.3 - 0.1,
             o: Math.random() * 0.4 + 0.1,
             phase: Math.random() * Math.PI * 2,
-            color: Math.random() > 0.5 ? '200,140,40' : '180,120,50'
+            color: Math.random() > 0.6 ? '232,160,60' : Math.random() > 0.3 ? '180,140,80' : '100,140,255'
         });
     }
 
@@ -670,7 +670,7 @@ function shareWhatsApp(productId) {
             r: 80 + Math.random() * 120,
             dx: (Math.random() - 0.5) * 0.2,
             dy: (Math.random() - 0.5) * 0.2,
-            hue: ['232,150,30','200,160,80','220,170,60','180,130,50','240,180,70'][i],
+            hue: ['232,150,30','60,100,220','220,170,60','100,60,200','240,180,70'][i],
             pulse: Math.random() * Math.PI * 2
         });
     }
@@ -718,7 +718,7 @@ function shareWhatsApp(productId) {
             if (p.x < -10) p.x = w + 10;
             if (p.x > w + 10) p.x = -10;
 
-            ctx.fillStyle = `rgba(${p.color},${p.o * flicker * 0.6})`;
+            ctx.fillStyle = `rgba(${p.color},${p.o * flicker * 0.8})`;
             ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
 
             for (let j = i + 1; j < particles.length; j++) {
@@ -726,7 +726,7 @@ function shareWhatsApp(productId) {
                 const lx = p.x - q.x, ly = p.y - q.y;
                 const ld = lx * lx + ly * ly;
                 if (ld < 15000) {
-                    const alpha = 0.06 * (1 - ld / 15000);
+                    const alpha = 0.1 * (1 - ld / 15000);
                     ctx.strokeStyle = `rgba(200,150,60,${alpha})`;
                     ctx.lineWidth = 0.4;
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
@@ -739,8 +739,8 @@ function shareWhatsApp(productId) {
             const glow = Math.pow(Math.sin(s.phase), 4);
             if (glow > 0.01) {
                 ctx.save();
-                ctx.globalAlpha = glow * 0.4;
-                ctx.fillStyle = 'rgba(232,170,80,0.8)';
+                ctx.globalAlpha = glow * 0.6;
+                ctx.fillStyle = 'rgba(232,170,80,0.9)';
                 ctx.beginPath();
                 const sz = s.size * glow;
                 ctx.moveTo(s.x, s.y - sz * 3);
