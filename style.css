@@ -493,7 +493,11 @@ a { text-decoration:none; color:inherit; }
 .btn-copy { background:var(--orange); color:#fff; }
 .btn-copy:hover { background:var(--orange-dark); }
 .btn-copy.copied { background:var(--green); }
-.btn-status { background:#25d366; color:#fff; }
-.btn-status:hover { background:#1da851; }
+.btn-whatsapp-share { background:#25d366; color:#fff; }
+.btn-whatsapp-share:hover { background:#1da851; }
+.btn-insta-share { background:linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff; }
+.btn-insta-share:hover { opacity:0.9; }
+.btn-fb-share { background:#1877f2; color:#fff; }
+.btn-fb-share:hover { background:#1565c0; }
 .btn-share { background:var(--navy-light); color:var(--white); border:1px solid var(--card-border) !important; }
 .btn-share:hover { background:var(--teal); }

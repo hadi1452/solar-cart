@@ -552,7 +552,11 @@ function generateSocialPosts() {
                     <div class="post-caption" id="caption-${p.id}">${caption}</div>
                     <div class="post-actions">
                         <button class="btn-copy" onclick="copyCaption(${p.id}, this)">Copy Caption</button>
-                        <button class="btn-status" onclick="shareToStatus(${p.id}, this)">📷 Share with Image</button>
+                    </div>
+                    <div class="post-actions" style="margin-top:6px;">
+                        <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
+                        <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
+                        <button class="btn-fb-share" onclick="shareToStatus(${p.id}, 'facebook', this)">Facebook</button>
                     </div>
                 </div>
             </div>
@@ -619,13 +623,13 @@ function fetchImageBlob(url) {
         });
 }
 
-function shareToStatus(productId, btn) {
+function shareToStatus(productId, platform, btn) {
     const caption = document.getElementById('caption-' + productId).textContent;
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
     const origText = btn.textContent;
-    btn.textContent = 'Loading image...';
+    btn.textContent = 'Loading...';
     btn.disabled = true;
 
     fetchImageBlob(product.image)
@@ -657,8 +661,14 @@ function shareToStatus(productId, btn) {
         .catch(() => {
             btn.textContent = origText;
             btn.disabled = false;
-            alert('Image load nahi ho saki. WhatsApp text share ho raha hai.');
-            window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+            navigator.clipboard.writeText(caption).catch(() => {});
+            if (platform === 'whatsapp') {
+                window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+            } else if (platform === 'facebook') {
+                window.open('https://www.facebook.com/sharer/sharer.php?quote=' + encodeURIComponent(caption) + '&u=' + encodeURIComponent('https://solar-cart-apvs.vercel.app'), '_blank');
+            } else {
+                alert('Caption copied! Instagram app kholein aur paste karein.');
+            }
         });
 }
 
