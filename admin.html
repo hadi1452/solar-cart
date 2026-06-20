@@ -35,7 +35,8 @@
         .dash-content { max-width:1000px; margin:0 auto; padding:30px 20px; }
 
         /* Stats */
-        .dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px; }
+        .dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
+        .dash-stats-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px; margin-bottom:20px; }
         .dash-stat { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; transition:all 0.2s ease; }
         .dash-stat[onclick]:hover { border-color:var(--orange); transform:translateY(-2px); box-shadow:0 6px 20px rgba(232,122,30,0.15); }
         .dash-stat-label { font-size:0.75rem; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
@@ -120,49 +121,61 @@
 
         @media(max-width:768px) {
             .dash-stats { grid-template-columns:1fr 1fr; gap:8px; }
+            .dash-stats-2 { grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
             .dash-stat { padding:12px 10px; }
-            .dash-stat-value { font-size:1.3rem; }
-            .dash-stat-label { font-size:0.65rem; letter-spacing:0.5px; }
-            .detail-grid { grid-template-columns:1fr; }
+            .dash-stat-value { font-size:1.2rem !important; word-break:break-all; }
+            .dash-stat-label { font-size:0.6rem; letter-spacing:0.5px; }
+            .detail-grid { grid-template-columns:1fr; gap:10px; }
             .order-meta { flex-wrap:wrap; gap:6px; }
-            .order-top { flex-direction:column; align-items:flex-start; gap:8px; }
-            .dash-header { flex-direction:column; gap:8px; padding:12px 14px; }
+            .order-top { flex-direction:column; align-items:flex-start; gap:8px; padding:12px; }
+            .dash-header { flex-direction:column; gap:8px; padding:10px 12px; }
             .dash-header-right { width:100%; justify-content:space-between; }
             .dash-header img { height:28px; }
-            .dash-content { padding:14px 10px; }
-            .dash-tabs { gap:4px; overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
-            .dash-tab { padding:8px 14px; font-size:0.75rem; white-space:nowrap; flex-shrink:0; }
-            .orders-header { flex-direction:column; gap:8px; align-items:flex-start; }
-            .orders-header h2 { font-size:1rem; }
-            .login-box { padding:24px 18px; margin:10px; }
-            .login-box h2 { font-size:1.1rem; }
-            .status-buttons { flex-wrap:wrap; gap:5px; }
-            .status-btn { padding:5px 8px; font-size:0.65rem; }
-            .order-card { margin-bottom:8px; }
-            .order-top { padding:12px 14px; }
-            .order-id { font-size:0.82rem; }
-            .order-amount { font-size:0.82rem; }
-            .order-time { font-size:0.7rem; }
-            .order-detail.open { padding:12px 14px; }
-            .social-posts-grid { grid-template-columns:1fr; }
-            .social-controls { flex-direction:column; gap:8px; }
-            .social-controls select { width:100%; }
-            .refresh-btn { width:100%; text-align:center; }
-            .notif-indicator { font-size:0.7rem; }
-            .logout-btn { padding:5px 12px; font-size:0.72rem; }
+            .dash-content { padding:12px 8px; }
+            .dash-tabs { gap:0; overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+            .dash-tab { padding:8px 12px; font-size:0.72rem; white-space:nowrap; flex-shrink:0; border-radius:6px; }
+            .orders-header { flex-direction:column; gap:8px; align-items:stretch; }
+            .orders-header h2 { font-size:0.95rem; }
+            .login-box { padding:20px 16px; margin:10px; }
+            .login-box h2 { font-size:1rem; }
+            .login-box input { padding:10px 14px; font-size:0.85rem; }
+            .status-buttons { flex-wrap:wrap; gap:4px; }
+            .status-btn { padding:5px 8px; font-size:0.62rem; }
+            .order-card { margin-bottom:8px; border-radius:10px; }
+            .order-id { font-size:0.78rem; }
+            .order-amount { font-size:0.78rem; }
+            .order-time { font-size:0.68rem; }
+            .order-status { font-size:0.6rem; padding:3px 8px; }
+            .order-detail.open { padding:10px 12px; }
+            .social-posts-grid { grid-template-columns:1fr; gap:10px; }
+            .social-controls { flex-direction:column; gap:6px; }
+            .social-controls select { width:100%; padding:8px 12px; font-size:0.8rem; }
+            .social-post-card .post-body { padding:10px; }
+            .social-post-card .post-caption { font-size:0.75rem; max-height:120px; }
+            .social-post-card .post-actions { flex-direction:column; gap:6px; }
+            .social-post-card .post-actions button { padding:8px; font-size:0.72rem; }
+            .social-post-card .post-img { height:140px; }
+            .refresh-btn { width:100%; text-align:center; padding:8px; font-size:0.75rem; }
+            .notif-indicator { font-size:0.68rem; }
+            .notif-dot { width:6px; height:6px; }
+            .logout-btn { padding:5px 10px; font-size:0.7rem; }
+            #lastRefresh { font-size:0.68rem; }
         }
         @media(max-width:400px) {
-            .dash-stats { grid-template-columns:1fr 1fr; gap:6px; }
-            .dash-stat { padding:10px 8px; }
-            .dash-stat-value { font-size:1.1rem; }
-            .dash-stat-label { font-size:0.6rem; }
-            .dash-tabs { gap:3px; }
-            .dash-tab { padding:7px 10px; font-size:0.7rem; }
-            .dash-content { padding:10px 8px; }
-            .order-top { padding:10px 12px; }
-            .order-id { font-size:0.75rem; }
-            .order-status { font-size:0.6rem; padding:3px 8px; }
-            .status-btn { padding:4px 7px; font-size:0.6rem; }
+            .dash-stats { grid-template-columns:1fr 1fr; gap:5px; }
+            .dash-stats-2 { grid-template-columns:1fr; gap:5px; }
+            .dash-stat { padding:8px 6px; }
+            .dash-stat-value { font-size:1rem !important; }
+            .dash-stat-label { font-size:0.55rem; }
+            .dash-tabs { gap:0; }
+            .dash-tab { padding:6px 9px; font-size:0.65rem; }
+            .dash-content { padding:8px 6px; }
+            .order-top { padding:8px 10px; }
+            .order-id { font-size:0.72rem; }
+            .order-status { font-size:0.55rem; padding:2px 6px; }
+            .status-btn { padding:4px 6px; font-size:0.58rem; }
+            .dash-header { padding:8px 10px; }
+            .dash-header img { height:24px; }
         }
     </style>
 </head>
@@ -224,14 +237,14 @@
                         <div class="dash-stat-value green" id="statDelivered">0</div>
                     </div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
-                    <div class="dash-stat" style="padding:24px;">
+                <div class="dash-stats-2">
+                    <div class="dash-stat">
                         <div class="dash-stat-label">Total Revenue</div>
-                        <div class="dash-stat-value orange" id="statRevenue">Rs. 0</div>
+                        <div class="dash-stat-value orange" id="statRevenue" style="font-size:1.3rem;">Rs. 0</div>
                     </div>
-                    <div class="dash-stat" style="padding:24px;">
+                    <div class="dash-stat">
                         <div class="dash-stat-label">Top City</div>
-                        <div class="dash-stat-value blue" id="statTopCity" style="font-size:1.4rem;">-</div>
+                        <div class="dash-stat-value blue" id="statTopCity" style="font-size:1.1rem;">-</div>
                     </div>
                 </div>
 
