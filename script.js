@@ -552,7 +552,7 @@ function generateSocialPosts() {
                     <div class="post-caption" id="caption-${p.id}">${caption}</div>
                     <div class="post-actions">
                         <button class="btn-copy" onclick="copyCaption(${p.id}, this)">Copy Caption</button>
-                        <button class="btn-share" onclick="shareWhatsApp(${p.id})">WhatsApp Share</button>
+                        <button class="btn-status" onclick="shareToStatus(${p.id}, this)">📷 Share with Image</button>
                     </div>
                 </div>
             </div>
@@ -595,33 +595,50 @@ function copyCaption(productId, btn) {
     });
 }
 
-function shareWhatsApp(productId) {
+function shareToStatus(productId, btn) {
     const caption = document.getElementById('caption-' + productId).textContent;
     const product = products.find(p => p.id === productId);
+    if (!product) return;
 
-    if (product && navigator.canShare) {
-        fetch(product.image)
-            .then(res => res.blob())
-            .then(blob => {
-                const ext = blob.type.split('/')[1] || 'jpg';
-                const file = new File([blob], product.model + '.' + ext, { type: blob.type });
-                if (navigator.canShare({ files: [file] })) {
-                    navigator.share({
-                        text: caption,
-                        files: [file]
-                    }).catch(() => {
-                        window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-                    });
-                } else {
+    btn.textContent = 'Loading...';
+
+    fetch(product.image)
+        .then(res => res.blob())
+        .then(blob => {
+            const ext = blob.type.split('/')[1] || 'jpg';
+            const file = new File([blob], product.model + '.' + ext, { type: blob.type });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    text: caption,
+                    files: [file]
+                }).then(() => {
+                    btn.textContent = 'Shared!';
+                    btn.style.background = '#2ecc71';
+                    setTimeout(() => { btn.textContent = '📷 Share with Image'; btn.style.background = ''; }, 2000);
+                }).catch(() => {
+                    btn.textContent = '📷 Share with Image';
                     window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-                }
-            })
-            .catch(() => {
-                window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-            });
-    } else {
-        window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-    }
+                });
+            } else {
+                navigator.clipboard.writeText(caption);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = product.model + '.' + ext;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                btn.textContent = 'Image saved + Caption copied!';
+                btn.style.background = '#2ecc71';
+                setTimeout(() => { btn.textContent = '📷 Share with Image'; btn.style.background = ''; }, 3000);
+            }
+        })
+        .catch(() => {
+            btn.textContent = '📷 Share with Image';
+            window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+        });
 }
 
 // ==================== SOLAR ANIMATION ====================

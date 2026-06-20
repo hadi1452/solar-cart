@@ -493,7 +493,7 @@ a { text-decoration:none; color:inherit; }
 .btn-copy { background:var(--orange); color:#fff; }
 .btn-copy:hover { background:var(--orange-dark); }
 .btn-copy.copied { background:var(--green); }
-.btn-download { background:#3b82f6; color:#fff; }
-.btn-download:hover { background:#2563eb; }
+.btn-status { background:#25d366; color:#fff; }
+.btn-status:hover { background:#1da851; }
 .btn-share { background:var(--navy-light); color:var(--white); border:1px solid var(--card-border) !important; }
 .btn-share:hover { background:var(--teal); }
