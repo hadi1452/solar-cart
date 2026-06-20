@@ -25,12 +25,111 @@
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
-body { font-family:'Inter',sans-serif; background:linear-gradient(180deg, #FDF6EC 0%, #F7ECD8 30%, #FDF6EC 60%, #F5E6D0 100%); color:var(--text); line-height:1.6; overflow-x:hidden; min-height:100vh; }
+body { font-family:'Inter',sans-serif; background:#FDF6EC; color:var(--text); line-height:1.6; overflow-x:hidden; min-height:100vh; }
 .container { max-width:1200px; margin:0 auto; padding:0 24px; }
 img { max-width:100%; display:block; }
 a { text-decoration:none; color:inherit; }
 .page { display:none; }
 .page.active { display:block; }
+
+/* ===== ANIMATED BACKGROUND ===== */
+.bg-animation {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; overflow:hidden;
+}
+.bg-orb {
+    position:absolute; border-radius:50%; filter:blur(80px); opacity:0.5; will-change:transform;
+}
+.bg-orb-1 {
+    width:500px; height:500px; top:-10%; right:-5%;
+    background:radial-gradient(circle, rgba(232,122,30,0.12), rgba(232,170,80,0.05), transparent 70%);
+    animation:orb-drift-1 20s ease-in-out infinite;
+}
+.bg-orb-2 {
+    width:600px; height:600px; bottom:-15%; left:-10%;
+    background:radial-gradient(circle, rgba(200,160,80,0.10), rgba(245,220,180,0.06), transparent 70%);
+    animation:orb-drift-2 25s ease-in-out infinite;
+}
+.bg-orb-3 {
+    width:400px; height:400px; top:40%; left:50%;
+    background:radial-gradient(circle, rgba(232,122,30,0.08), transparent 70%);
+    animation:orb-drift-3 18s ease-in-out infinite;
+}
+.bg-orb-4 {
+    width:350px; height:350px; top:20%; left:15%;
+    background:radial-gradient(circle, rgba(245,200,130,0.10), transparent 70%);
+    animation:orb-drift-4 22s ease-in-out infinite;
+}
+.bg-orb-5 {
+    width:300px; height:300px; bottom:10%; right:20%;
+    background:radial-gradient(circle, rgba(232,150,60,0.08), transparent 70%);
+    animation:orb-drift-5 28s ease-in-out infinite;
+}
+.bg-mesh {
+    position:absolute; inset:0;
+    background-image:
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(232,122,30,0.04), transparent),
+        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(200,160,80,0.03), transparent);
+    animation:mesh-shift 30s ease-in-out infinite alternate;
+}
+.bg-grain {
+    position:absolute; inset:0; opacity:0.3;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+.bg-rays {
+    position:absolute; top:-50%; left:50%; transform:translateX(-50%);
+    width:200%; height:200%;
+    background:conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg, rgba(232,170,80,0.02) 10deg, transparent 20deg,
+        transparent 40deg, rgba(245,200,130,0.015) 50deg, transparent 60deg,
+        transparent 90deg, rgba(232,122,30,0.02) 100deg, transparent 110deg,
+        transparent 140deg, rgba(200,160,80,0.015) 150deg, transparent 160deg,
+        transparent 180deg, rgba(232,170,80,0.02) 190deg, transparent 200deg,
+        transparent 230deg, rgba(245,200,130,0.015) 240deg, transparent 250deg,
+        transparent 280deg, rgba(232,122,30,0.02) 290deg, transparent 300deg,
+        transparent 330deg, rgba(200,160,80,0.015) 340deg, transparent 360deg
+    );
+    animation:rays-rotate 120s linear infinite;
+}
+
+@keyframes orb-drift-1 {
+    0%,100% { transform:translate(0,0) scale(1); }
+    25% { transform:translate(-60px,40px) scale(1.1); }
+    50% { transform:translate(-30px,80px) scale(0.9); }
+    75% { transform:translate(40px,30px) scale(1.05); }
+}
+@keyframes orb-drift-2 {
+    0%,100% { transform:translate(0,0) scale(1); }
+    25% { transform:translate(50px,-40px) scale(1.15); }
+    50% { transform:translate(80px,-20px) scale(0.95); }
+    75% { transform:translate(30px,-60px) scale(1.08); }
+}
+@keyframes orb-drift-3 {
+    0%,100% { transform:translate(-50%,0) scale(1); }
+    33% { transform:translate(calc(-50% + 80px),-50px) scale(1.12); }
+    66% { transform:translate(calc(-50% - 60px),40px) scale(0.92); }
+}
+@keyframes orb-drift-4 {
+    0%,100% { transform:translate(0,0) scale(1); }
+    30% { transform:translate(40px,60px) scale(1.08); }
+    60% { transform:translate(-30px,30px) scale(0.95); }
+}
+@keyframes orb-drift-5 {
+    0%,100% { transform:translate(0,0) scale(1); }
+    40% { transform:translate(-50px,-40px) scale(1.1); }
+    70% { transform:translate(30px,-60px) scale(0.9); }
+}
+@keyframes mesh-shift {
+    0% { transform:scale(1) rotate(0deg); }
+    100% { transform:scale(1.1) rotate(3deg); }
+}
+@keyframes rays-rotate {
+    0% { transform:translateX(-50%) rotate(0deg); }
+    100% { transform:translateX(-50%) rotate(360deg); }
+}
+
+.top-bar, .navbar, .hero, .stats-section, .categories, .featured, .why-us, .footer,
+.page-header, .shop-section, .checkout-section, .success-section, .contact-section,
+.cart-sidebar, .zoom-modal { position:relative; z-index:1; }
 
 /* ===== TOPBAR ===== */
 .top-bar { background:var(--orange); padding:8px 0; text-align:center; }
@@ -80,7 +179,7 @@ a { text-decoration:none; color:inherit; }
 .section-sub { color:var(--text-dim); font-size:0.95rem; max-width:500px; margin:0 auto; }
 
 /* ===== HERO - CINEMATIC CENTERED ===== */
-.hero { min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; padding:80px 0 40px; background:linear-gradient(160deg, #FDF6EC 0%, #FAE8CC 40%, #FDF0DE 70%, #FDF6EC 100%); }
+.hero { min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; padding:80px 0 40px; background:transparent; }
 .hero-grid-bg { position:absolute; inset:0; background-image:radial-gradient(rgba(139,110,78,0.06) 1px, transparent 1px); background-size:40px 40px; }
 .hero-glow-1 { position:absolute; width:600px; height:600px; top:-200px; right:-100px; background:radial-gradient(circle, rgba(232,122,30,0.10), transparent 70%); border-radius:50%; animation:glow-float 10s ease-in-out infinite; }
 .hero-glow-2 { position:absolute; width:500px; height:500px; bottom:-200px; left:-100px; background:radial-gradient(circle, rgba(232,170,80,0.08), transparent 70%); border-radius:50%; animation:glow-float 12s ease-in-out infinite reverse; }

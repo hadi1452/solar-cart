@@ -629,9 +629,11 @@ function shareWhatsApp(productId) {
     const canvas = document.getElementById('solarCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let w, h, t = 0;
+    let w, h, t = 0, mouseX = -1000, mouseY = -1000;
+
     const particles = [];
     const orbs = [];
+    const sparkles = [];
 
     function resize() {
         const hero = canvas.parentElement;
@@ -641,68 +643,128 @@ function shareWhatsApp(productId) {
     resize();
     window.addEventListener('resize', resize);
 
-    const count = w < 768 ? 35 : 80;
+    canvas.parentElement.addEventListener('mousemove', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    });
+    canvas.parentElement.addEventListener('mouseleave', function() { mouseX = -1000; mouseY = -1000; });
+
+    const count = w < 768 ? 30 : 60;
 
     for (let i = 0; i < count; i++) {
         particles.push({
             x: Math.random() * w, y: Math.random() * h,
-            r: Math.random() * 3 + 1,
-            dx: (Math.random() - 0.5) * 0.6,
-            dy: -Math.random() * 0.5 - 0.2,
-            o: Math.random() * 0.5 + 0.1,
-            phase: Math.random() * Math.PI * 2
+            r: Math.random() * 2.5 + 0.5,
+            dx: (Math.random() - 0.5) * 0.3,
+            dy: -Math.random() * 0.3 - 0.1,
+            o: Math.random() * 0.4 + 0.1,
+            phase: Math.random() * Math.PI * 2,
+            color: Math.random() > 0.5 ? '200,140,40' : '180,120,50'
         });
     }
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         orbs.push({
             x: Math.random() * w, y: Math.random() * h,
-            r: 60 + Math.random() * 100,
-            dx: (Math.random() - 0.5) * 0.3,
-            dy: (Math.random() - 0.5) * 0.3,
-            hue: i % 2 === 0 ? '232,150,30' : '180,140,60'
+            r: 80 + Math.random() * 120,
+            dx: (Math.random() - 0.5) * 0.2,
+            dy: (Math.random() - 0.5) * 0.2,
+            hue: ['232,150,30','200,160,80','220,170,60','180,130,50','240,180,70'][i],
+            pulse: Math.random() * Math.PI * 2
+        });
+    }
+
+    for (let i = 0; i < 15; i++) {
+        sparkles.push({
+            x: Math.random() * w, y: Math.random() * h,
+            size: Math.random() * 3 + 1,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.02 + 0.01
         });
     }
 
     function draw() {
         ctx.clearRect(0, 0, w, h);
-        t += 0.01;
+        t += 0.008;
 
         orbs.forEach(o => {
             o.x += o.dx; o.y += o.dy;
+            o.pulse += 0.008;
             if (o.x < -o.r) o.x = w + o.r;
             if (o.x > w + o.r) o.x = -o.r;
             if (o.y < -o.r) o.y = h + o.r;
             if (o.y > h + o.r) o.y = -o.r;
-            const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
-            g.addColorStop(0, `rgba(${o.hue},0.07)`);
+            const pulseR = o.r * (1 + 0.15 * Math.sin(o.pulse));
+            const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, pulseR);
+            g.addColorStop(0, `rgba(${o.hue},0.06)`);
+            g.addColorStop(0.5, `rgba(${o.hue},0.03)`);
             g.addColorStop(1, 'transparent');
             ctx.fillStyle = g;
-            ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(o.x, o.y, pulseR, 0, Math.PI * 2); ctx.fill();
         });
 
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
+            const dx = mouseX - p.x, dy = mouseY - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+                p.x -= dx * 0.008;
+                p.y -= dy * 0.008;
+            }
             p.x += p.dx; p.y += p.dy;
             const flicker = 0.5 + 0.5 * Math.sin(t * 3 + p.phase);
             if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
             if (p.x < -10) p.x = w + 10;
             if (p.x > w + 10) p.x = -10;
 
-            ctx.fillStyle = `rgba(200,150,60,${p.o * flicker * 0.7})`;
+            ctx.fillStyle = `rgba(${p.color},${p.o * flicker * 0.6})`;
             ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
 
             for (let j = i + 1; j < particles.length; j++) {
                 const q = particles[j];
-                const dx = p.x - q.x, dy = p.y - q.y;
-                const dist = dx * dx + dy * dy;
-                if (dist < 12000) {
-                    ctx.strokeStyle = `rgba(200,150,60,${0.08 * (1 - dist / 12000)})`;
-                    ctx.lineWidth = 0.5;
+                const lx = p.x - q.x, ly = p.y - q.y;
+                const ld = lx * lx + ly * ly;
+                if (ld < 15000) {
+                    const alpha = 0.06 * (1 - ld / 15000);
+                    ctx.strokeStyle = `rgba(200,150,60,${alpha})`;
+                    ctx.lineWidth = 0.4;
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
                 }
             }
         }
+
+        sparkles.forEach(s => {
+            s.phase += s.speed;
+            const glow = Math.pow(Math.sin(s.phase), 4);
+            if (glow > 0.01) {
+                ctx.save();
+                ctx.globalAlpha = glow * 0.4;
+                ctx.fillStyle = 'rgba(232,170,80,0.8)';
+                ctx.beginPath();
+                const sz = s.size * glow;
+                ctx.moveTo(s.x, s.y - sz * 3);
+                ctx.lineTo(s.x + sz * 0.6, s.y);
+                ctx.lineTo(s.x, s.y + sz * 3);
+                ctx.lineTo(s.x - sz * 0.6, s.y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(s.x - sz * 3, s.y);
+                ctx.lineTo(s.x, s.y + sz * 0.6);
+                ctx.lineTo(s.x + sz * 3, s.y);
+                ctx.lineTo(s.x, s.y - sz * 0.6);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+            if (s.phase > Math.PI * 6) {
+                s.phase = 0;
+                s.x = Math.random() * w;
+                s.y = Math.random() * h;
+            }
+        });
+
         requestAnimationFrame(draw);
     }
     draw();
