@@ -297,7 +297,7 @@ function placeOrder(e) {
 
     // Save order to cloud for admin dashboard
     orderData.timestamp = Date.now();
-    const BLOB_ID = '019edb05-e87f-7360-8c1e-b6e82e509b83';
+    const BLOB_ID = '019ee599-7990-7f2c-ac68-f9eb2bf47601';
     fetch('https://jsonblob.com/api/jsonBlob/' + BLOB_ID)
         .then(r => r.json())
         .then(data => {
