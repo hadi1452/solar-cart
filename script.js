@@ -78,6 +78,7 @@ function getCartCount() {
 }
 
 function updateCartUI() {
+    if (!document.getElementById('cartCount')) return;
     document.getElementById('cartCount').textContent = getCartCount();
     const cartItems = document.getElementById('cartItems');
     const cartFooter = document.getElementById('cartFooter');
@@ -242,8 +243,10 @@ function renderCheckout() {
 }
 
 // Payment method - Meezan Bank only, always show transaction ID
-document.getElementById('trxIdGroup').style.display = 'block';
-document.getElementById('trxId').setAttribute('required', 'required');
+if (document.getElementById('trxIdGroup')) {
+    document.getElementById('trxIdGroup').style.display = 'block';
+    document.getElementById('trxId').setAttribute('required', 'required');
+}
 
 function placeOrder(e) {
     e.preventDefault();
@@ -387,9 +390,11 @@ function filterSearch(category) {
     }
 }
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') searchProducts();
-});
+if (document.getElementById('searchInput')) {
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') searchProducts();
+    });
+}
 
 // ==================== CONTACT FORM ====================
 function submitContact(e) {
@@ -412,9 +417,11 @@ function showToast(message) {
 }
 
 // ==================== MOBILE MENU ====================
-document.getElementById('menuToggle').addEventListener('click', function() {
-    document.getElementById('navLinks').classList.toggle('active');
-});
+if (document.getElementById('menuToggle')) {
+    document.getElementById('menuToggle').addEventListener('click', function() {
+        document.getElementById('navLinks').classList.toggle('active');
+    });
+}
 
 // ==================== IMAGE ZOOM ====================
 let zoomLevel = 1;
@@ -453,58 +460,59 @@ function resetZoom() {
     document.getElementById('zoomImage').style.transform = 'scale(1)';
 }
 
-document.getElementById('zoomModal').addEventListener('click', function(e) {
-    if (e.target === this || e.target === document.getElementById('zoomBody')) closeZoom();
-});
-
-document.addEventListener('keydown', function(e) {
-    if (!document.getElementById('zoomModal').classList.contains('active')) return;
-    if (e.key === 'Escape') closeZoom();
-    if (e.key === '+' || e.key === '=') zoomIn();
-    if (e.key === '-') zoomOut();
-});
-
-document.getElementById('zoomBody').addEventListener('wheel', function(e) {
-    e.preventDefault();
-    if (e.deltaY < 0) zoomIn();
-    else zoomOut();
-});
-
+const zoomModal = document.getElementById('zoomModal');
 const zoomBody = document.getElementById('zoomBody');
-zoomBody.addEventListener('mousedown', function(e) {
-    isDragging = true;
-    zoomBody.classList.add('dragging');
-    startX = e.pageX - zoomBody.offsetLeft;
-    startY = e.pageY - zoomBody.offsetTop;
-    scrollLeft = zoomBody.scrollLeft;
-    scrollTop = zoomBody.scrollTop;
-});
-zoomBody.addEventListener('mouseleave', function() { isDragging = false; zoomBody.classList.remove('dragging'); });
-zoomBody.addEventListener('mouseup', function() { isDragging = false; zoomBody.classList.remove('dragging'); });
-zoomBody.addEventListener('mousemove', function(e) {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - zoomBody.offsetLeft;
-    const y = e.pageY - zoomBody.offsetTop;
-    zoomBody.scrollLeft = scrollLeft - (x - startX);
-    zoomBody.scrollTop = scrollTop - (y - startY);
-});
+if (zoomModal && zoomBody) {
+    zoomModal.addEventListener('click', function(e) {
+        if (e.target === this || e.target === zoomBody) closeZoom();
+    });
 
-// Touch support for mobile zoom
-let touchStartDist = 0;
-zoomBody.addEventListener('touchstart', function(e) {
-    if (e.touches.length === 2) {
-        touchStartDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-    }
-});
-zoomBody.addEventListener('touchmove', function(e) {
-    if (e.touches.length === 2) {
+    document.addEventListener('keydown', function(e) {
+        if (!zoomModal.classList.contains('active')) return;
+        if (e.key === 'Escape') closeZoom();
+        if (e.key === '+' || e.key === '=') zoomIn();
+        if (e.key === '-') zoomOut();
+    });
+
+    zoomBody.addEventListener('wheel', function(e) {
         e.preventDefault();
-        const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-        if (dist > touchStartDist + 10) { zoomIn(); touchStartDist = dist; }
-        else if (dist < touchStartDist - 10) { zoomOut(); touchStartDist = dist; }
-    }
-});
+        if (e.deltaY < 0) zoomIn();
+        else zoomOut();
+    });
+
+    let touchStartDist = 0;
+    zoomBody.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        zoomBody.classList.add('dragging');
+        startX = e.pageX - zoomBody.offsetLeft;
+        startY = e.pageY - zoomBody.offsetTop;
+        scrollLeft = zoomBody.scrollLeft;
+        scrollTop = zoomBody.scrollTop;
+    });
+    zoomBody.addEventListener('mouseleave', function() { isDragging = false; zoomBody.classList.remove('dragging'); });
+    zoomBody.addEventListener('mouseup', function() { isDragging = false; zoomBody.classList.remove('dragging'); });
+    zoomBody.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - zoomBody.offsetLeft;
+        const y = e.pageY - zoomBody.offsetTop;
+        zoomBody.scrollLeft = scrollLeft - (x - startX);
+        zoomBody.scrollTop = scrollTop - (y - startY);
+    });
+    zoomBody.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 2) {
+            touchStartDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+        }
+    });
+    zoomBody.addEventListener('touchmove', function(e) {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+            if (dist > touchStartDist + 10) { zoomIn(); touchStartDist = dist; }
+            else if (dist < touchStartDist - 10) { zoomOut(); touchStartDist = dist; }
+        }
+    });
+}
 
 // ==================== ANIMATED COUNTER ====================
 const counterObserver = new IntersectionObserver((entries) => {
