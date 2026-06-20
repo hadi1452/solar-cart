@@ -199,14 +199,16 @@ function renderProducts() {
 // ==================== PAGE NAVIGATION ====================
 function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
 
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     const navMap = { home:0, panels:1, inverters:2, batteries:3, ess:4, contact:5 };
     const links = document.querySelectorAll('.nav-links a');
     if (links[navMap[page]]) links[navMap[page]].classList.add('active');
 
-    document.getElementById('navLinks').classList.remove('active');
+    const navLinksEl = document.getElementById('navLinks');
+    if (navLinksEl) navLinksEl.classList.remove('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (page === 'checkout') renderCheckout();
@@ -215,6 +217,7 @@ function showPage(page) {
 // ==================== CHECKOUT ====================
 function renderCheckout() {
     const container = document.getElementById('checkoutItems');
+    if (!container) return;
     if (cart.length === 0) {
         container.innerHTML = '<p style="color:var(--gray-500);padding:20px 0;">Your cart is empty. Add products first.</p>';
         document.getElementById('summarySubtotal').textContent = 'Rs. 0';
