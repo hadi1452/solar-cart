@@ -552,7 +552,6 @@ function generateSocialPosts() {
                     <div class="post-caption" id="caption-${p.id}">${caption}</div>
                     <div class="post-actions">
                         <button class="btn-copy" onclick="copyCaption(${p.id}, this)">Copy Caption</button>
-                        <button class="btn-download" onclick="downloadImage(${p.id}, this)">Download Image</button>
                         <button class="btn-share" onclick="shareWhatsApp(${p.id})">WhatsApp Share</button>
                     </div>
                 </div>
@@ -594,32 +593,6 @@ function copyCaption(productId, btn) {
         btn.classList.add('copied');
         setTimeout(() => { btn.textContent = 'Copy Caption'; btn.classList.remove('copied'); }, 2000);
     });
-}
-
-function downloadImage(productId, btn) {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    btn.textContent = 'Downloading...';
-    fetch(product.image)
-        .then(res => res.blob())
-        .then(blob => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const ext = blob.type.split('/')[1] || 'jpg';
-            a.download = product.model + '.' + ext;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            btn.textContent = 'Downloaded!';
-            btn.style.background = '#2ecc71';
-            setTimeout(() => { btn.textContent = 'Download Image'; btn.style.background = ''; }, 2000);
-        })
-        .catch(() => {
-            window.open(product.image, '_blank');
-            btn.textContent = 'Download Image';
-        });
 }
 
 function shareWhatsApp(productId) {
