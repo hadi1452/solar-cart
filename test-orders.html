@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Orders</title></head>
+<body style="background:#111;color:#fff;font-family:Arial;padding:20px;">
+<h2>Testing Orders Load...</h2>
+<div id="result">Loading...</div>
+<script>
+fetch('https://jsonblob.com/api/jsonBlob/019ee599-7990-7f2c-ac68-f9eb2bf47601')
+    .then(r => r.json())
+    .then(data => {
+        const orders = data.orders || [];
+        document.getElementById('result').innerHTML =
+            '<h3>Found ' + orders.length + ' orders!</h3>' +
+            orders.map(o => '<p>' + o.orderId + ' - ' + o.name + ' - ' + o.city + ' - Rs.' + o.total + ' - ' + o.status + '</p>').join('');
+    })
+    .catch(err => {
+        document.getElementById('result').innerHTML = '<h3 style="color:red">ERROR: ' + err.message + '</h3>';
+    });
+</script>
+</body>
+</html>
