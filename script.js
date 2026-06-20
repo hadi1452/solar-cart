@@ -660,7 +660,7 @@ function shareWhatsApp(productId) {
             r: 60 + Math.random() * 100,
             dx: (Math.random() - 0.5) * 0.3,
             dy: (Math.random() - 0.5) * 0.3,
-            hue: i % 2 === 0 ? '232,150,30' : '200,160,60'
+            hue: i % 2 === 0 ? '232,150,30' : '180,140,60'
         });
     }
 
@@ -689,7 +689,7 @@ function shareWhatsApp(productId) {
             if (p.x < -10) p.x = w + 10;
             if (p.x > w + 10) p.x = -10;
 
-            ctx.fillStyle = `rgba(210,160,50,${p.o * flicker})`;
+            ctx.fillStyle = `rgba(200,150,60,${p.o * flicker * 0.7})`;
             ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
 
             for (let j = i + 1; j < particles.length; j++) {
@@ -697,7 +697,7 @@ function shareWhatsApp(productId) {
                 const dx = p.x - q.x, dy = p.y - q.y;
                 const dist = dx * dx + dy * dy;
                 if (dist < 12000) {
-                    ctx.strokeStyle = `rgba(210,160,50,${0.06 * (1 - dist / 12000)})`;
+                    ctx.strokeStyle = `rgba(200,150,60,${0.08 * (1 - dist / 12000)})`;
                     ctx.lineWidth = 0.5;
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
                 }
