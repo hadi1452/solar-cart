@@ -595,48 +595,69 @@ function copyCaption(productId, btn) {
     });
 }
 
+function fetchImageBlob(url) {
+    return fetch(url)
+        .then(r => { if (!r.ok) throw new Error(); return r.blob(); })
+        .catch(() => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    const c = document.createElement('canvas');
+                    c.width = img.naturalWidth;
+                    c.height = img.naturalHeight;
+                    c.getContext('2d').drawImage(img, 0, 0);
+                    c.toBlob(function(b) { b ? resolve(b) : reject(); }, 'image/jpeg', 0.92);
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        })
+        .catch(() => {
+            return fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
+                .then(r => r.blob());
+        });
+}
+
 function shareToStatus(productId, btn) {
     const caption = document.getElementById('caption-' + productId).textContent;
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    btn.textContent = 'Loading...';
+    const origText = btn.textContent;
+    btn.textContent = 'Loading image...';
+    btn.disabled = true;
 
-    fetch(product.image)
-        .then(res => res.blob())
+    fetchImageBlob(product.image)
         .then(blob => {
-            const ext = blob.type.split('/')[1] || 'jpg';
-            const file = new File([blob], product.model + '.' + ext, { type: blob.type });
+            const type = blob.type || 'image/jpeg';
+            const ext = type.split('/')[1] || 'jpg';
+            const file = new File([blob], product.model + '.' + ext, { type: type });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    text: caption,
-                    files: [file]
-                }).then(() => {
-                    btn.textContent = 'Shared!';
-                    btn.style.background = '#2ecc71';
-                    setTimeout(() => { btn.textContent = '📷 Share with Image'; btn.style.background = ''; }, 2000);
-                }).catch(() => {
-                    btn.textContent = '📷 Share with Image';
-                    window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-                });
+                return navigator.share({ text: caption, files: [file] })
+                    .then(() => {
+                        btn.textContent = 'Shared!';
+                        btn.style.background = '#2ecc71';
+                        setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2000);
+                    });
             } else {
-                navigator.clipboard.writeText(caption);
-                const url = URL.createObjectURL(blob);
+                navigator.clipboard.writeText(caption).catch(() => {});
                 const a = document.createElement('a');
-                a.href = url;
+                a.href = URL.createObjectURL(blob);
                 a.download = product.model + '.' + ext;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                URL.revokeObjectURL(url);
                 btn.textContent = 'Image saved + Caption copied!';
                 btn.style.background = '#2ecc71';
-                setTimeout(() => { btn.textContent = '📷 Share with Image'; btn.style.background = ''; }, 3000);
+                setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 3000);
             }
         })
         .catch(() => {
-            btn.textContent = '📷 Share with Image';
+            btn.textContent = origText;
+            btn.disabled = false;
+            alert('Image load nahi ho saki. WhatsApp text share ho raha hai.');
             window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
         });
 }
