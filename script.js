@@ -1,32 +1,32 @@
 // ==================== PRODUCT DATA ====================
 const products = [
     // Solar Panels - Longi
-    { id:1, name:"LONGi Hi-MO X10 645W Monofacial Panel", model:"LR7-72HVH-645M", category:"longi", price:32250, badge:"New", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://sunsolar.pk/wp-content/uploads/2025/05/Design-ohne-Titel-35-3.png", specs:["Power: 645W","Type: N-Type HPBC 2.0","Efficiency: 24.1%"], perWatt:"~Rs. 50/watt", featured:true },
-    { id:2, name:"Longi 610W Hi-Mo 7 Bifacial Series Solar Panel", model:"LR8-66HGD-610M", category:"longi", price:27450, badge:"Popular", badgeClass:"", warranty:"12 Yr Product / 30 Yr Performance", image:"https://cdn11.bigcommerce.com/s-o8a7xpro4o/images/stencil/760x760/products/987/4078/1__55057.1705069390.png?c=1", specs:["Power: 610W","Type: N-Type HPDC Bifacial","Efficiency: 22.8%"], perWatt:"~Rs. 45/watt", featured:true },
+    { id:1, name:"LONGi Hi-MO X10 645W Monofacial Panel", model:"LR7-72HVH-645M", category:"longi", price:32250, badge:"New", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://sunsolar.pk/wp-content/uploads/2025/05/Design-ohne-Titel-35-3.png", localImage:"images/longi-645w.jpg", specs:["Power: 645W","Type: N-Type HPBC 2.0","Efficiency: 24.1%"], perWatt:"~Rs. 50/watt", featured:true },
+    { id:2, name:"Longi 610W Hi-Mo 7 Bifacial Series Solar Panel", model:"LR8-66HGD-610M", category:"longi", price:27450, badge:"Popular", badgeClass:"", warranty:"12 Yr Product / 30 Yr Performance", image:"https://cdn11.bigcommerce.com/s-o8a7xpro4o/images/stencil/760x760/products/987/4078/1__55057.1705069390.png?c=1", localImage:"images/longi-610w.jpg", specs:["Power: 610W","Type: N-Type HPDC Bifacial","Efficiency: 22.8%"], perWatt:"~Rs. 45/watt", featured:true },
 
     // Solar Panels - Jinko
-    { id:3, name:"JINKO 585W N-Type Bifacial Solar Panel", model:"JKM585N-72HL4-BDV", category:"jinko", price:29250, badge:"Tier 1", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://www.sunevosolar.com/uploadfile/202402/26/f0645231480db88bfff1bdee41323bf7_medium.jpg", specs:["Power: 585W","Type: N-Type Bifacial","Efficiency: 22.6%"], perWatt:"~Rs. 50/watt", featured:true },
+    { id:3, name:"JINKO 585W N-Type Bifacial Solar Panel", model:"JKM585N-72HL4-BDV", category:"jinko", price:29250, badge:"Tier 1", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://www.sunevosolar.com/uploadfile/202402/26/f0645231480db88bfff1bdee41323bf7_medium.jpg", localImage:"images/jinko-585w.jpg", specs:["Power: 585W","Type: N-Type Bifacial","Efficiency: 22.6%"], perWatt:"~Rs. 50/watt", featured:true },
 
     // Inverters (Official iTel images from itelsolar.com)
-    { id:4, name:"iTel 3KW Pro IP54 Hybrid Solar Inverter", model:"IPV-3K24UPRO", category:"inverter", price:80000, badge:"", warranty:"3 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-3kW-Hybrid-Solar-Inverter-%E2%80%93-24V-Pure-Sine-Wave-Powers-ACs-TVs-Fridge-1.jpg", specs:["Capacity: 3kW / 4.5kVA","Type: Hybrid IP54","Voltage: 24V"], featured:false },
-    { id:5, name:"iPV-4K24U Pro itel Inverter 4kW 24V SP Hybrid", model:"IPV-4K24UPRO", category:"inverter", price:113000, badge:"Popular", badgeClass:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-4kW-Hybrid-Solar-Inverter-%E2%80%93-Powers-ACs-Fridges-TVs-24V-IP54-Rated-1.jpg", specs:["Capacity: 4kW","Type: Hybrid IP54","MPPT: Dual + WiFi"], featured:true },
-    { id:6, name:"itel 6kw Inverter Hybrid 48V IP54 IPV-6K48UPRO with Wifi", model:"IPV-6K48UPRO", category:"inverter", price:145000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg", specs:["Capacity: 6kW","Type: Hybrid IP54","MPPT: 8kW PV + WiFi"], featured:true },
-    { id:7, name:"IHY-6KL1A itel 6kW IP66 Hybrid Solar Inverter", model:"IHY-6KL1A", category:"inverter", price:225000, badge:"IP66", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-8kW-3-Phase-Hybrid-Solar-Inverter-%E2%80%93-Commercial-Power-for-Offices-Estates-IP66-2.jpg", specs:["Capacity: 6kW","Type: Hybrid IP66","PV Input: 12kW + WiFi"], featured:false },
-    { id:8, name:"ITEL 8KW (IP54) Hybrid Solar Inverter", model:"IPV-8K48U", category:"inverter", price:213000, badge:"Best Value", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/10/8kw-inverter-8k48T-dual-output-8kva.webp", specs:["Capacity: 8kW / 8kVA","Type: Hybrid IP54","PV Input: 16kW Max"], featured:false },
-    { id:9, name:"itel 12kw Inverter Hybrid 48V IP54 IPV-12K48U with Wifi", model:"IPV-12K48U", category:"inverter", price:525000, badge:"Heavy Duty", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-12kW-Hybrid-Solar-Inverter-%E2%80%93-Heavy-Duty-Backup-for-Estates-Clinics-Offices-48V-Dual-MPPT-2.jpg", specs:["Capacity: 12kW","Type: Hybrid IP54","MPPT: Dual + WiFi"], featured:false },
-    { id:10, name:"IP66-rated 6.6kW Hybrid itel Inverter", model:"IHY-6K6L1A", category:"inverter", price:210000, badge:"IP66", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-8kW-3-Phase-Hybrid-Solar-Inverter-%E2%80%93-Commercial-Power-for-Offices-Estates-IP66-2.jpg", specs:["Capacity: 6.6kW","Type: Hybrid IP66","AI SmartGo + WiFi"], featured:false },
+    { id:4, name:"iTel 3KW Pro IP54 Hybrid Solar Inverter", model:"IPV-3K24UPRO", category:"inverter", price:80000, badge:"", warranty:"3 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-3kW-Hybrid-Solar-Inverter-%E2%80%93-24V-Pure-Sine-Wave-Powers-ACs-TVs-Fridge-1.jpg", localImage:"images/itel-3kw.jpg", specs:["Capacity: 3kW / 4.5kVA","Type: Hybrid IP54","Voltage: 24V"], featured:false },
+    { id:5, name:"iPV-4K24U Pro itel Inverter 4kW 24V SP Hybrid", model:"IPV-4K24UPRO", category:"inverter", price:113000, badge:"Popular", badgeClass:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-4kW-Hybrid-Solar-Inverter-%E2%80%93-Powers-ACs-Fridges-TVs-24V-IP54-Rated-1.jpg", localImage:"images/itel-4kw.jpg", specs:["Capacity: 4kW","Type: Hybrid IP54","MPPT: Dual + WiFi"], featured:true },
+    { id:6, name:"itel 6kw Inverter Hybrid 48V IP54 IPV-6K48UPRO with Wifi", model:"IPV-6K48UPRO", category:"inverter", price:145000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg", localImage:"images/itel-6kw.jpg", specs:["Capacity: 6kW","Type: Hybrid IP54","MPPT: 8kW PV + WiFi"], featured:true },
+    { id:7, name:"IHY-6KL1A itel 6kW IP66 Hybrid Solar Inverter", model:"IHY-6KL1A", category:"inverter", price:225000, badge:"IP66", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-8kW-3-Phase-Hybrid-Solar-Inverter-%E2%80%93-Commercial-Power-for-Offices-Estates-IP66-2.jpg", localImage:"images/itel-6kw-ip66.jpg", specs:["Capacity: 6kW","Type: Hybrid IP66","PV Input: 12kW + WiFi"], featured:false },
+    { id:8, name:"ITEL 8KW (IP54) Hybrid Solar Inverter", model:"IPV-8K48U", category:"inverter", price:213000, badge:"Best Value", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/10/8kw-inverter-8k48T-dual-output-8kva.webp", localImage:"images/itel-8kw.jpg", specs:["Capacity: 8kW / 8kVA","Type: Hybrid IP54","PV Input: 16kW Max"], featured:false },
+    { id:9, name:"itel 12kw Inverter Hybrid 48V IP54 IPV-12K48U with Wifi", model:"IPV-12K48U", category:"inverter", price:525000, badge:"Heavy Duty", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-12kW-Hybrid-Solar-Inverter-%E2%80%93-Heavy-Duty-Backup-for-Estates-Clinics-Offices-48V-Dual-MPPT-2.jpg", localImage:"images/itel-12kw.jpg", specs:["Capacity: 12kW","Type: Hybrid IP54","MPPT: Dual + WiFi"], featured:false },
+    { id:10, name:"IP66-rated 6.6kW Hybrid itel Inverter", model:"IHY-6K6L1A", category:"inverter", price:210000, badge:"IP66", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-8kW-3-Phase-Hybrid-Solar-Inverter-%E2%80%93-Commercial-Power-for-Offices-Estates-IP66-2.jpg", localImage:"images/itel-6k6-ip66.jpg", specs:["Capacity: 6.6kW","Type: Hybrid IP66","AI SmartGo + WiFi"], featured:false },
 
     // ESS Solution (Official iTel images from itelsolar.com)
-    { id:16, name:"itel Energy 500W Power Tank + 1kWh LiFePO4 All-in-One", model:"IESS-05K10N", category:"ess", price:72500, badge:"All-in-One", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-Energy-500W-Inverter-1kWh-LifePo4-Battery-All-in-One-Solar-Power-System-1.jpg", specs:["Output: 500W / 1kWh","Battery: LiFePO4 6000+ Cycles","Ports: AC, USB-C, USB-A"], featured:true },
-    { id:17, name:"Itel Combo 3.6KW Hybrid + 8KWH Li-Battery", model:"IESS-3K680N", category:"ess", price:350000, badge:"Complete System", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-3.6kW-All-in-One-Solar-Power-System-with-8kWh-Battery-Complete-Home-Energy-Storage-Solution-1.jpg", specs:["Inverter: 3.6kW Pure Sine","Battery: 8kWh LiFePO4","UPS Switchover: <16ms"], featured:true },
-    { id:18, name:"itel Power Go 320Wh Portable Power Station", model:"IESS-320T", category:"ess", price:35000, badge:"Portable", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-130W-Portable-Power-Station-%E2%80%93-320Wh-Smart-Backup-Power-Solution-IESS-320T.webp", specs:["Output: 130W / 320Wh","Battery: 100,000mAh LiFePO4","USB-C: 65W Fast Charge"], featured:true },
+    { id:16, name:"itel Energy 500W Power Tank + 1kWh LiFePO4 All-in-One", model:"IESS-05K10N", category:"ess", price:72500, badge:"All-in-One", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-Energy-500W-Inverter-1kWh-LifePo4-Battery-All-in-One-Solar-Power-System-1.jpg", localImage:"images/itel-ess-500w.jpg", specs:["Output: 500W / 1kWh","Battery: LiFePO4 6000+ Cycles","Ports: AC, USB-C, USB-A"], featured:true },
+    { id:17, name:"Itel Combo 3.6KW Hybrid + 8KWH Li-Battery", model:"IESS-3K680N", category:"ess", price:350000, badge:"Complete System", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-3.6kW-All-in-One-Solar-Power-System-with-8kWh-Battery-Complete-Home-Energy-Storage-Solution-1.jpg", localImage:"images/itel-ess-3k6.jpg", specs:["Inverter: 3.6kW Pure Sine","Battery: 8kWh LiFePO4","UPS Switchover: <16ms"], featured:true },
+    { id:18, name:"itel Power Go 320Wh Portable Power Station", model:"IESS-320T", category:"ess", price:35000, badge:"Portable", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-130W-Portable-Power-Station-%E2%80%93-320Wh-Smart-Backup-Power-Solution-IESS-320T.webp", localImage:"images/itel-ess-320.jpg", specs:["Output: 130W / 320Wh","Battery: 100,000mAh LiFePO4","USB-C: 65W Fast Charge"], featured:true },
 
     // Batteries (Official iTel images from itelsolar.com)
-    { id:11, name:"Itel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:70000, badge:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-Energy-1280Wh-12V-Lithium-Battery-LiFePO%E2%82%84-%E2%80%93-Smart-Solar-Storage-Solution.webp", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false },
-    { id:12, name:"IPW-25100 Itel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", model:"IPW-25100", category:"battery", price:110000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-2.56kWh-Lithium-Battery-Wall-Mounted-Backup-for-Homes-Shops-25.6V-LiFePO4-2-1.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"], featured:true },
-    { id:13, name:"IPL-51100 Itel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:250000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true },
-    { id:14, name:"Itel IPL-51280 51.2V 280Ah (14.5kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:495000, badge:"", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-14.3kWh-Silent-Power-Battery-%E2%80%93-Long-Backup-for-Big-Homes-Offices-48V-2.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false },
-    { id:15, name:"Itel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:535000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false }
+    { id:11, name:"Itel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:70000, badge:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-Energy-1280Wh-12V-Lithium-Battery-LiFePO%E2%82%84-%E2%80%93-Smart-Solar-Storage-Solution.webp", localImage:"images/itel-bat-100ah.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false },
+    { id:12, name:"IPW-25100 Itel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", model:"IPW-25100", category:"battery", price:110000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-2.56kWh-Lithium-Battery-Wall-Mounted-Backup-for-Homes-Shops-25.6V-LiFePO4-2-1.jpg", localImage:"images/itel-bat-256.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"], featured:true },
+    { id:13, name:"IPL-51100 Itel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:250000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg", localImage:"images/itel-bat-512.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true },
+    { id:14, name:"Itel IPL-51280 51.2V 280Ah (14.5kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:495000, badge:"", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-14.3kWh-Silent-Power-Battery-%E2%80%93-Long-Backup-for-Big-Homes-Offices-48V-2.jpg", localImage:"images/itel-bat-14kwh.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false },
+    { id:15, name:"Itel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:535000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", localImage:"images/itel-bat-16kwh.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false }
 ];
 
 // ==================== CART ====================
@@ -599,176 +599,30 @@ function copyCaption(productId, btn) {
     });
 }
 
-function createPostImage(product) {
-    const cw = 1080, ch = 1350;
-    const c = document.createElement('canvas');
-    c.width = cw; c.height = ch;
-    const ctx = c.getContext('2d');
-    const pad = 70;
-
-    const bg = ctx.createLinearGradient(0, 0, cw, ch);
-    bg.addColorStop(0, '#0a0c14');
-    bg.addColorStop(0.5, '#0f1118');
-    bg.addColorStop(1, '#0a0c14');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, cw, ch);
-
-    const g1 = ctx.createRadialGradient(cw * 0.8, ch * 0.15, 0, cw * 0.8, ch * 0.15, 400);
-    g1.addColorStop(0, 'rgba(232,122,30,0.12)');
-    g1.addColorStop(1, 'transparent');
-    ctx.fillStyle = g1;
-    ctx.fillRect(0, 0, cw, ch);
-
-    const g2 = ctx.createRadialGradient(cw * 0.2, ch * 0.8, 0, cw * 0.2, ch * 0.8, 350);
-    g2.addColorStop(0, 'rgba(60,100,220,0.06)');
-    g2.addColorStop(1, 'transparent');
-    ctx.fillStyle = g2;
-    ctx.fillRect(0, 0, cw, ch);
-
-    ctx.fillStyle = '#e87a1e';
-    ctx.fillRect(0, 0, cw, 6);
-
-    ctx.fillStyle = 'rgba(232,122,30,0.08)';
-    roundRect(ctx, pad - 20, 60, cw - (pad - 20) * 2, 120, 16);
-    ctx.fill();
-    ctx.fillStyle = '#e87a1e';
-    ctx.font = 'bold 22px Arial, sans-serif';
-    ctx.fillText('SOLAR CART', pad, 125);
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
-    ctx.font = '18px Arial, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText('solar-cart-apvs.vercel.app', cw - pad, 125);
-    ctx.textAlign = 'left';
-
-    let curY = 250;
-
-    if (product.badge) {
-        ctx.fillStyle = product.badgeClass === 'best' ? '#2ecc71' : product.badgeClass === 'premium' ? '#8b5cf6' : '#e87a1e';
-        roundRect(ctx, pad, curY, ctx.measureText(product.badge.toUpperCase()).width + 40, 38, 8);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 16px Arial, sans-serif';
-        ctx.fillText(product.badge.toUpperCase(), pad + 20, curY + 26);
-        curY += 65;
-    }
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 42px Arial, sans-serif';
-    curY = wrapText(ctx, product.name, pad, curY, cw - pad * 2, 52) + 20;
-
-    ctx.fillStyle = 'rgba(255,255,255,0.15)';
-    ctx.font = '20px Arial, sans-serif';
-    ctx.fillText(product.model, pad, curY);
-    curY += 55;
-
-    ctx.fillStyle = '#e87a1e';
-    ctx.font = 'bold 56px Arial, sans-serif';
-    ctx.fillText('Rs. ' + product.price.toLocaleString(), pad, curY);
-    if (product.perWatt) {
-        ctx.fillStyle = 'rgba(255,255,255,0.35)';
-        ctx.font = '20px Arial, sans-serif';
-        ctx.fillText(product.perWatt, pad, curY + 30);
-        curY += 30;
-    }
-    curY += 60;
-
-    ctx.fillStyle = 'rgba(255,255,255,0.06)';
-    roundRect(ctx, pad - 10, curY - 15, cw - (pad - 10) * 2, product.specs.length * 52 + 30, 14);
-    ctx.fill();
-    product.specs.forEach((spec, i) => {
-        const parts = spec.split(':');
-        ctx.fillStyle = 'rgba(255,255,255,0.45)';
-        ctx.font = '22px Arial, sans-serif';
-        ctx.fillText(parts[0] + ':', pad + 10, curY + i * 52 + 20);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 22px Arial, sans-serif';
-        ctx.fillText(parts[1] || '', pad + 10 + ctx.measureText(parts[0] + ': ').width, curY + i * 52 + 20);
-    });
-    curY += product.specs.length * 52 + 45;
-
-    ctx.fillStyle = '#2ecc71';
-    ctx.font = 'bold 22px Arial, sans-serif';
-    ctx.fillText('✓ ' + product.warranty + ' Official Warranty', pad, curY);
-    curY += 70;
-
-    ctx.fillStyle = 'rgba(232,122,30,0.3)';
-    ctx.fillRect(pad, curY, cw - pad * 2, 1);
-    curY += 45;
-
-    ctx.fillStyle = '#e87a1e';
-    roundRect(ctx, pad, curY, 280, 55, 12);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 22px Arial, sans-serif';
-    ctx.fillText('ORDER NOW', pad + 30, curY + 36);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.font = '22px Arial, sans-serif';
-    ctx.fillText('WhatsApp: 0323-7927923', pad + 310, curY + 36);
-
-    ctx.fillStyle = '#e87a1e';
-    ctx.fillRect(0, ch - 6, cw, 6);
-
-    return new Promise(function(resolve, reject) {
-        c.toBlob(function(b) { b ? resolve(b) : reject(); }, 'image/jpeg', 0.95);
-    });
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-}
-
-function wrapText(ctx, text, x, y, maxW, lineH) {
-    const words = text.split(' ');
-    let line = '';
-    let curY = y;
-    for (let i = 0; i < words.length; i++) {
-        const test = line + words[i] + ' ';
-        if (ctx.measureText(test).width > maxW && i > 0) {
-            ctx.fillText(line.trim(), x, curY);
-            line = words[i] + ' ';
-            curY += lineH;
-        } else {
-            line = test;
-        }
-    }
-    ctx.fillText(line.trim(), x, curY);
-    return curY + lineH;
-}
-
 function shareToStatus(productId, platform, btn) {
     const product = products.find(p => p.id === productId);
+    const caption = document.getElementById('caption-' + productId).textContent;
     if (!product) return;
 
     const origText = btn.textContent;
-    btn.textContent = 'Creating...';
+    btn.textContent = 'Loading...';
     btn.disabled = true;
 
-    createPostImage(product)
+    const imgUrl = product.localImage || product.image;
+
+    fetch(imgUrl)
+        .then(r => r.blob())
         .then(blob => {
-            const file = new File([blob], product.model + '-' + platform + '.jpg', { type: 'image/jpeg' });
+            const file = new File([blob], product.model + '.jpg', { type: blob.type || 'image/jpeg' });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                return navigator.share({ files: [file] })
+                navigator.share({ text: caption, files: [file] })
                     .then(() => {
                         btn.textContent = 'Done!';
                         btn.style.background = '#2ecc71';
                         setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2000);
                     })
-                    .catch(() => {
-                        btn.textContent = origText;
-                        btn.disabled = false;
-                    });
+                    .catch(() => { btn.textContent = origText; btn.disabled = false; });
             } else {
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
@@ -776,15 +630,13 @@ function shareToStatus(productId, platform, btn) {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+                navigator.clipboard.writeText(caption).catch(() => {});
                 btn.textContent = 'Saved!';
                 btn.style.background = '#2ecc71';
                 setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2500);
             }
         })
-        .catch(() => {
-            btn.textContent = origText;
-            btn.disabled = false;
-        });
+        .catch(() => { btn.textContent = origText; btn.disabled = false; });
 }
 
 // ==================== SOLAR ANIMATION ====================
