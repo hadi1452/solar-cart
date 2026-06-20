@@ -599,61 +599,130 @@ function copyCaption(productId, btn) {
     });
 }
 
-function fetchImageBlob(url) {
-    return fetch(url)
-        .then(r => { if (!r.ok) throw new Error(); return r.blob(); })
-        .catch(() => {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                img.onload = function() {
-                    const c = document.createElement('canvas');
-                    c.width = img.naturalWidth;
-                    c.height = img.naturalHeight;
-                    c.getContext('2d').drawImage(img, 0, 0);
-                    c.toBlob(function(b) { b ? resolve(b) : reject(); }, 'image/jpeg', 0.92);
-                };
-                img.onerror = reject;
-                img.src = url;
-            });
-        })
-        .catch(() => {
-            return fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
-                .then(r => r.blob());
-        });
+function createPostImage(product, caption) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+            const cw = 1080, ch = 1080;
+            const c = document.createElement('canvas');
+            c.width = cw; c.height = ch;
+            const ctx = c.getContext('2d');
+
+            ctx.fillStyle = '#0a0c10';
+            ctx.fillRect(0, 0, cw, ch);
+
+            ctx.fillStyle = '#e87a1e';
+            ctx.fillRect(0, 0, cw, 5);
+
+            const imgH = 500, imgW = cw;
+            const scale = Math.min(imgW / img.naturalWidth, imgH / img.naturalHeight) * 0.85;
+            const dw = img.naturalWidth * scale;
+            const dh = img.naturalHeight * scale;
+            const dx = (cw - dw) / 2;
+            const dy = 40 + (imgH - dh) / 2;
+            ctx.drawImage(img, dx, dy, dw, dh);
+
+            const textY = 560;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 28px Inter, Arial, sans-serif';
+            wrapText(ctx, product.name, 50, textY, cw - 100, 34);
+
+            const nameLines = Math.ceil(ctx.measureText(product.name).width / (cw - 100));
+            let curY = textY + (nameLines * 34) + 16;
+
+            ctx.fillStyle = '#e87a1e';
+            ctx.font = 'bold 36px Inter, Arial, sans-serif';
+            ctx.fillText('Rs. ' + product.price.toLocaleString(), 50, curY);
+            curY += 44;
+
+            ctx.fillStyle = '#9a9a9a';
+            ctx.font = '20px Inter, Arial, sans-serif';
+            const specs = product.specs.map(s => s).join('  |  ');
+            ctx.fillText(specs, 50, curY);
+            curY += 32;
+
+            ctx.fillStyle = '#2ecc71';
+            ctx.font = '18px Inter, Arial, sans-serif';
+            ctx.fillText('Warranty: ' + product.warranty, 50, curY);
+            curY += 50;
+
+            ctx.fillStyle = '#e87a1e';
+            ctx.fillRect(50, curY, cw - 100, 1);
+            curY += 30;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px Inter, Arial, sans-serif';
+            ctx.fillText('solar-cart-apvs.vercel.app', 50, curY);
+
+            ctx.fillStyle = '#9a9a9a';
+            ctx.font = '18px Inter, Arial, sans-serif';
+            ctx.fillText('WhatsApp: 0323-7927923', 50, curY + 30);
+
+            ctx.fillStyle = '#e87a1e';
+            ctx.font = 'bold 20px Inter, Arial, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('SOLAR CART', cw - 50, ch - 30);
+            ctx.textAlign = 'left';
+
+            c.toBlob(function(blob) { blob ? resolve(blob) : reject(); }, 'image/jpeg', 0.95);
+        };
+        img.onerror = function() {
+            const proxyImg = new Image();
+            proxyImg.crossOrigin = 'anonymous';
+            proxyImg.onload = function() { img.onload.call(proxyImg); };
+            proxyImg.onerror = reject;
+            proxyImg.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(product.image);
+        };
+        img.src = product.image;
+    });
+}
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+    const words = text.split(' ');
+    let line = '';
+    let curY = y;
+    for (let i = 0; i < words.length; i++) {
+        const test = line + words[i] + ' ';
+        if (ctx.measureText(test).width > maxW && i > 0) {
+            ctx.fillText(line.trim(), x, curY);
+            line = words[i] + ' ';
+            curY += lineH;
+        } else {
+            line = test;
+        }
+    }
+    ctx.fillText(line.trim(), x, curY);
 }
 
 function shareToStatus(productId, platform, btn) {
-    const caption = document.getElementById('caption-' + productId).textContent;
     const product = products.find(p => p.id === productId);
+    const caption = document.getElementById('caption-' + productId).textContent;
     if (!product) return;
 
     const origText = btn.textContent;
-    btn.textContent = 'Loading...';
+    btn.textContent = 'Creating post...';
     btn.disabled = true;
 
-    fetchImageBlob(product.image)
+    createPostImage(product, caption)
         .then(blob => {
-            const type = blob.type || 'image/jpeg';
-            const ext = type.split('/')[1] || 'jpg';
-            const file = new File([blob], product.model + '.' + ext, { type: type });
+            const file = new File([blob], product.model + '-post.jpg', { type: 'image/jpeg' });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                return navigator.share({ text: caption, files: [file] })
+                return navigator.share({ files: [file] })
                     .then(() => {
                         btn.textContent = 'Shared!';
                         btn.style.background = '#2ecc71';
                         setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2000);
                     });
             } else {
-                navigator.clipboard.writeText(caption).catch(() => {});
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = product.model + '.' + ext;
+                a.download = product.model + '-' + platform + '.jpg';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                btn.textContent = 'Image saved + Caption copied!';
+                btn.textContent = 'Post image saved!';
                 btn.style.background = '#2ecc71';
                 setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 3000);
             }
@@ -662,13 +731,7 @@ function shareToStatus(productId, platform, btn) {
             btn.textContent = origText;
             btn.disabled = false;
             navigator.clipboard.writeText(caption).catch(() => {});
-            if (platform === 'whatsapp') {
-                window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
-            } else if (platform === 'facebook') {
-                window.open('https://www.facebook.com/sharer/sharer.php?quote=' + encodeURIComponent(caption) + '&u=' + encodeURIComponent('https://solar-cart-apvs.vercel.app'), '_blank');
-            } else {
-                alert('Caption copied! Instagram app kholein aur paste karein.');
-            }
+            alert('Image nahi ban saki. Caption copy ho gaya hai.');
         });
 }
 
