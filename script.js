@@ -566,11 +566,11 @@ function generateCaption(product, platform) {
     const hashtags = getHashtags(product);
 
     if (platform === 'instagram') {
-        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at www.solarcart.com\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
     } else if (platform === 'facebook') {
-        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: www.solarcart.com\nCall/WhatsApp: 0323-7927923\nDelivery across Pakistan!`;
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\nDelivery across Pakistan!`;
     } else {
-        return `*${product.name}*\n\nPrice: *${price}*\n${specs}\nWarranty: ${product.warranty}\n\nOrder now: www.solarcart.com\nWhatsApp: 0323-7927923`;
+        return `*${product.name}*\n\nPrice: *${price}*\n${specs}\nWarranty: ${product.warranty}\n\nOrder now: https://solar-cart-apvs.vercel.app\nWhatsApp: 0323-7927923`;
     }
 }
 
