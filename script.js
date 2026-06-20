@@ -599,83 +599,133 @@ function copyCaption(productId, btn) {
     });
 }
 
-function createPostImage(product, caption) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = function() {
-            const cw = 1080, ch = 1080;
-            const c = document.createElement('canvas');
-            c.width = cw; c.height = ch;
-            const ctx = c.getContext('2d');
+function createPostImage(product) {
+    const cw = 1080, ch = 1350;
+    const c = document.createElement('canvas');
+    c.width = cw; c.height = ch;
+    const ctx = c.getContext('2d');
+    const pad = 70;
 
-            ctx.fillStyle = '#0a0c10';
-            ctx.fillRect(0, 0, cw, ch);
+    const bg = ctx.createLinearGradient(0, 0, cw, ch);
+    bg.addColorStop(0, '#0a0c14');
+    bg.addColorStop(0.5, '#0f1118');
+    bg.addColorStop(1, '#0a0c14');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, cw, ch);
 
-            ctx.fillStyle = '#e87a1e';
-            ctx.fillRect(0, 0, cw, 5);
+    const g1 = ctx.createRadialGradient(cw * 0.8, ch * 0.15, 0, cw * 0.8, ch * 0.15, 400);
+    g1.addColorStop(0, 'rgba(232,122,30,0.12)');
+    g1.addColorStop(1, 'transparent');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, cw, ch);
 
-            const imgH = 500, imgW = cw;
-            const scale = Math.min(imgW / img.naturalWidth, imgH / img.naturalHeight) * 0.85;
-            const dw = img.naturalWidth * scale;
-            const dh = img.naturalHeight * scale;
-            const dx = (cw - dw) / 2;
-            const dy = 40 + (imgH - dh) / 2;
-            ctx.drawImage(img, dx, dy, dw, dh);
+    const g2 = ctx.createRadialGradient(cw * 0.2, ch * 0.8, 0, cw * 0.2, ch * 0.8, 350);
+    g2.addColorStop(0, 'rgba(60,100,220,0.06)');
+    g2.addColorStop(1, 'transparent');
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, cw, ch);
 
-            const textY = 560;
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 28px Inter, Arial, sans-serif';
-            wrapText(ctx, product.name, 50, textY, cw - 100, 34);
+    ctx.fillStyle = '#e87a1e';
+    ctx.fillRect(0, 0, cw, 6);
 
-            const nameLines = Math.ceil(ctx.measureText(product.name).width / (cw - 100));
-            let curY = textY + (nameLines * 34) + 16;
+    ctx.fillStyle = 'rgba(232,122,30,0.08)';
+    roundRect(ctx, pad - 20, 60, cw - (pad - 20) * 2, 120, 16);
+    ctx.fill();
+    ctx.fillStyle = '#e87a1e';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('SOLAR CART', pad, 125);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '18px Arial, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('solar-cart-apvs.vercel.app', cw - pad, 125);
+    ctx.textAlign = 'left';
 
-            ctx.fillStyle = '#e87a1e';
-            ctx.font = 'bold 36px Inter, Arial, sans-serif';
-            ctx.fillText('Rs. ' + product.price.toLocaleString(), 50, curY);
-            curY += 44;
+    let curY = 250;
 
-            ctx.fillStyle = '#9a9a9a';
-            ctx.font = '20px Inter, Arial, sans-serif';
-            const specs = product.specs.map(s => s).join('  |  ');
-            ctx.fillText(specs, 50, curY);
-            curY += 32;
+    if (product.badge) {
+        ctx.fillStyle = product.badgeClass === 'best' ? '#2ecc71' : product.badgeClass === 'premium' ? '#8b5cf6' : '#e87a1e';
+        roundRect(ctx, pad, curY, ctx.measureText(product.badge.toUpperCase()).width + 40, 38, 8);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 16px Arial, sans-serif';
+        ctx.fillText(product.badge.toUpperCase(), pad + 20, curY + 26);
+        curY += 65;
+    }
 
-            ctx.fillStyle = '#2ecc71';
-            ctx.font = '18px Inter, Arial, sans-serif';
-            ctx.fillText('Warranty: ' + product.warranty, 50, curY);
-            curY += 50;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 42px Arial, sans-serif';
+    curY = wrapText(ctx, product.name, pad, curY, cw - pad * 2, 52) + 20;
 
-            ctx.fillStyle = '#e87a1e';
-            ctx.fillRect(50, curY, cw - 100, 1);
-            curY += 30;
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.font = '20px Arial, sans-serif';
+    ctx.fillText(product.model, pad, curY);
+    curY += 55;
 
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 22px Inter, Arial, sans-serif';
-            ctx.fillText('solar-cart-apvs.vercel.app', 50, curY);
+    ctx.fillStyle = '#e87a1e';
+    ctx.font = 'bold 56px Arial, sans-serif';
+    ctx.fillText('Rs. ' + product.price.toLocaleString(), pad, curY);
+    if (product.perWatt) {
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '20px Arial, sans-serif';
+        ctx.fillText(product.perWatt, pad, curY + 30);
+        curY += 30;
+    }
+    curY += 60;
 
-            ctx.fillStyle = '#9a9a9a';
-            ctx.font = '18px Inter, Arial, sans-serif';
-            ctx.fillText('WhatsApp: 0323-7927923', 50, curY + 30);
-
-            ctx.fillStyle = '#e87a1e';
-            ctx.font = 'bold 20px Inter, Arial, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('SOLAR CART', cw - 50, ch - 30);
-            ctx.textAlign = 'left';
-
-            c.toBlob(function(blob) { blob ? resolve(blob) : reject(); }, 'image/jpeg', 0.95);
-        };
-        img.onerror = function() {
-            const proxyImg = new Image();
-            proxyImg.crossOrigin = 'anonymous';
-            proxyImg.onload = function() { img.onload.call(proxyImg); };
-            proxyImg.onerror = reject;
-            proxyImg.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(product.image);
-        };
-        img.src = product.image;
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    roundRect(ctx, pad - 10, curY - 15, cw - (pad - 10) * 2, product.specs.length * 52 + 30, 14);
+    ctx.fill();
+    product.specs.forEach((spec, i) => {
+        const parts = spec.split(':');
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillText(parts[0] + ':', pad + 10, curY + i * 52 + 20);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 22px Arial, sans-serif';
+        ctx.fillText(parts[1] || '', pad + 10 + ctx.measureText(parts[0] + ': ').width, curY + i * 52 + 20);
     });
+    curY += product.specs.length * 52 + 45;
+
+    ctx.fillStyle = '#2ecc71';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('✓ ' + product.warranty + ' Official Warranty', pad, curY);
+    curY += 70;
+
+    ctx.fillStyle = 'rgba(232,122,30,0.3)';
+    ctx.fillRect(pad, curY, cw - pad * 2, 1);
+    curY += 45;
+
+    ctx.fillStyle = '#e87a1e';
+    roundRect(ctx, pad, curY, 280, 55, 12);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 22px Arial, sans-serif';
+    ctx.fillText('ORDER NOW', pad + 30, curY + 36);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '22px Arial, sans-serif';
+    ctx.fillText('WhatsApp: 0323-7927923', pad + 310, curY + 36);
+
+    ctx.fillStyle = '#e87a1e';
+    ctx.fillRect(0, ch - 6, cw, 6);
+
+    return new Promise(function(resolve, reject) {
+        c.toBlob(function(b) { b ? resolve(b) : reject(); }, 'image/jpeg', 0.95);
+    });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
 }
 
 function wrapText(ctx, text, x, y, maxW, lineH) {
@@ -693,27 +743,31 @@ function wrapText(ctx, text, x, y, maxW, lineH) {
         }
     }
     ctx.fillText(line.trim(), x, curY);
+    return curY + lineH;
 }
 
 function shareToStatus(productId, platform, btn) {
     const product = products.find(p => p.id === productId);
-    const caption = document.getElementById('caption-' + productId).textContent;
     if (!product) return;
 
     const origText = btn.textContent;
-    btn.textContent = 'Creating post...';
+    btn.textContent = 'Creating...';
     btn.disabled = true;
 
-    createPostImage(product, caption)
+    createPostImage(product)
         .then(blob => {
-            const file = new File([blob], product.model + '-post.jpg', { type: 'image/jpeg' });
+            const file = new File([blob], product.model + '-' + platform + '.jpg', { type: 'image/jpeg' });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 return navigator.share({ files: [file] })
                     .then(() => {
-                        btn.textContent = 'Shared!';
+                        btn.textContent = 'Done!';
                         btn.style.background = '#2ecc71';
                         setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2000);
+                    })
+                    .catch(() => {
+                        btn.textContent = origText;
+                        btn.disabled = false;
                     });
             } else {
                 const a = document.createElement('a');
@@ -722,16 +776,14 @@ function shareToStatus(productId, platform, btn) {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                btn.textContent = 'Post image saved!';
+                btn.textContent = 'Saved!';
                 btn.style.background = '#2ecc71';
-                setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 3000);
+                setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2500);
             }
         })
         .catch(() => {
             btn.textContent = origText;
             btn.disabled = false;
-            navigator.clipboard.writeText(caption).catch(() => {});
-            alert('Image nahi ban saki. Caption copy ho gaya hai.');
         });
 }
 
