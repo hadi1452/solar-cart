@@ -43,6 +43,20 @@
         </div>
     </div>
 
+    <!-- Flash Sale Banner -->
+    <div class="flash-sale-bar" id="flashSaleBanner" style="display:none;">
+        <div class="container flash-sale-inner">
+            <strong>&#9889; FLASH SALE</strong>
+            <div class="flash-timer">
+                <span class="flash-timer-unit" id="flashDays">00</span>d
+                <span class="flash-timer-unit" id="flashHours">00</span>h
+                <span class="flash-timer-unit" id="flashMins">00</span>m
+                <span class="flash-timer-unit" id="flashSecs">00</span>s
+            </div>
+            <a href="#" class="btn btn-sm" onclick="showPage('panels')">Shop Now</a>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -74,8 +88,9 @@
                     <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode" id="themeBtn">&#9790;</button>
                     <button class="lang-toggle" onclick="toggleLanguage()" id="langBtn">UR</button>
                 </div>
-                <div class="search-box">
+                <div class="search-box" style="display:flex;align-items:center;gap:0;">
                     <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+                    <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()" title="Voice Search">&#127908;</button>
                 </div>
                 <button class="cart-btn" onclick="toggleCart()">
                     <span class="cart-icon">&#128722;</span>
@@ -240,6 +255,28 @@
                     <a href="#" class="btn btn-outline btn-sm" onclick="showPage('panels')">View All &rarr;</a>
                 </div>
                 <div class="products-grid" id="featuredProducts"></div>
+            </div>
+        </section>
+
+        <!-- Savings Counter -->
+        <section class="stats-section" style="background:var(--orange);padding:30px 0;">
+            <div class="container" style="text-align:center;">
+                <p style="color:#fff;font-size:1.1rem;font-weight:700;">Our Customers Have Saved Over</p>
+                <p style="color:#fff;font-size:2.5rem;font-weight:900;"><span class="stat-counter" data-target="50">0</span>,000,000+ Rs. On Electricity</p>
+                <p style="color:rgba(255,255,255,0.8);font-size:0.85rem;">Join 500+ Happy Customers In Karachi</p>
+            </div>
+        </section>
+
+        <!-- Recently Viewed -->
+        <section class="recently-viewed" id="recentlyViewedSection" style="display:none;">
+            <div class="container">
+                <div class="section-header-row">
+                    <div>
+                        <div class="section-tag">History</div>
+                        <h2 class="section-title" style="text-align:left;">Recently <span class="highlight">Viewed</span></h2>
+                    </div>
+                </div>
+                <div class="products-grid" id="recentlyViewedGrid"></div>
             </div>
         </section>
 
@@ -1029,6 +1066,51 @@
                 <button class="btn btn-primary btn-sm" onclick="showComparison()">Compare Now</button>
                 <button class="btn btn-outline btn-sm" onclick="clearCompare()">Clear</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Smart Chatbot -->
+    <div class="chatbot-popup" id="chatbotPopup">
+        <div class="chatbot-header"><h4>Solar Assistant</h4><button class="chatbot-close" onclick="toggleChatbot()">&times;</button></div>
+        <div class="chatbot-messages" id="chatMessages"><div class="chat-msg bot">Assalam-o-Alaikum! I'm Your Solar Assistant. How Can I Help You?</div></div>
+        <div class="chat-options" id="chatOptions">
+            <button class="chat-option" onclick="chatAnswer('system_size')">What System Size Do I Need?</button>
+            <button class="chat-option" onclick="chatAnswer('pricing')">Product Pricing</button>
+            <button class="chat-option" onclick="chatAnswer('delivery')">Delivery Info</button>
+            <button class="chat-option" onclick="chatAnswer('warranty')">Warranty</button>
+            <button class="chat-option" onclick="chatAnswer('payment')">Payment Method</button>
+            <button class="chat-option" onclick="chatAnswer('human')">Talk To Human</button>
+        </div>
+    </div>
+    <button class="chatbot-btn" onclick="toggleChatbot()" title="Solar Assistant">&#128172;</button>
+
+    <!-- Order Ticker -->
+    <div class="order-ticker" id="orderTicker">
+        <span class="order-ticker-dot"></span>
+        <span class="order-ticker-text" id="tickerText"></span>
+        <button class="order-ticker-close" onclick="dismissTicker()">&times;</button>
+    </div>
+
+    <!-- Lead Collection Popup -->
+    <div class="lead-popup-overlay" id="leadPopup">
+        <div class="lead-popup">
+            <button class="lead-popup-close" onclick="closeLeadPopup()">&times;</button>
+            <h3>Get 5% Off Your First Order!</h3>
+            <p>Enter Your Phone Number To Receive Exclusive Deals & Offers</p>
+            <input type="tel" id="leadPhone" placeholder="e.g. 0321-1234567">
+            <button class="btn btn-primary btn-full" onclick="submitLead()">Get My Discount</button>
+            <p style="font-size:0.72rem;color:var(--text-dim);margin-top:10px;">We Respect Your Privacy. No Spam.</p>
+        </div>
+    </div>
+
+    <!-- Cart Abandonment Reminder -->
+    <div class="cart-reminder" id="cartReminder">
+        <button class="cart-reminder-close" onclick="dismissCartReminder()">&times;</button>
+        <h4>&#128722; Don't Forget Your Cart!</h4>
+        <p>You Have Items Waiting In Your Cart. Complete Your Order Now!</p>
+        <div class="cart-reminder-btns">
+            <button class="btn btn-primary btn-sm" onclick="showPage('checkout'); dismissCartReminder();">Checkout Now</button>
+            <button class="btn btn-outline btn-sm" onclick="dismissCartReminder()">Later</button>
         </div>
     </div>
 

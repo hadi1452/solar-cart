@@ -411,9 +411,16 @@
                 <div class="notif-indicator">
                     <span class="notif-dot"></span> Live
                 </div>
+                <button style="background:none;border:1px solid var(--border);color:var(--dim);padding:6px 10px;border-radius:8px;cursor:pointer;position:relative;font-size:1rem;" onclick="toggleNotifPanel()" id="notifBell">&#128276;<span id="notifBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:0.55rem;width:16px;height:16px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:700;"></span></button>
                 <span id="lastRefresh"></span>
+                <span id="adminRoleDisplay" style="font-size:0.72rem;color:var(--orange);font-weight:600;"></span>
                 <button class="logout-btn" onclick="adminLogout()">Logout</button>
             </div>
+        </div>
+        <!-- Notification Panel -->
+        <div id="notifPanel" style="display:none;position:absolute;top:60px;right:20px;width:300px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.3);z-index:50;max-height:400px;overflow-y:auto;">
+            <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;"><h4 style="font-size:0.9rem;">Notifications</h4><button style="background:none;border:none;color:var(--dim);font-size:0.72rem;cursor:pointer;" onclick="clearNotifications()">Clear All</button></div>
+            <div id="notifList" style="padding:8px;"><p style="text-align:center;padding:20px;color:var(--dim);font-size:0.8rem;">No Notifications</p></div>
         </div>
         <div class="dash-content">
             <!-- Tabs -->
@@ -490,7 +497,13 @@
                     <div id="allOrdersList"></div>
                 </div>
 
-                <h2 style="margin:30px 0 16px;" id="recentTitle">Recent Orders</h2>
+                <!-- Data Backup/Restore -->
+                <div style="display:flex;gap:10px;margin:30px 0 16px;flex-wrap:wrap;align-items:center;">
+                    <h2 style="flex:1;">Recent Orders</h2>
+                    <button class="refresh-btn" onclick="backupData()" style="background:var(--blue);">&#128190; Backup Data</button>
+                    <label class="refresh-btn" style="background:var(--green);cursor:pointer;">&#128194; Restore Data<input type="file" accept=".json" onchange="restoreData(event)" style="display:none;"></label>
+                </div>
+                <div id="recentTitle" style="display:none;"></div>
                 <div id="recentOrdersList"></div>
             </div>
 
@@ -996,6 +1009,15 @@
                                         `<button class="status-btn ${status===s?'active':''}" onclick="updateStatus('${order.orderId}', '${s}', this)">${s}</button>`
                                     ).join('')}
                                     <button class="edit-order-btn" onclick="event.stopPropagation(); showEditOrder('${order.orderId}', ${i})">&#9998; Edit</button>
+                                </div>
+                                <!-- Order Notes -->
+                                <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+                                    <h4 style="font-size:0.78rem;color:var(--dim);margin-bottom:8px;">INTERNAL NOTES</h4>
+                                    <div id="orderNotes-${i}" style="margin-bottom:8px;font-size:0.78rem;"></div>
+                                    <div style="display:flex;gap:6px;">
+                                        <input type="text" id="noteInput-${i}" placeholder="Add a note..." style="flex:1;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--navy);color:var(--text);font-size:0.78rem;font-family:inherit;">
+                                        <button class="status-btn" onclick="addOrderNote('${order.orderId}', ${i})" style="background:var(--orange);color:#fff;border-color:var(--orange);">Add</button>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Edit Mode -->
@@ -1850,6 +1872,169 @@
                 Notification.requestPermission();
             }
         }
+
+        // ==================== DATA BACKUP/RESTORE ====================
+        function backupData() {
+            const backup = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                backup[key] = localStorage.getItem(key);
+            }
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'solar-cart-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            addNotification('Data backup downloaded successfully');
+        }
+
+        function restoreData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    Object.keys(data).forEach(key => { localStorage.setItem(key, data[key]); });
+                    addNotification('Data restored successfully');
+                    alert('Data Restored! Page will reload.');
+                    location.reload();
+                } catch (err) { alert('Invalid Backup File'); }
+            };
+            reader.readAsText(file);
+        }
+
+        // ==================== ORDER NOTES ====================
+        function getOrderNotes(orderId) {
+            const all = JSON.parse(localStorage.getItem('order_notes') || '{}');
+            return all[orderId] || [];
+        }
+
+        function addOrderNote(orderId, index) {
+            const input = document.getElementById('noteInput-' + index);
+            const text = input.value.trim();
+            if (!text) return;
+            const all = JSON.parse(localStorage.getItem('order_notes') || '{}');
+            if (!all[orderId]) all[orderId] = [];
+            all[orderId].push({ text, time: new Date().toLocaleString('en-PK') });
+            localStorage.setItem('order_notes', JSON.stringify(all));
+            input.value = '';
+            renderOrderNotes(orderId, index);
+        }
+
+        function renderOrderNotes(orderId, index) {
+            const notes = getOrderNotes(orderId);
+            const container = document.getElementById('orderNotes-' + index);
+            if (!container) return;
+            container.innerHTML = notes.length === 0 ? '<p style="color:var(--dim);font-size:0.72rem;">No notes yet</p>' :
+                notes.map(n => '<div style="padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text);">' + n.text + '</span><br><span style="font-size:0.65rem;color:var(--dim);">' + n.time + '</span></div>').join('');
+        }
+
+        // Render notes after orders load
+        const __origRenderOrders = renderOrders;
+        renderOrders = function(orders) {
+            __origRenderOrders(orders);
+            orders.forEach((o, i) => { renderOrderNotes(o.orderId, i); });
+        };
+
+        // ==================== MULTI-ADMIN ROLES ====================
+        const ADMIN_ROLES = {
+            'solarcart2026': { role: 'owner', label: 'Owner' },
+            'manager2026': { role: 'manager', label: 'Manager' },
+            'staff2026': { role: 'staff', label: 'Staff' }
+        };
+
+        const _origAdminLogin = adminLogin;
+        adminLogin = function() {
+            const pw = document.getElementById('adminPassword').value;
+            const roleInfo = ADMIN_ROLES[pw];
+            if (roleInfo) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                sessionStorage.setItem('admin_logged', 'true');
+                sessionStorage.setItem('admin_role', roleInfo.role);
+                document.getElementById('adminRoleDisplay').textContent = roleInfo.label;
+                applyRolePermissions(roleInfo.role);
+                loadOrders();
+                startLiveListener();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        };
+
+        function applyRolePermissions(role) {
+            const tabs = document.querySelectorAll('.dash-tab');
+            const tabNames = ['dashboard', 'orders', 'products', 'inventory', 'accounting', 'customers', 'reports', 'coupons', 'social'];
+            const access = {
+                owner: tabNames,
+                manager: ['dashboard', 'orders', 'products', 'inventory', 'accounting', 'customers'],
+                staff: ['dashboard', 'orders']
+            };
+            const allowed = access[role] || [];
+            tabs.forEach(tab => {
+                const onclick = tab.getAttribute('onclick') || '';
+                const match = onclick.match(/switchTab\('(\w+)'/);
+                if (match && !allowed.includes(match[1])) {
+                    tab.style.display = 'none';
+                } else {
+                    tab.style.display = '';
+                }
+            });
+        }
+
+        // Check if already logged in with role
+        if (sessionStorage.getItem('admin_logged') === 'true') {
+            const role = sessionStorage.getItem('admin_role') || 'owner';
+            document.getElementById('adminRoleDisplay').textContent = ADMIN_ROLES[Object.keys(ADMIN_ROLES).find(k => ADMIN_ROLES[k].role === role)]?.label || role;
+            applyRolePermissions(role);
+        }
+
+        // ==================== NOTIFICATIONS ====================
+        function getNotifications() { return JSON.parse(localStorage.getItem('admin_notifications') || '[]'); }
+
+        function addNotification(text) {
+            const notifs = getNotifications();
+            notifs.unshift({ text, time: new Date().toLocaleString('en-PK'), read: false });
+            if (notifs.length > 20) notifs.length = 20;
+            localStorage.setItem('admin_notifications', JSON.stringify(notifs));
+            updateNotifBadge();
+        }
+
+        function updateNotifBadge() {
+            const notifs = getNotifications();
+            const unread = notifs.filter(n => !n.read).length;
+            const badge = document.getElementById('notifBadge');
+            if (badge) {
+                if (unread > 0) { badge.style.display = 'flex'; badge.textContent = unread; }
+                else { badge.style.display = 'none'; }
+            }
+        }
+
+        function toggleNotifPanel() {
+            const panel = document.getElementById('notifPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            const notifs = getNotifications();
+            notifs.forEach(n => n.read = true);
+            localStorage.setItem('admin_notifications', JSON.stringify(notifs));
+            updateNotifBadge();
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const notifs = getNotifications();
+            const list = document.getElementById('notifList');
+            if (notifs.length === 0) { list.innerHTML = '<p style="text-align:center;padding:20px;color:var(--dim);font-size:0.8rem;">No Notifications</p>'; return; }
+            list.innerHTML = notifs.map(n => '<div style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:0.78rem;"><div style="color:var(--text);">' + n.text + '</div><div style="color:var(--dim);font-size:0.65rem;margin-top:2px;">' + n.time + '</div></div>').join('');
+        }
+
+        function clearNotifications() {
+            localStorage.setItem('admin_notifications', '[]');
+            renderNotifications();
+            updateNotifBadge();
+        }
+
+        updateNotifBadge();
 
         // PWA - Install as App
         if ('serviceWorker' in navigator) {

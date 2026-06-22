@@ -181,7 +181,9 @@ function createProductCard(product) {
                     <button class="qty-btn" onclick="changeQtyBtn(this, 1)">+</button>
                 </div>`}
                 ${cartBtnHTML}
+                <div class="verified-stamp">&#10003; Genuine Product | Official Warranty</div>
                 <label class="compare-check"><input type="checkbox" data-pid="${product.id}" onchange="toggleCompare(${product.id})"> Compare</label>
+                <button class="price-alert-btn ${(JSON.parse(localStorage.getItem('price_alerts')||'[]')).includes(product.id)?'active':''}" onclick="event.stopPropagation(); togglePriceAlert(${product.id}, this)">${(JSON.parse(localStorage.getItem('price_alerts')||'[]')).includes(product.id)?'&#128277; Alert Set':'&#128276; Price Alert'}</button>
             </div>
         </div>
     `;
@@ -527,6 +529,8 @@ function openZoom(imgSrc, title) {
     img.style.transform = 'scale(1)';
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    const p = products.find(pr => pr.image === imgSrc);
+    if (p) trackRecentlyViewed(p.id);
 }
 
 function closeZoom() {
@@ -1456,6 +1460,228 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
+// ==================== SMART CHATBOT ====================
+function toggleChatbot() {
+    document.getElementById('chatbotPopup').classList.toggle('open');
+}
+
+const chatResponses = {
+    system_size: "For most homes in Karachi:\n\n- Rs. 10,000-15,000 bill → 3kW system\n- Rs. 15,000-25,000 bill → 5kW system\n- Rs. 25,000-40,000 bill → 8kW system\n- Rs. 40,000+ bill → 10kW+ system\n\nUse our Solar Calculator for a precise recommendation!",
+    pricing: "Our price range:\n\n- Solar Panels: Rs. 27,450 - 32,250\n- Inverters: Rs. 80,000 - 525,000\n- Batteries: Rs. 35,000 - 535,000\n- Complete Packages: Rs. 3.5 Lac - 15 Lac\n\nAll prices include official warranty!",
+    delivery: "We deliver within Karachi only.\n\n- Delivery Time: 2-5 business days\n- Delivery Charges: Depending on location\n- We call before delivery to schedule\n- Heavy items delivered to ground floor",
+    warranty: "All products come with official manufacturer warranty:\n\n- Solar Panels: 12 Year Product + 30 Year Performance\n- Inverters: 3-5 Years\n- Batteries: 5-10 Years\n- ESS Solutions: 2-5 Years\n\nWarranty card included with every product!",
+    payment: "We accept Bank Transfer only:\n\nNATIONAL TRADERS\nA/C: PK72 ASCM 0000 6004 2000 2328\nAskari Bank Ltd, Korangi Industrial Area, Karachi\n\nSend transaction ID after payment.",
+    human: "REDIRECT_WHATSAPP"
+};
+
+function chatAnswer(key) {
+    const msgs = document.getElementById('chatMessages');
+    const opts = document.getElementById('chatOptions');
+    const label = { system_size:'What System Size Do I Need?', pricing:'Product Pricing', delivery:'Delivery Info', warranty:'Warranty', payment:'Payment Method', human:'Talk To Human' };
+
+    msgs.innerHTML += '<div class="chat-msg user">' + label[key] + '</div>';
+    opts.style.display = 'none';
+    msgs.innerHTML += '<div class="chat-typing"><span></span><span></span><span></span></div>';
+    msgs.scrollTop = msgs.scrollHeight;
+
+    setTimeout(() => {
+        msgs.querySelector('.chat-typing')?.remove();
+        if (key === 'human') {
+            msgs.innerHTML += '<div class="chat-msg bot">Connecting you to our team on WhatsApp...</div>';
+            setTimeout(() => { window.open('https://wa.me/923237927923?text=Hi, I need help with solar products', '_blank'); }, 1000);
+        } else {
+            msgs.innerHTML += '<div class="chat-msg bot">' + chatResponses[key].replace(/\n/g, '<br>') + '</div>';
+        }
+        msgs.scrollTop = msgs.scrollHeight;
+        setTimeout(() => { opts.style.display = 'flex'; }, 500);
+    }, 1200);
+}
+
+// ==================== RECENTLY VIEWED ====================
+function trackRecentlyViewed(productId) {
+    let rv = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
+    rv = rv.filter(id => id !== productId);
+    rv.unshift(productId);
+    if (rv.length > 6) rv = rv.slice(0, 6);
+    localStorage.setItem('recently_viewed', JSON.stringify(rv));
+}
+
+function renderRecentlyViewed() {
+    const rv = JSON.parse(localStorage.getItem('recently_viewed') || '[]');
+    const section = document.getElementById('recentlyViewedSection');
+    const grid = document.getElementById('recentlyViewedGrid');
+    if (!section || !grid || rv.length === 0) { if (section) section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    const rvProducts = rv.map(id => products.find(p => p.id === id)).filter(Boolean);
+    grid.innerHTML = rvProducts.map(createProductCard).join('');
+    updateWishlistHearts();
+}
+
+// ==================== FLASH SALE COUNTDOWN ====================
+function initFlashSale() {
+    const saleEnd = new Date();
+    saleEnd.setDate(saleEnd.getDate() + 3);
+    saleEnd.setHours(23, 59, 59);
+    const banner = document.getElementById('flashSaleBanner');
+    if (!banner) return;
+
+    function updateTimer() {
+        const now = new Date();
+        const diff = saleEnd - now;
+        if (diff <= 0) { banner.style.display = 'none'; return; }
+        banner.style.display = 'block';
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('flashDays').textContent = String(d).padStart(2, '0');
+        document.getElementById('flashHours').textContent = String(h).padStart(2, '0');
+        document.getElementById('flashMins').textContent = String(m).padStart(2, '0');
+        document.getElementById('flashSecs').textContent = String(s).padStart(2, '0');
+    }
+    updateTimer();
+    setInterval(updateTimer, 1000);
+}
+
+// ==================== LIVE ORDER TICKER ====================
+const tickerOrders = [
+    'Ahmed from DHA ordered iTel 6kW Inverter', 'Bilal from Gulshan ordered 2x Longi 645W Panels',
+    'Saad from Clifton ordered iTel 5.12kWh Battery', 'Fahad from PECHS ordered 5kW Package',
+    'Usman from Bahria Town ordered iTel 8kW Inverter', 'Hamza from Korangi ordered Power Go 320Wh',
+    'Kashif from North Nazimabad ordered 3kW Package', 'Zubair from Malir ordered iTel Combo System',
+    'Imran from Nazimabad ordered Jinko 585W Panel', 'Rehan from Tariq Road ordered iTel 3kW Inverter'
+];
+let tickerDismissed = false;
+
+function startOrderTicker() {
+    if (tickerDismissed) return;
+    let idx = 0;
+    function showTicker() {
+        if (tickerDismissed) return;
+        const ticker = document.getElementById('orderTicker');
+        document.getElementById('tickerText').textContent = tickerOrders[idx % tickerOrders.length];
+        ticker.classList.add('show');
+        setTimeout(() => { ticker.classList.remove('show'); }, 4000);
+        idx++;
+    }
+    setTimeout(showTicker, 8000);
+    setInterval(showTicker, 15000);
+}
+
+function dismissTicker() {
+    tickerDismissed = true;
+    document.getElementById('orderTicker').classList.remove('show');
+}
+
+// ==================== LEAD COLLECTION POPUP ====================
+function initLeadPopup() {
+    if (localStorage.getItem('lead_collected')) return;
+    setTimeout(() => {
+        document.getElementById('leadPopup').classList.add('show');
+    }, 10000);
+}
+
+function closeLeadPopup() {
+    document.getElementById('leadPopup').classList.remove('show');
+    localStorage.setItem('lead_collected', 'dismissed');
+}
+
+function submitLead() {
+    const phone = document.getElementById('leadPhone').value.trim();
+    if (!phone) { alert('Enter Your Phone Number'); return; }
+    const leads = JSON.parse(localStorage.getItem('solar_leads') || '[]');
+    leads.push({ phone, date: new Date().toISOString() });
+    localStorage.setItem('solar_leads', JSON.stringify(leads));
+    localStorage.setItem('lead_collected', 'submitted');
+    document.getElementById('leadPopup').classList.remove('show');
+    showToast('Thank You! You Will Receive Exclusive Offers!');
+}
+
+// ==================== VOICE SEARCH ====================
+function startVoiceSearch() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast('Voice Search Not Supported In This Browser');
+        return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    const btn = document.getElementById('voiceBtn');
+    btn.classList.add('listening');
+
+    recognition.onresult = function(e) {
+        const text = e.results[0][0].transcript;
+        document.getElementById('searchInput').value = text;
+        searchProducts();
+        btn.classList.remove('listening');
+    };
+    recognition.onerror = function() { btn.classList.remove('listening'); };
+    recognition.onend = function() { btn.classList.remove('listening'); };
+    recognition.start();
+}
+
+// ==================== CART ABANDONMENT REMINDER ====================
+let cartReminderDismissed = false;
+function initCartReminder() {
+    setInterval(() => {
+        if (cartReminderDismissed || cart.length === 0) return;
+        const pageHome = document.getElementById('page-home');
+        if (pageHome && pageHome.classList.contains('active')) {
+            document.getElementById('cartReminder').classList.add('show');
+        }
+    }, 120000);
+}
+
+function dismissCartReminder() {
+    document.getElementById('cartReminder').classList.remove('show');
+    cartReminderDismissed = true;
+}
+
+// ==================== PRICE DROP ALERT ====================
+function togglePriceAlert(productId, btn) {
+    let alerts = JSON.parse(localStorage.getItem('price_alerts') || '[]');
+    const idx = alerts.indexOf(productId);
+    if (idx > -1) {
+        alerts.splice(idx, 1);
+        btn.classList.remove('active');
+        btn.innerHTML = '&#128276; Price Alert';
+        showToast('Price Alert Removed');
+    } else {
+        alerts.push(productId);
+        btn.classList.add('active');
+        btn.innerHTML = '&#128277; Alert Set';
+        showToast('You Will Be Notified When Price Drops!');
+    }
+    localStorage.setItem('price_alerts', JSON.stringify(alerts));
+}
+
+// ==================== SEO - DYNAMIC PAGE TITLES ====================
+const pageTitles = {
+    home: 'Solar Cart - iTel Solar Products | Shop Online',
+    panels: 'Solar Panels - Longi & Jinko | Solar Cart',
+    inverters: 'iTel Hybrid Solar Inverters | Solar Cart',
+    batteries: 'iTel LiFePO4 Lithium Batteries | Solar Cart',
+    ess: 'Energy Storage Solutions | Solar Cart',
+    reviews: 'Customer Reviews & Gallery | Solar Cart',
+    calculator: 'Solar Calculator & EMI | Solar Cart',
+    faq: 'Frequently Asked Questions | Solar Cart',
+    tracking: 'Track Your Order | Solar Cart',
+    contact: 'Contact Us | Solar Cart',
+    packages: 'Complete Solar System Packages | Solar Cart',
+    blog: 'Solar Energy Blog & Articles | Solar Cart',
+    wishlist: 'My Wishlist | Solar Cart',
+    compare: 'Compare Products | Solar Cart',
+    checkout: 'Checkout | Solar Cart',
+    privacy: 'Privacy Policy | Solar Cart'
+};
+
+const _origShowPage = showPage;
+showPage = function(page) {
+    _origShowPage(page);
+    if (pageTitles[page]) document.title = pageTitles[page];
+};
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();
@@ -1468,3 +1694,8 @@ selectStar(5);
 initTheme();
 initLanguage();
 updateWishlistHearts();
+renderRecentlyViewed();
+initFlashSale();
+startOrderTicker();
+initLeadPopup();
+initCartReminder();
