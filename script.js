@@ -228,7 +228,7 @@ function showPage(page) {
     if (pageEl) pageEl.classList.add('active');
 
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    const navMap = { home:0, panels:1, inverters:2, batteries:3, ess:4, contact:5 };
+    const navMap = { home:0, panels:1, inverters:2, batteries:3, ess:4, reviews:5, contact:6 };
     const links = document.querySelectorAll('.nav-links a');
     if (links[navMap[page]]) links[navMap[page]].classList.add('active');
 
