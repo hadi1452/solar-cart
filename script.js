@@ -266,8 +266,8 @@ function renderCheckout() {
 
     const total = getCartTotal();
     document.getElementById('summarySubtotal').textContent = 'Rs. ' + total.toLocaleString();
-    document.getElementById('summaryDelivery').textContent = 'Contact for rates';
-    document.getElementById('summaryTotal').textContent = 'Rs. ' + total.toLocaleString();
+    document.getElementById('summaryDelivery').textContent = 'Rs. 2,000';
+    document.getElementById('summaryTotal').textContent = 'Rs. ' + (total + 2000).toLocaleString();
 }
 
 // Payment method - transaction ID always visible
@@ -605,7 +605,7 @@ function generateCaption(product, platform) {
     if (platform === 'instagram') {
         return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
     } else if (platform === 'facebook') {
-        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\nDelivery across Pakistan!`;
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\nDelivery In Karachi!`;
     } else {
         return `*${product.name}*\n\nPrice: *${price}*\n${specs}\nWarranty: ${product.warranty}\n\nOrder now: https://solar-cart-apvs.vercel.app\nWhatsApp: 0323-7927923`;
     }
