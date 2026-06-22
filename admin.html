@@ -751,6 +751,15 @@
         }
 
         // ==================== INVENTORY MANAGEMENT ====================
+        function initInventory() {
+            if (!localStorage.getItem('solar_inventory')) {
+                const inv = {};
+                products.forEach(p => { inv[p.id] = 20; });
+                localStorage.setItem('solar_inventory', JSON.stringify(inv));
+            }
+        }
+        initInventory();
+
         function getInventory() {
             return JSON.parse(localStorage.getItem('solar_inventory') || '{}');
         }
