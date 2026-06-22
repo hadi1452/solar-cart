@@ -705,7 +705,7 @@
                 const productNames = (order.products || []).map(p => p.name + ' x' + p.qty).join(', ');
                 const date = order.timestamp ? new Date(order.timestamp).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                 accEntries.push({
-                    id: Date.now() + Math.random(),
+                    id: Date.now() + Math.floor(Math.random() * 100000),
                     type: 'income',
                     category: 'order',
                     amount: amount,
@@ -734,6 +734,8 @@
                     });
                     syncOrdersToInventoryAndAccounting(orders);
                     renderOrders(orders);
+                    if (document.getElementById('tab-accounting').classList.contains('active')) renderAccounting();
+                    if (document.getElementById('tab-inventory').classList.contains('active')) renderInventory();
                 })
                 .catch(err => {
                     console.log('Fetch error:', err);
@@ -960,9 +962,11 @@
             products.forEach(p => { inv[p.id] = 100; });
             localStorage.setItem('solar_inventory', JSON.stringify(inv));
         }
-        if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '100') {
+        if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '100v2') {
             initInventory();
-            localStorage.setItem('inv_version', '100');
+            localStorage.removeItem('synced_orders');
+            localStorage.removeItem('solar_accounting');
+            localStorage.setItem('inv_version', '100v2');
         }
 
         function getInventory() {
@@ -1180,15 +1184,26 @@
 
             let totalIncome = 0, totalExpense = 0;
             entries.forEach(e => {
-                if (e.type === 'income') totalIncome += e.amount;
-                else totalExpense += e.amount;
+                const amt = parseInt(String(e.amount).replace(/,/g, '')) || 0;
+                if (e.type === 'income') totalIncome += amt;
+                else totalExpense += amt;
             });
             const profit = totalIncome - totalExpense;
 
             document.getElementById('accIncome').textContent = 'Rs. ' + totalIncome.toLocaleString();
             document.getElementById('accExpense').textContent = 'Rs. ' + totalExpense.toLocaleString();
-            document.getElementById('accProfit').textContent = (profit >= 0 ? 'Rs. ' : '- Rs. ') + Math.abs(profit).toLocaleString();
-            document.getElementById('accProfit').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+
+            const profitEl = document.getElementById('accProfit');
+            if (totalExpense === 0 && totalIncome > 0) {
+                profitEl.textContent = 'Rs. ' + totalIncome.toLocaleString();
+                profitEl.style.color = '#2ecc71';
+            } else if (profit >= 0) {
+                profitEl.textContent = 'Rs. ' + profit.toLocaleString();
+                profitEl.style.color = '#2ecc71';
+            } else {
+                profitEl.textContent = '- Rs. ' + Math.abs(profit).toLocaleString();
+                profitEl.style.color = '#ef4444';
+            }
             document.getElementById('accEntries').textContent = entries.length;
 
             const bar = document.getElementById('accProfitBar');
@@ -1224,7 +1239,7 @@
                     '<td class="' + typeClass + '">' + typeLabel + '</td>' +
                     '<td>' + (categoryNames[e.category] || e.category) + '</td>' +
                     '<td>' + e.desc + '</td>' +
-                    '<td style="font-weight:700;' + (e.type === 'income' ? 'color:var(--green)' : 'color:var(--red)') + '">Rs. ' + e.amount.toLocaleString() + '</td>' +
+                    '<td style="font-weight:700;' + (e.type === 'income' ? 'color:var(--green)' : 'color:var(--red)') + '">Rs. ' + (parseInt(String(e.amount).replace(/,/g,'')) || 0).toLocaleString() + '</td>' +
                     '<td><button class="acc-del-btn" onclick="deleteAccEntry(' + e.id + ')">Delete</button></td>' +
                 '</tr>';
             }).join('');
