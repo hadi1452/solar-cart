@@ -121,17 +121,18 @@ function toggleCart() {
 
 // ==================== INVENTORY ====================
 function initInventory() {
-    if (!localStorage.getItem('solar_inventory')) {
-        const inv = {};
-        products.forEach(p => { inv[p.id] = 50; });
-        localStorage.setItem('solar_inventory', JSON.stringify(inv));
-    }
+    const inv = {};
+    products.forEach(p => { inv[p.id] = 100; });
+    localStorage.setItem('solar_inventory', JSON.stringify(inv));
 }
-initInventory();
+if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '100') {
+    initInventory();
+    localStorage.setItem('inv_version', '100');
+}
 
 function getProductStock(productId) {
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
-    return inv[productId] !== undefined ? inv[productId] : 50;
+    return inv[productId] !== undefined ? inv[productId] : 100;
 }
 
 // ==================== PRODUCT CARDS ====================
