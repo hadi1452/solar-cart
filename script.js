@@ -631,8 +631,7 @@ const counterObserver = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.3 });
 
-const statsSection = document.querySelector('.stats-section');
-if (statsSection) counterObserver.observe(statsSection);
+document.querySelectorAll('.stats-section').forEach(s => counterObserver.observe(s));
 
 // ==================== SOCIAL MEDIA DASHBOARD ====================
 function generateSocialPosts() {
