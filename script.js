@@ -336,6 +336,31 @@ function placeOrder(e) {
             });
         }).catch(() => {});
 
+    // Update Inventory - reduce stock for each ordered item
+    const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
+    cart.forEach(item => {
+        if (inv[item.id] !== undefined) {
+            inv[item.id] = Math.max(0, inv[item.id] - item.qty);
+        }
+    });
+    localStorage.setItem('solar_inventory', JSON.stringify(inv));
+
+    // Update Accounting - add income entry for this order
+    const accEntries = JSON.parse(localStorage.getItem('solar_accounting') || '[]');
+    const productNames = cart.map(item => {
+        const p = products.find(pr => pr.id === item.id);
+        return p ? p.name + ' x' + item.qty : '';
+    }).filter(Boolean).join(', ');
+    accEntries.unshift({
+        id: Date.now(),
+        type: 'income',
+        category: 'order',
+        amount: total,
+        desc: orderId + ' - ' + name + ' (' + productNames + ')',
+        date: new Date().toISOString().slice(0, 10)
+    });
+    localStorage.setItem('solar_accounting', JSON.stringify(accEntries));
+
     // Show success
     document.getElementById('orderIdDisplay').textContent = 'Order ID: ' + orderId;
     document.getElementById('successDetails').innerHTML = `
