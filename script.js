@@ -152,8 +152,13 @@ function createProductCard(product) {
         ? '<button class="btn-add-cart btn-out-of-stock" disabled>Out Of Stock</button>'
         : `<button class="btn-add-cart" onclick="addToCartBtn(this, ${product.id})">Add To Cart &#128722;</button>`;
 
+    const wl = getWishlist();
+    const isWished = wl.includes(product.id);
+    const heartHTML = `<button class="wishlist-heart ${isWished ? 'active' : ''}" data-pid="${product.id}" onclick="event.stopPropagation(); toggleWishlist(${product.id})">${isWished ? '&#9829;' : '&#9825;'}</button>`;
+
     return `
         <div class="product-card${disabledClass}" data-name="${product.name.toLowerCase()}" data-category="${product.category}">
+            ${heartHTML}
             ${badgeHTML}
             <div class="product-img ${product.bgColor ? 'has-bg' : ''}" style="${product.bgColor ? 'background:' + product.bgColor : ''}" onclick="openZoom('${product.image}', '${product.name.replace(/'/g, "\\'")}')">
                 <img src="${product.image}" alt="${product.name}" loading="lazy" style="${product.bgColor ? 'object-fit:contain;padding:15px;' : ''}">
@@ -237,6 +242,8 @@ function showPage(page) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (page === 'checkout') renderCheckout();
+    if (page === 'wishlist') renderWishlist();
+    if (page === 'blog') { document.getElementById('blogContent').innerHTML = '<div class="blog-grid" id="blogGrid"></div>'; renderBlog(); }
 }
 
 // ==================== CHECKOUT ====================
@@ -1162,7 +1169,302 @@ function applyCoupon() {
     renderCheckout();
 }
 
+// ==================== NET METERING CALCULATOR ====================
+function calculateNetMetering() {
+    const systemKW = parseFloat(document.getElementById('nmSystemSize').value);
+    const consumption = parseInt(document.getElementById('nmConsumption').value);
+    if (!systemKW || !consumption) { alert('Enter System Size And Consumption'); return; }
+
+    const monthlyGen = Math.round(systemKW * 130);
+    const selfUse = Math.min(consumption, monthlyGen);
+    const exported = Math.max(0, monthlyGen - consumption);
+    const creditRate = 22;
+    const monthlyCredit = exported * creditRate;
+    const selfSaveRate = 55;
+    const annualSavings = (selfUse * selfSaveRate + monthlyCredit) * 12;
+
+    document.getElementById('nmGeneration').textContent = monthlyGen + ' Units';
+    document.getElementById('nmSelfUse').textContent = selfUse + ' Units';
+    document.getElementById('nmExported').textContent = exported + ' Units';
+    document.getElementById('nmCredit').textContent = 'Rs. ' + monthlyCredit.toLocaleString();
+    document.getElementById('nmAnnual').textContent = 'Rs. ' + annualSavings.toLocaleString();
+    document.getElementById('nmResult').style.display = 'block';
+}
+
+// ==================== PACKAGES ====================
+const solarPackages = [
+    { size:'3kW', label:'Small Home', panels:6, panelName:'Longi 550W', inverterId:4, batteryId:11, popular:false },
+    { size:'5kW', label:'Medium Home', panels:10, panelName:'Longi 550W', inverterId:6, batteryId:13, popular:true },
+    { size:'8kW', label:'Large Home', panels:15, panelName:'Longi 550W', inverterId:8, batteryId:13, popular:false },
+    { size:'10kW', label:'Villa / Office', panels:18, panelName:'Longi 550W', inverterId:9, batteryId:14, popular:false }
+];
+
+function renderPackages() {
+    const grid = document.getElementById('packagesGrid');
+    if (!grid) return;
+    grid.innerHTML = solarPackages.map(pkg => {
+        const inv = products.find(p => p.id === pkg.inverterId);
+        const bat = products.find(p => p.id === pkg.batteryId);
+        const panelPrice = 27450;
+        const totalPrice = (pkg.panels * panelPrice) + (inv ? inv.price : 0) + (bat ? bat.price : 0);
+        const individualTotal = totalPrice;
+        const packagePrice = Math.round(individualTotal * 0.95);
+        const savings = individualTotal - packagePrice;
+
+        return '<div class="package-card' + (pkg.popular ? ' popular' : '') + '">' +
+            (pkg.popular ? '<div class="package-badge">Most Popular</div>' : '') +
+            '<div class="package-size">' + pkg.size + '</div>' +
+            '<div class="package-label">' + pkg.label + '</div>' +
+            '<ul class="package-items">' +
+                '<li>' + pkg.panels + 'x ' + pkg.panelName + ' Panels</li>' +
+                '<li>' + (inv ? inv.name : 'Inverter') + '</li>' +
+                '<li>' + (bat ? bat.name : 'Battery') + '</li>' +
+                '<li>Complete Wiring & Setup</li>' +
+                '<li>Free Delivery In Karachi</li>' +
+            '</ul>' +
+            '<div class="package-price">Rs. ' + packagePrice.toLocaleString() + '</div>' +
+            '<div class="package-save">Save Rs. ' + savings.toLocaleString() + ' (5% Off)</div>' +
+            '<button class="btn btn-primary btn-full" onclick="orderPackage(' + pkg.inverterId + ',' + pkg.batteryId + ',' + pkg.panels + ')">Order This Package</button>' +
+        '</div>';
+    }).join('');
+}
+
+function orderPackage(inverterId, batteryId, panelCount) {
+    const panelProduct = products.find(p => p.category === 'longi' && p.price === 27450);
+    if (panelProduct) { cart.push({ id: panelProduct.id, qty: panelCount }); }
+    cart.push({ id: inverterId, qty: 1 });
+    cart.push({ id: batteryId, qty: 1 });
+    saveCart();
+    showToast('Package Added To Cart!');
+    toggleCart();
+}
+
+// ==================== BLOG ====================
+const blogArticles = [
+    { id:1, title:'5 Benefits Of Going Solar In Pakistan', tag:'Guide', date:'June 2026', img:'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400', excerpt:'Discover why thousands of Pakistani households are switching to solar energy and how it can save you money.', content:'<h3>1. Slash Your Electricity Bills</h3><p>With electricity rates rising every year in Pakistan, solar energy offers a way to reduce your monthly bill by 70-100%. A 5kW system can generate enough power for an average household.</p><h3>2. Beat Load Shedding</h3><p>Combined with a lithium battery, solar provides uninterrupted power during load shedding — no more sweltering summers without AC or fans.</p><h3>3. Earn From Net Metering</h3><p>Export excess solar electricity to WAPDA and earn credits on your bill. Many homeowners generate more than they consume during sunny months.</p><h3>4. Increase Property Value</h3><p>Homes with solar systems sell for 4-6% more than comparable homes without solar. It is an investment that pays for itself.</p><h3>5. Protect The Environment</h3><p>A typical 5kW solar system prevents approximately 6 tons of CO2 emissions per year — equivalent to planting 100 trees annually.</p>' },
+    { id:2, title:'How To Choose The Right Solar Panels', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400', excerpt:'N-Type vs P-Type, Mono vs Poly — learn which solar panel technology is best for your needs.', content:'<h3>Panel Types</h3><p>Modern solar panels come in two main types: N-Type (newer, more efficient) and P-Type (older, cheaper). For Pakistan\'s hot climate, N-Type panels perform significantly better as they have lower temperature coefficients.</p><h3>Wattage Matters</h3><p>Higher wattage panels (550W-645W) mean fewer panels on your roof for the same system size. This saves installation costs and roof space.</p><h3>Brand Selection</h3><p>Stick with Tier-1 brands like Longi and Jinko. They offer 25-30 year performance warranties and have been tested globally.</p><h3>Efficiency Rating</h3><p>Look for panels with 21%+ efficiency. Higher efficiency means more power from the same surface area.</p>' },
+    { id:3, title:'Complete Guide To Net Metering In Pakistan', tag:'Guide', date:'June 2026', img:'https://images.unsplash.com/photo-1595437193398-f24279553f4f?w=400', excerpt:'Everything you need to know about selling excess solar electricity back to WAPDA.', content:'<h3>What Is Net Metering?</h3><p>Net metering allows you to export excess solar electricity to the national grid (WAPDA/KESC) and receive credits on your electricity bill.</p><h3>How It Works</h3><p>A bidirectional meter measures both electricity consumed from the grid and electricity exported to the grid. At the end of the billing cycle, you only pay for the net consumption.</p><h3>Requirements</h3><p>You need: a grid-tied or hybrid inverter, a solar system of 1kW or more, application to your DISCO (KESC/HESCO etc.), and approval from NEPRA.</p><h3>Current Rates</h3><p>Export rates in Pakistan are approximately Rs. 19-25 per unit depending on your distribution company and time of year.</p>' },
+    { id:4, title:'Battery Backup: LiFePO4 vs Lead Acid', tag:'Comparison', date:'June 2026', img:'https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=400', excerpt:'Why LiFePO4 lithium batteries are the future of solar energy storage in Pakistan.', content:'<h3>LiFePO4 Advantages</h3><p>Lithium Iron Phosphate (LiFePO4) batteries last 6000+ cycles vs 300-500 for lead acid. That means 15+ years vs 2-3 years of service life.</p><h3>Safety</h3><p>LiFePO4 is the safest lithium chemistry — no risk of thermal runaway, fire, or explosion. Lead acid batteries release toxic gases during charging.</p><h3>Weight & Size</h3><p>A 5kWh LiFePO4 battery weighs about 45kg vs 150kg+ for equivalent lead acid batteries. They also take up 70% less space.</p><h3>Cost Analysis</h3><p>While LiFePO4 costs more upfront, the cost per cycle is 5-8x lower than lead acid. Over 10 years, lithium saves you significantly more money.</p>' },
+    { id:5, title:'Solar System Maintenance Tips', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400', excerpt:'Keep your solar system running at peak performance with these simple maintenance tips.', content:'<h3>Panel Cleaning</h3><p>Clean your panels every 2-4 weeks with water and a soft cloth. Dust and bird droppings can reduce output by 15-25% in Karachi\'s dusty environment.</p><h3>Inverter Monitoring</h3><p>Check your inverter display or WiFi app weekly. Look for error codes, unusual power drops, or fan noise. Most iTel inverters have built-in WiFi monitoring.</p><h3>Battery Care</h3><p>LiFePO4 batteries require minimal maintenance. Keep them in a ventilated area between 15-35°C. Avoid deep discharge below 20% regularly.</p><h3>Annual Inspection</h3><p>Have a professional inspect wiring, connections, and mounting structures annually. Pakistan\'s monsoon season can loosen roof mounts.</p>' }
+];
+
+function renderBlog() {
+    const grid = document.getElementById('blogGrid');
+    if (!grid) return;
+    grid.innerHTML = blogArticles.map(a =>
+        '<div class="blog-card" onclick="showBlogArticle(' + a.id + ')">' +
+            '<div class="blog-card-img"><img src="' + a.img + '" alt="' + a.title + '" loading="lazy"></div>' +
+            '<div class="blog-card-body">' +
+                '<div class="blog-card-tag">' + a.tag + '</div>' +
+                '<div class="blog-card-title">' + a.title + '</div>' +
+                '<div class="blog-card-excerpt">' + a.excerpt + '</div>' +
+                '<div class="blog-card-date">' + a.date + '</div>' +
+            '</div>' +
+        '</div>'
+    ).join('');
+}
+
+function showBlogArticle(id) {
+    const article = blogArticles.find(a => a.id === id);
+    if (!article) return;
+    const container = document.getElementById('blogContent');
+    container.innerHTML = '<div class="blog-full">' +
+        '<span class="blog-back" onclick="renderBlog(); document.getElementById(\'blogContent\').innerHTML=\'<div class=blog-grid id=blogGrid></div>\'; renderBlog();">&#8592; Back To Articles</span>' +
+        '<div class="blog-card-tag">' + article.tag + ' | ' + article.date + '</div>' +
+        '<h2>' + article.title + '</h2>' +
+        '<img src="' + article.img + '" alt="' + article.title + '" style="width:100%;border-radius:var(--radius);margin-bottom:24px;" loading="lazy">' +
+        article.content +
+    '</div>';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ==================== WISHLIST ====================
+function getWishlist() { return JSON.parse(localStorage.getItem('solar_wishlist') || '[]'); }
+
+function toggleWishlist(productId) {
+    let wl = getWishlist();
+    const idx = wl.indexOf(productId);
+    if (idx > -1) { wl.splice(idx, 1); showToast('Removed From Wishlist'); }
+    else { wl.push(productId); showToast('Added To Wishlist!'); }
+    localStorage.setItem('solar_wishlist', JSON.stringify(wl));
+    updateWishlistHearts();
+}
+
+function updateWishlistHearts() {
+    const wl = getWishlist();
+    document.querySelectorAll('.wishlist-heart').forEach(btn => {
+        const pid = parseInt(btn.dataset.pid);
+        btn.classList.toggle('active', wl.includes(pid));
+        btn.innerHTML = wl.includes(pid) ? '&#9829;' : '&#9825;';
+    });
+}
+
+function renderWishlist() {
+    const wl = getWishlist();
+    const container = document.getElementById('wishlistContent');
+    if (!container) return;
+    if (wl.length === 0) {
+        container.innerHTML = '<div class="wishlist-empty"><h3>Your Wishlist Is Empty</h3><p>Browse Products And Click The Heart Icon To Save Items.</p><a href="#" class="btn btn-primary" onclick="showPage(\'panels\')" style="margin-top:16px;">Browse Products</a></div>';
+        return;
+    }
+    const wishProducts = wl.map(id => products.find(p => p.id === id)).filter(Boolean);
+    container.innerHTML = '<div class="products-grid">' + wishProducts.map(createProductCard).join('') + '</div>' +
+        '<div style="text-align:center;margin-top:24px;"><button class="btn btn-primary" onclick="addAllWishlistToCart()">Add All To Cart</button> <button class="btn btn-outline" onclick="clearWishlist()">Clear Wishlist</button></div>';
+    updateWishlistHearts();
+}
+
+function addAllWishlistToCart() {
+    const wl = getWishlist();
+    wl.forEach(id => { if (!cart.find(i => i.id === id)) cart.push({ id, qty: 1 }); });
+    saveCart();
+    showToast('All Wishlist Items Added To Cart!');
+}
+
+function clearWishlist() {
+    localStorage.setItem('solar_wishlist', '[]');
+    renderWishlist();
+    updateWishlistHearts();
+}
+
+// ==================== REVIEW SUBMIT ====================
+let selectedRating = 5;
+
+function selectStar(rating) {
+    selectedRating = rating;
+    document.querySelectorAll('#starSelect span').forEach((s, i) => {
+        s.classList.toggle('active', i < rating);
+    });
+}
+
+function populateReviewProducts() {
+    const sel = document.getElementById('reviewProduct');
+    if (!sel) return;
+    products.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = p.name;
+        sel.appendChild(opt);
+    });
+}
+
+function submitReview() {
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const product = document.getElementById('reviewProduct').value;
+    if (!name || !text) { alert('Enter Your Name And Review'); return; }
+
+    const reviews = JSON.parse(localStorage.getItem('customer_reviews') || '[]');
+    reviews.unshift({ name, rating: selectedRating, product, text, date: new Date().toISOString().slice(0,10) });
+    localStorage.setItem('customer_reviews', JSON.stringify(reviews));
+
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    selectStar(5);
+    showToast('Thank You For Your Review!');
+    renderCustomerReviews();
+}
+
+function renderCustomerReviews() {
+    const reviews = JSON.parse(localStorage.getItem('customer_reviews') || '[]');
+    if (reviews.length === 0) return;
+    const container = document.querySelector('.reviews-grid');
+    if (!container) return;
+    const newHTML = reviews.map(r => {
+        const initials = r.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+        const stars = '&#9733;'.repeat(r.rating) + '&#9734;'.repeat(5 - r.rating);
+        return '<div class="review-card"><div class="review-stars">' + stars + '</div><p class="review-text">"' + r.text + '"</p><div class="review-author"><div class="review-avatar">' + initials + '</div><div><strong>' + r.name + '</strong><span>Karachi</span></div></div><div class="review-product">' + r.product + '</div></div>';
+    }).join('');
+    container.insertAdjacentHTML('afterbegin', newHTML);
+}
+
+// ==================== WHATSAPP CHAT POPUP ====================
+function toggleWaChat() {
+    document.getElementById('waChatPopup').classList.toggle('open');
+}
+
+// ==================== DARK MODE ====================
+function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.getElementById('themeBtn').innerHTML = newTheme === 'dark' ? '&#9728;' : '&#9790;';
+}
+
+function initTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const btn = document.getElementById('themeBtn');
+        if (btn) btn.innerHTML = '&#9728;';
+    }
+}
+
+// ==================== URDU LANGUAGE ====================
+const urduTranslations = {
+    'Home': 'ہوم', 'Solar Panels': 'سولر پینلز', 'Inverters': 'انورٹرز', 'Batteries': 'بیٹریاں',
+    'ESS Solution': 'ای ایس ایس', 'More': 'مزید', 'Reviews': 'ریویوز', 'Solar Calculator': 'سولر کیلکولیٹر',
+    'FAQ': 'سوالات', 'Track Order': 'آرڈر ٹریک', 'Packages': 'پیکجز', 'Blog': 'بلاگ',
+    'Wishlist': 'پسندیدہ', 'Contact': 'رابطہ', 'Add To Cart': 'کارٹ میں شامل کریں',
+    'Compare': 'موازنہ', 'Search products...': 'مصنوعات تلاش کریں...', 'Place Order': 'آرڈر دیں',
+    'Shopping Cart': 'شاپنگ کارٹ', 'Your cart is empty': 'آپ کا کارٹ خالی ہے',
+    'Proceed to Checkout': 'چیک آؤٹ', 'Continue Shopping': 'خریداری جاری رکھیں',
+    'Checkout': 'چیک آؤٹ', 'Send Message': 'پیغام بھیجیں'
+};
+
+function toggleLanguage() {
+    const current = localStorage.getItem('language') || 'en';
+    const newLang = current === 'en' ? 'ur' : 'en';
+    localStorage.setItem('language', newLang);
+    applyLanguage(newLang);
+}
+
+function applyLanguage(lang) {
+    const btn = document.getElementById('langBtn');
+    if (btn) btn.textContent = lang === 'en' ? 'UR' : 'EN';
+    document.body.style.direction = lang === 'ur' ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-ur]').forEach(el => {
+        if (lang === 'ur') {
+            if (!el.dataset.en) el.dataset.en = el.textContent;
+            el.textContent = el.dataset.ur;
+        } else {
+            if (el.dataset.en) el.textContent = el.dataset.en;
+        }
+    });
+
+    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+        const text = a.textContent.trim();
+        if (lang === 'ur') {
+            if (!a.dataset.enText) a.dataset.enText = text;
+            const key = a.dataset.enText || text;
+            if (urduTranslations[key]) a.textContent = urduTranslations[key];
+        } else {
+            if (a.dataset.enText) a.textContent = a.dataset.enText;
+        }
+    });
+}
+
+function initLanguage() {
+    const saved = localStorage.getItem('language');
+    if (saved === 'ur') applyLanguage('ur');
+}
+
+// ==================== PWA ====================
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();
 populateEMIProducts();
+renderPackages();
+renderBlog();
+populateReviewProducts();
+renderCustomerReviews();
+selectStar(5);
+initTheme();
+initLanguage();
+updateWishlistHearts();

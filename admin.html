@@ -210,6 +210,28 @@
         .expense-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
         .expense-bar-pct { width:40px; font-size:0.72rem; color:var(--dim); text-align:right; }
 
+        /* Invoice Print */
+        .invoice-btn { background:var(--blue); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-size:0.72rem; cursor:pointer; font-family:inherit; font-weight:600; margin-left:6px; }
+        .invoice-btn:hover { opacity:0.85; }
+        @media print {
+            body * { visibility:hidden; }
+            #invoicePrint, #invoicePrint * { visibility:visible; }
+            #invoicePrint { position:absolute; left:0; top:0; width:100%; background:#fff !important; color:#000 !important; padding:30px; }
+        }
+        #invoicePrint { display:none; background:#fff; color:#000; padding:30px; font-family:'Inter',sans-serif; }
+        .invoice-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e87a1e; padding-bottom:16px; margin-bottom:20px; }
+        .invoice-header h1 { font-size:1.5rem; color:#e87a1e; }
+        .invoice-table { width:100%; border-collapse:collapse; margin:16px 0; }
+        .invoice-table th { background:#f5f5f5; padding:10px; text-align:left; font-size:0.82rem; border-bottom:2px solid #ddd; }
+        .invoice-table td { padding:10px; border-bottom:1px solid #eee; font-size:0.85rem; }
+        .invoice-total { text-align:right; font-size:1.1rem; font-weight:700; color:#e87a1e; margin-top:16px; }
+
+        /* Supplier Cost */
+        .supplier-input { width:80px; padding:6px 8px; border-radius:6px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.8rem; text-align:center; font-family:inherit; }
+        .supplier-input:focus { outline:none; border-color:var(--orange); }
+        .margin-positive { color:var(--green); font-weight:700; }
+        .margin-negative { color:var(--red); font-weight:700; }
+
         /* Accounting */
         .acc-controls { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
         .acc-controls select, .acc-controls input[type="month"] { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
@@ -484,8 +506,11 @@
             <!-- Products Tab -->
             <div class="tab-content" id="tab-products">
                 <div class="orders-header">
-                    <h2>Product Catalog</h2>
-                    <span style="color:var(--dim);font-size:0.85rem;" id="productCount">0 products</span>
+                    <h2>Product Catalog & Supplier Cost</h2>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <span style="color:var(--dim);font-size:0.85rem;" id="productCount">0 products</span>
+                        <span style="color:var(--green);font-size:0.85rem;font-weight:700;" id="totalMargin"></span>
+                    </div>
                 </div>
                 <div id="adminProductsList" style="display:grid;grid-template-columns:1fr;gap:12px;"></div>
             </div>
@@ -713,6 +738,14 @@
                         <div id="statusBreakdown"></div>
                     </div>
                 </div>
+                <!-- P&L Statement -->
+                <div class="report-card" style="margin-top:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <h3>Monthly Profit & Loss Statement</h3>
+                        <button class="refresh-btn" onclick="exportPL()" style="width:auto;">Export CSV</button>
+                    </div>
+                    <div id="plStatement"></div>
+                </div>
             </div>
 
             <!-- Coupons Tab -->
@@ -773,6 +806,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Invoice Print Template -->
+    <div id="invoicePrint"></div>
 
     <script src="script.js?v=20260620"></script>
     <script>
@@ -1567,6 +1603,124 @@
                 return '<div class="expense-bar-row"><span class="expense-bar-cat">' + (categoryNames[cat]||cat) + '</span><div class="expense-bar-track"><div class="expense-bar-fill" style="width:' + pct + '%;background:' + catColors[i % catColors.length] + ';"></div></div><span class="expense-bar-pct">' + pct + '%</span></div>';
             }).join('');
         }
+
+        // ==================== INVOICE GENERATOR ====================
+        function generateInvoice(orderId) {
+            const order = allOrders.find(o => o.orderId === orderId);
+            if (!order) return;
+            const date = new Date(order.timestamp).toLocaleDateString('en-PK', { day:'2-digit', month:'long', year:'numeric' });
+            const productsHTML = (order.products||[]).map(p => '<tr><td>' + p.name + '</td><td style="text-align:center;">' + p.qty + '</td><td style="text-align:right;">Rs. ' + p.total + '</td></tr>').join('');
+
+            const div = document.getElementById('invoicePrint');
+            div.style.display = 'block';
+            div.innerHTML = '<div class="invoice-header"><div><h1>SOLAR CART</h1><p style="font-size:0.82rem;color:#666;">Plot 9c Ayubi Commercial, Street 3, Phase 7 Ext DHA, Karachi</p><p style="font-size:0.82rem;color:#666;">Phone: +92 323 7927923</p></div><div style="text-align:right;"><h2 style="font-size:1.2rem;">INVOICE</h2><p style="font-size:0.85rem;color:#666;">' + order.orderId + '</p><p style="font-size:0.82rem;color:#666;">' + date + '</p></div></div>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;"><div><strong>Bill To:</strong><p>' + order.name + '</p><p>' + order.phone + '</p><p>' + order.city + '</p><p>' + order.address + '</p></div><div style="text-align:right;"><strong>Payment:</strong><p>' + order.payment + '</p><strong>Status:</strong><p style="text-transform:capitalize;">' + (order.status||'new') + '</p></div></div>' +
+                '<table class="invoice-table"><thead><tr><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Amount</th></tr></thead><tbody>' + productsHTML + '<tr><td colspan="2" style="text-align:right;font-weight:700;">Delivery</td><td style="text-align:right;">Rs. 2,000</td></tr></tbody></table>' +
+                '<div class="invoice-total">Total: Rs. ' + (parseInt((order.total||'0').replace(/,/g,'')) + 2000).toLocaleString() + '</div>' +
+                '<div style="margin-top:30px;padding-top:16px;border-top:1px solid #ddd;font-size:0.78rem;color:#888;"><p><strong>Bank:</strong> NATIONAL TRADERS | A/C: PK72 ASCM 0000 6004 2000 2328 | Askari Bank Ltd</p><p style="margin-top:8px;">Thank you for your business!</p></div>';
+
+            setTimeout(() => { window.print(); setTimeout(() => { div.style.display = 'none'; }, 500); }, 300);
+        }
+
+        // ==================== SUPPLIER COST TRACKING ====================
+        function getSupplierCosts() { return JSON.parse(localStorage.getItem('supplier_costs') || '{}'); }
+
+        function setSupplierCost(productId, cost) {
+            const costs = getSupplierCosts();
+            costs[productId] = parseInt(cost) || 0;
+            localStorage.setItem('supplier_costs', JSON.stringify(costs));
+            renderAdminProducts();
+        }
+
+        // Override renderAdminProducts to include supplier cost
+        const _origRenderAdminProducts = renderAdminProducts;
+        renderAdminProducts = function() {
+            const container = document.getElementById('adminProductsList');
+            const costs = getSupplierCosts();
+            document.getElementById('productCount').textContent = products.length + ' products';
+
+            let totalProfit = 0;
+            container.innerHTML = products.map(p => {
+                const cost = costs[p.id] || 0;
+                const margin = cost > 0 ? p.price - cost : 0;
+                const marginPct = cost > 0 ? Math.round((margin / p.price) * 100) : 0;
+                totalProfit += margin;
+                const marginClass = margin >= 0 ? 'margin-positive' : 'margin-negative';
+                const badgeHTML = p.badge ? '<span style="background:var(--orange);color:#fff;padding:2px 6px;border-radius:4px;font-size:0.6rem;font-weight:700;margin-left:6px;">' + p.badge + '</span>' : '';
+
+                return '<div class="admin-product-row" style="grid-template-columns:50px 1fr auto auto;">' +
+                    '<img src="' + p.image + '" class="admin-product-img">' +
+                    '<div><div class="admin-product-name">' + p.name + badgeHTML + '</div><div class="admin-product-meta">' + p.model + ' | ' + p.category + '</div></div>' +
+                    '<div style="text-align:right;"><div class="admin-product-price">Sell: Rs. ' + p.price.toLocaleString() + '</div><div style="font-size:0.72rem;color:var(--dim);">Cost: <input class="supplier-input" type="number" value="' + cost + '" onchange="setSupplierCost(' + p.id + ', this.value)" placeholder="0"></div></div>' +
+                    '<div style="text-align:right;min-width:80px;">' + (cost > 0 ? '<div class="' + marginClass + '">Rs. ' + margin.toLocaleString() + '</div><div style="font-size:0.65rem;color:var(--dim);">' + marginPct + '% Margin</div>' : '<div style="font-size:0.72rem;color:var(--dim);">Set Cost</div>') + '</div>' +
+                '</div>';
+            }).join('');
+
+            const totalMarginEl = document.getElementById('totalMargin');
+            if (totalMarginEl && totalProfit > 0) totalMarginEl.textContent = 'Total Margin: Rs. ' + totalProfit.toLocaleString();
+        };
+
+        // ==================== P&L STATEMENT ====================
+        function renderPL() {
+            const entries = JSON.parse(localStorage.getItem('solar_accounting') || '[]');
+            const months = {};
+
+            entries.forEach(e => {
+                const month = e.date ? e.date.slice(0, 7) : 'Unknown';
+                if (!months[month]) months[month] = { income: 0, expense: 0 };
+                const amt = parseInt(String(e.amount).replace(/,/g, '')) || 0;
+                if (e.type === 'income') months[month].income += amt;
+                else months[month].expense += amt;
+            });
+
+            const sorted = Object.entries(months).sort((a, b) => b[0].localeCompare(a[0]));
+            const container = document.getElementById('plStatement');
+            if (!container) return;
+
+            if (sorted.length === 0) { container.innerHTML = '<p style="color:var(--dim);">No Data Available</p>'; return; }
+
+            container.innerHTML = '<div style="overflow-x:auto;"><table class="acc-table"><thead><tr><th>Month</th><th style="text-align:right;">Revenue</th><th style="text-align:right;">Expenses</th><th style="text-align:right;">Net Profit/Loss</th></tr></thead><tbody>' +
+                sorted.map(([month, data]) => {
+                    const net = data.income - data.expense;
+                    return '<tr><td>' + month + '</td><td style="text-align:right;color:var(--green);">Rs. ' + data.income.toLocaleString() + '</td><td style="text-align:right;color:var(--red);">Rs. ' + data.expense.toLocaleString() + '</td><td style="text-align:right;font-weight:700;color:' + (net >= 0 ? 'var(--green)' : 'var(--red)') + ';">' + (net >= 0 ? 'Rs. ' : '- Rs. ') + Math.abs(net).toLocaleString() + '</td></tr>';
+                }).join('') +
+                '<tr style="border-top:2px solid var(--border);"><td style="font-weight:700;">Total</td><td style="text-align:right;font-weight:700;color:var(--green);">Rs. ' + sorted.reduce((s, [, d]) => s + d.income, 0).toLocaleString() + '</td><td style="text-align:right;font-weight:700;color:var(--red);">Rs. ' + sorted.reduce((s, [, d]) => s + d.expense, 0).toLocaleString() + '</td><td style="text-align:right;font-weight:700;color:' + ((sorted.reduce((s, [, d]) => s + d.income - d.expense, 0)) >= 0 ? 'var(--green)' : 'var(--red)') + ';">Rs. ' + Math.abs(sorted.reduce((s, [, d]) => s + d.income - d.expense, 0)).toLocaleString() + '</td></tr>' +
+            '</tbody></table></div>';
+        }
+
+        function exportPL() {
+            const entries = JSON.parse(localStorage.getItem('solar_accounting') || '[]');
+            const months = {};
+            entries.forEach(e => {
+                const month = e.date ? e.date.slice(0, 7) : 'Unknown';
+                if (!months[month]) months[month] = { income: 0, expense: 0 };
+                const amt = parseInt(String(e.amount).replace(/,/g, '')) || 0;
+                if (e.type === 'income') months[month].income += amt;
+                else months[month].expense += amt;
+            });
+            let csv = 'Month,Revenue,Expenses,Net Profit\n';
+            Object.entries(months).sort((a,b) => a[0].localeCompare(b[0])).forEach(([m, d]) => { csv += m + ',' + d.income + ',' + d.expense + ',' + (d.income - d.expense) + '\n'; });
+            const blob = new Blob([csv], { type:'text/csv' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'solar-cart-pl-' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+        }
+
+        // Add renderPL to reports render
+        const _origRenderReports = renderReports;
+        renderReports = function(period, btn) { _origRenderReports(period, btn); renderPL(); };
+
+        // Add invoice button to order cards
+        const _origRenderOrders = renderOrders;
+        renderOrders = function(orders) {
+            _origRenderOrders(orders);
+            document.querySelectorAll('.status-buttons').forEach(sb => {
+                const card = sb.closest('.order-card');
+                if (!card) return;
+                const orderId = card.querySelector('.order-id')?.textContent;
+                if (orderId && !sb.querySelector('.invoice-btn')) {
+                    sb.insertAdjacentHTML('beforeend', '<button class="invoice-btn" onclick="event.stopPropagation(); generateInvoice(\'' + orderId + '\')">Invoice</button>');
+                }
+            });
+        };
 
         // Live listener - check for new orders every 30 seconds
         let lastOrderCount = 0;

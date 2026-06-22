@@ -20,6 +20,10 @@
     <meta name="twitter:description" content="Shop iTel solar panels, hybrid inverters & lithium batteries online. Delivery In Karachi.">
     <meta name="twitter:image" content="https://solar-cart-apvs.vercel.app/og-banner.png">
 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#e87a1e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Solar Cart">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,12 +61,19 @@
                         <li><a href="#" data-page="reviews" onclick="showPage('reviews')">Reviews</a></li>
                         <li><a href="#" data-page="calculator" onclick="showPage('calculator')">Solar Calculator</a></li>
                         <li><a href="#" data-page="faq" onclick="showPage('faq')">FAQ</a></li>
+                        <li><a href="#" data-page="packages" onclick="showPage('packages')">Packages</a></li>
                         <li><a href="#" data-page="tracking" onclick="showPage('tracking')">Track Order</a></li>
+                        <li><a href="#" data-page="blog" onclick="showPage('blog')">Blog</a></li>
+                        <li><a href="#" data-page="wishlist" onclick="showPage('wishlist')">Wishlist</a></li>
                         <li><a href="#" data-page="contact" onclick="showPage('contact')">Contact</a></li>
                     </ul>
                 </li>
             </ul>
             <div class="nav-right">
+                <div class="nav-toggles">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Dark/Light Mode" id="themeBtn">&#9790;</button>
+                    <button class="lang-toggle" onclick="toggleLanguage()" id="langBtn">UR</button>
+                </div>
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
                 </div>
@@ -375,6 +386,38 @@
             </div>
         </section>
         <!-- Installation Gallery -->
+        <!-- Submit Review -->
+        <section class="reviews-section" style="padding:40px 0;">
+            <div class="container">
+                <div class="review-submit">
+                    <h3 data-ur="اپنا ریویو دیں">Submit Your Review</h3>
+                    <div class="form-group">
+                        <label data-ur="آپ کا نام">Your Name</label>
+                        <input type="text" id="reviewName" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label data-ur="ریٹنگ">Rating</label>
+                        <div class="star-select" id="starSelect">
+                            <span onclick="selectStar(1)">&#9733;</span>
+                            <span onclick="selectStar(2)">&#9733;</span>
+                            <span onclick="selectStar(3)">&#9733;</span>
+                            <span onclick="selectStar(4)">&#9733;</span>
+                            <span onclick="selectStar(5)">&#9733;</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label data-ur="پروڈکٹ">Product</label>
+                        <select id="reviewProduct"></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-ur="آپ کا ریویو">Your Review</label>
+                        <textarea id="reviewText" placeholder="Share your experience..." rows="3" required></textarea>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="submitReview()">Submit Review</button>
+                </div>
+            </div>
+        </section>
+
         <section class="gallery-section">
             <div class="container">
                 <div class="section-header">
@@ -799,6 +842,39 @@
                 </div>
             </div>
         </section>
+        <!-- Net Metering Calculator -->
+        <section class="calculator-section" style="background:#F5EDDF;">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-tag">Net Metering</div>
+                    <h2 class="section-title" data-ur="نیٹ میٹرنگ کیلکولیٹر">Net Metering <span class="highlight">Calculator</span></h2>
+                    <p class="section-sub" data-ur="واپڈا سے کتنا پیسہ واپس ملے گا">Calculate Your WAPDA Credit & Savings</p>
+                </div>
+                <div class="calc-grid">
+                    <div class="calc-form">
+                        <div class="form-group">
+                            <label>System Size (kW)</label>
+                            <input type="number" id="nmSystemSize" placeholder="e.g. 5" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Electricity Consumption (Units)</label>
+                            <input type="number" id="nmConsumption" placeholder="e.g. 500" min="50">
+                        </div>
+                        <button class="btn btn-primary btn-full" onclick="calculateNetMetering()">Calculate Net Metering</button>
+                    </div>
+                    <div class="calc-result" id="nmResult" style="display:none;">
+                        <h3>Net Metering Estimate</h3>
+                        <div class="calc-result-items">
+                            <div class="calc-result-item"><span class="calc-label">Monthly Solar Generation</span><span class="calc-value" id="nmGeneration">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Self Consumed Units</span><span class="calc-value" id="nmSelfUse">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Units Exported To WAPDA</span><span class="calc-value" id="nmExported">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Monthly WAPDA Credit</span><span class="calc-value green" id="nmCredit">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Annual Savings</span><span class="calc-value orange" id="nmAnnual">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- ============ ORDER TRACKING PAGE ============ -->
@@ -840,6 +916,53 @@
         </section>
     </div>
 
+    <!-- ============ PACKAGES PAGE ============ -->
+    <div id="page-packages" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1 data-ur="مکمل سولر سسٹم پیکجز">Complete Solar System Packages</h1>
+                <p data-ur="اپنے گھر کے لیے مکمل سولر سسٹم منتخب کریں">Choose A Complete Solar System For Your Home</p>
+            </div>
+        </section>
+        <section class="packages-section">
+            <div class="container">
+                <div class="packages-grid" id="packagesGrid"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ BLOG PAGE ============ -->
+    <div id="page-blog" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1 data-ur="بلاگ اور مضامین">Blog & Articles</h1>
+                <p data-ur="سولر انرجی کے بارے میں مفید معلومات">Useful Information About Solar Energy</p>
+            </div>
+        </section>
+        <section class="blog-section">
+            <div class="container">
+                <div id="blogContent">
+                    <div class="blog-grid" id="blogGrid"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ WISHLIST PAGE ============ -->
+    <div id="page-wishlist" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1 data-ur="پسندیدہ مصنوعات">My Wishlist</h1>
+                <p data-ur="بعد میں خریدنے کے لیے محفوظ کیا گیا">Products Saved For Later</p>
+            </div>
+        </section>
+        <section class="wishlist-section">
+            <div class="container">
+                <div id="wishlistContent"></div>
+            </div>
+        </section>
+    </div>
+
     <!-- Compare Float Bar -->
     <div class="compare-bar" id="compareBar" style="display:none;">
         <div class="container compare-bar-inner">
@@ -852,8 +975,24 @@
         </div>
     </div>
 
-    <!-- WhatsApp Float -->
-    <a href="https://wa.me/923237927923" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+    <!-- WhatsApp Chat Popup -->
+    <div class="wa-chat-popup" id="waChatPopup">
+        <div class="wa-chat-header">
+            <h4>Solar Cart Support</h4>
+            <button class="wa-chat-close" onclick="toggleWaChat()">&times;</button>
+        </div>
+        <div class="wa-chat-body">
+            <div class="wa-chat-msg">Assalam-o-Alaikum! How Can We Help You Today?</div>
+            <div class="wa-chat-quick">
+                <a href="https://wa.me/923237927923?text=I%20want%20a%20solar%20system%20quote" target="_blank">I Want A Quote</a>
+                <a href="https://wa.me/923237927923?text=I%20want%20to%20track%20my%20order" target="_blank">Track My Order</a>
+                <a href="https://wa.me/923237927923?text=I%20have%20a%20product%20inquiry" target="_blank">Product Inquiry</a>
+                <a href="https://wa.me/923237927923?text=I%20need%20installation%20help" target="_blank">Installation Help</a>
+                <a href="https://wa.me/923237927923" target="_blank">Custom Message</a>
+            </div>
+        </div>
+    </div>
+    <a class="whatsapp-float" onclick="toggleWaChat()" aria-label="Chat on WhatsApp">
         <span class="wa-icon">W</span>
         <span class="wa-text">WhatsApp</span>
     </a>
@@ -882,6 +1021,9 @@
                         <li><a href="#" onclick="showPage('faq')">FAQ</a></li>
                         <li><a href="#" onclick="showPage('tracking')">Track Order</a></li>
                         <li><a href="#" onclick="showPage('calculator')">Solar Calculator</a></li>
+                        <li><a href="#" onclick="showPage('packages')">System Packages</a></li>
+                        <li><a href="#" onclick="showPage('blog')">Blog</a></li>
+                        <li><a href="#" onclick="showPage('wishlist')">Wishlist</a></li>
                         <li><a href="#">Delivery: Karachi Only</a></li>
                         <li><a href="#">Delivery Charges: Depending On Location</a></li>
                     </ul>

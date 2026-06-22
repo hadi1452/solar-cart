@@ -1,0 +1,22 @@
+{
+  "name": "Solar Cart - iTel Solar Products",
+  "short_name": "Solar Cart",
+  "description": "Shop iTel Solar Panels, Inverters & Batteries Online",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF6EC",
+  "theme_color": "#e87a1e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
