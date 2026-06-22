@@ -46,13 +46,21 @@
                 <img src="logo.png" alt="Solar Cart" class="logo-img">
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#" class="active" onclick="showPage('home')">Home</a></li>
-                <li><a href="#" onclick="showPage('panels')">Solar Panels</a></li>
-                <li><a href="#" onclick="showPage('inverters')">Inverters</a></li>
-                <li><a href="#" onclick="showPage('batteries')">Batteries</a></li>
-                <li><a href="#" onclick="showPage('ess')">ESS Solution</a></li>
-                <li><a href="#" onclick="showPage('reviews')">Reviews</a></li>
-                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                <li><a href="#" class="active" data-page="home" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" data-page="panels" onclick="showPage('panels')">Solar Panels</a></li>
+                <li><a href="#" data-page="inverters" onclick="showPage('inverters')">Inverters</a></li>
+                <li><a href="#" data-page="batteries" onclick="showPage('batteries')">Batteries</a></li>
+                <li><a href="#" data-page="ess" onclick="showPage('ess')">ESS Solution</a></li>
+                <li class="nav-more-wrap">
+                    <a href="#" class="nav-more-btn" onclick="toggleMoreMenu(event)">More &#9662;</a>
+                    <ul class="nav-dropdown" id="navDropdown">
+                        <li><a href="#" data-page="reviews" onclick="showPage('reviews')">Reviews</a></li>
+                        <li><a href="#" data-page="calculator" onclick="showPage('calculator')">Solar Calculator</a></li>
+                        <li><a href="#" data-page="faq" onclick="showPage('faq')">FAQ</a></li>
+                        <li><a href="#" data-page="tracking" onclick="showPage('tracking')">Track Order</a></li>
+                        <li><a href="#" data-page="contact" onclick="showPage('contact')">Contact</a></li>
+                    </ul>
+                </li>
             </ul>
             <div class="nav-right">
                 <div class="search-box">
@@ -366,6 +374,24 @@
                 </div>
             </div>
         </section>
+        <!-- Installation Gallery -->
+        <section class="gallery-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-tag">Gallery</div>
+                    <h2 class="section-title">Installation <span class="highlight">Gallery</span></h2>
+                    <p class="section-sub">Professional Solar Installations In Karachi</p>
+                </div>
+                <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800', 'Rooftop Solar Panel Installation')"><img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400" alt="Solar Installation" loading="lazy"><div class="gallery-caption">Rooftop Solar Panels</div></div>
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800', 'Solar Panel Array')"><img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400" alt="Solar Array" loading="lazy"><div class="gallery-caption">Solar Panel Array</div></div>
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1595437193398-f24279553f4f?w=800', 'Inverter Setup')"><img src="https://images.unsplash.com/photo-1595437193398-f24279553f4f?w=400" alt="Inverter Setup" loading="lazy"><div class="gallery-caption">Inverter & Battery Setup</div></div>
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=800', 'Solar Installation Process')"><img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=400" alt="Installation Process" loading="lazy"><div class="gallery-caption">Installation Process</div></div>
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=800', 'Home Solar System')"><img src="https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400" alt="Home Solar" loading="lazy"><div class="gallery-caption">Home Solar System</div></div>
+                    <div class="gallery-item" onclick="openZoom('https://images.unsplash.com/photo-1592833159117-ac62bc01e68a?w=800', 'Commercial Solar Setup')"><img src="https://images.unsplash.com/photo-1592833159117-ac62bc01e68a?w=400" alt="Commercial Solar" loading="lazy"><div class="gallery-caption">Commercial Solar Setup</div></div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- ============ PANELS PAGE ============ -->
@@ -509,6 +535,15 @@
                                 <textarea id="custNotes" placeholder="Any special instructions" rows="2"></textarea>
                             </div>
 
+                            <div class="coupon-section">
+                                <label>Have A Promo Code?</label>
+                                <div class="coupon-row">
+                                    <input type="text" id="couponInput" placeholder="Enter Promo Code">
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="applyCoupon()">Apply</button>
+                                </div>
+                                <div id="couponMessage"></div>
+                            </div>
+
                             <h3>Payment Method</h3>
                             <div class="payment-methods">
                                 <label class="payment-option">
@@ -538,6 +573,10 @@
                             <span>Subtotal</span>
                             <span id="summarySubtotal">Rs. 0</span>
                         </div>
+                        <div class="summary-line discount-line" id="discountLine" style="display:none;">
+                            <span>Discount</span>
+                            <span id="summaryDiscount" style="color:var(--green);">- Rs. 0</span>
+                        </div>
                         <div class="summary-line">
                             <span>Delivery</span>
                             <span id="summaryDelivery">Rs. 2,000</span>
@@ -564,6 +603,7 @@
                     <div class="success-details" id="successDetails"></div>
                     <div class="success-buttons">
                         <a href="#" class="btn btn-primary" onclick="showPage('home')">Continue Shopping</a>
+                        <a href="#" class="btn btn-outline" onclick="showPage('tracking')">Track Order</a>
                         <a href="https://wa.me/923237927923" target="_blank" class="btn btn-whatsapp">WhatsApp Us</a>
                     </div>
                 </div>
@@ -621,6 +661,197 @@
         </section>
     </div>
 
+    <!-- ============ FAQ PAGE ============ -->
+    <div id="page-faq" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Frequently Asked Questions</h1>
+                <p>Everything You Need To Know About Solar Energy</p>
+            </div>
+        </section>
+        <section class="faq-section">
+            <div class="container">
+                <div class="faq-filters">
+                    <button class="filter-btn active" onclick="filterFaq('all', this)">All</button>
+                    <button class="filter-btn" onclick="filterFaq('general', this)">General</button>
+                    <button class="filter-btn" onclick="filterFaq('products', this)">Products</button>
+                    <button class="filter-btn" onclick="filterFaq('payment', this)">Payment</button>
+                    <button class="filter-btn" onclick="filterFaq('delivery', this)">Delivery</button>
+                    <button class="filter-btn" onclick="filterFaq('warranty', this)">Warranty</button>
+                </div>
+                <div class="faq-list">
+                    <div class="faq-item" data-cat="general"><div class="faq-question" onclick="toggleFaq(this)"><span>What Is Solar Cart?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Solar Cart Is An Online Store For iTel Solar Products In Karachi. We Sell Solar Panels, Hybrid Inverters, Lithium Batteries And Complete Energy Storage Solutions.</p></div></div>
+                    <div class="faq-item" data-cat="general"><div class="faq-question" onclick="toggleFaq(this)"><span>How Does Solar Energy Work?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Solar Panels Convert Sunlight Into Electricity. A Hybrid Inverter Converts This DC Power Into AC Power For Your Home. Batteries Store Excess Energy For Use At Night Or During Load Shedding.</p></div></div>
+                    <div class="faq-item" data-cat="general"><div class="faq-question" onclick="toggleFaq(this)"><span>How Much Can I Save With Solar?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Most Customers Save 70-100% On Their Electricity Bills. Use Our Solar Calculator To Get An Estimate Based On Your Current Bill.</p></div></div>
+                    <div class="faq-item" data-cat="general"><div class="faq-question" onclick="toggleFaq(this)"><span>Do You Offer Installation Services?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>We Can Connect You With Trusted Installation Partners In Karachi. Contact Us On WhatsApp For Installation Quotes.</p></div></div>
+                    <div class="faq-item" data-cat="products"><div class="faq-question" onclick="toggleFaq(this)"><span>What Brands Do You Sell?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>We Sell iTel Inverters & Batteries, Longi Solar Panels, And Jinko Solar Panels. All Are Tier-1 Brands With Official Warranties.</p></div></div>
+                    <div class="faq-item" data-cat="products"><div class="faq-question" onclick="toggleFaq(this)"><span>What Size Solar System Do I Need?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>It Depends On Your Monthly Electricity Bill. A 4kW System Works For Most Homes. Use Our Solar Calculator For A Personalized Recommendation.</p></div></div>
+                    <div class="faq-item" data-cat="products"><div class="faq-question" onclick="toggleFaq(this)"><span>What Is LiFePO4 Battery?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>LiFePO4 (Lithium Iron Phosphate) Is The Safest And Longest-Lasting Lithium Battery Technology. It Offers 6000+ Charge Cycles, 10+ Year Lifespan, And No Risk Of Fire Or Explosion.</p></div></div>
+                    <div class="faq-item" data-cat="products"><div class="faq-question" onclick="toggleFaq(this)"><span>What Is A Hybrid Inverter?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>A Hybrid Inverter Can Work With Both Solar Panels And Batteries. It Automatically Switches Between Solar, Battery, And Grid Power For Maximum Efficiency And Uninterrupted Supply.</p></div></div>
+                    <div class="faq-item" data-cat="products"><div class="faq-question" onclick="toggleFaq(this)"><span>Can I Run AC On Solar?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Yes! A 4kW Or Higher Inverter Can Run 1-2 ACs Along With Other Appliances. The iTel 6kW And 8kW Inverters Are Popular Choices For Running Multiple ACs.</p></div></div>
+                    <div class="faq-item" data-cat="payment"><div class="faq-question" onclick="toggleFaq(this)"><span>What Payment Methods Do You Accept?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>We Accept Bank Transfer To NATIONAL TRADERS Account At Askari Bank Ltd, Korangi Industrial Area, Karachi. IBAN: PK72 ASCM 0000 6004 2000 2328.</p></div></div>
+                    <div class="faq-item" data-cat="payment"><div class="faq-question" onclick="toggleFaq(this)"><span>Do You Offer Installment Plans?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Yes! Check Our EMI Calculator On The Solar Calculator Page. We Offer 3, 6, 12, And 18 Month Installment Plans. Contact Us On WhatsApp For Details.</p></div></div>
+                    <div class="faq-item" data-cat="payment"><div class="faq-question" onclick="toggleFaq(this)"><span>Is My Payment Secure?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Yes. You Transfer Directly To Our Official Askari Bank Account. We Confirm Every Payment And Send You A Receipt Via WhatsApp.</p></div></div>
+                    <div class="faq-item" data-cat="delivery"><div class="faq-question" onclick="toggleFaq(this)"><span>Where Do You Deliver?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>We Currently Deliver Within Karachi Only. Delivery Charges Depend On Your Location Within The City.</p></div></div>
+                    <div class="faq-item" data-cat="delivery"><div class="faq-question" onclick="toggleFaq(this)"><span>How Long Does Delivery Take?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Most Orders Are Delivered Within 2-5 Business Days After Payment Confirmation. We Will Contact You To Schedule A Convenient Delivery Time.</p></div></div>
+                    <div class="faq-item" data-cat="delivery"><div class="faq-question" onclick="toggleFaq(this)"><span>Can I Track My Order?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Yes! Use Our Order Tracking Page. Enter Your Order ID (e.g. SC-20260601) To Check Your Order Status In Real-Time.</p></div></div>
+                    <div class="faq-item" data-cat="warranty"><div class="faq-question" onclick="toggleFaq(this)"><span>What Warranty Do Products Come With?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Solar Panels: 12 Year Product + 30 Year Performance Warranty. Inverters: 3-5 Years. Batteries: 5-10 Years. All Warranties Are Official From The Manufacturer.</p></div></div>
+                    <div class="faq-item" data-cat="warranty"><div class="faq-question" onclick="toggleFaq(this)"><span>How Do I Claim Warranty?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>Contact Us On WhatsApp With Your Order ID And Product Details. We Will Coordinate With The Manufacturer For Warranty Claims.</p></div></div>
+                    <div class="faq-item" data-cat="warranty"><div class="faq-question" onclick="toggleFaq(this)"><span>Are These Products Genuine?</span><span class="faq-arrow">+</span></div><div class="faq-answer"><p>100% Genuine. All Products Come With Official Manufacturer Warranty Cards And Serial Numbers. We Are An Authorized Dealer.</p></div></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ SOLAR CALCULATOR PAGE ============ -->
+    <div id="page-calculator" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Solar Calculator</h1>
+                <p>Find The Perfect Solar System For Your Home</p>
+            </div>
+        </section>
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-grid">
+                    <div class="calc-form">
+                        <h3>Enter Your Details</h3>
+                        <div class="form-group">
+                            <label>Monthly Electricity Bill (Rs.) *</label>
+                            <input type="number" id="calcBill" placeholder="e.g. 15000" min="500" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Property Type</label>
+                            <select id="calcProperty">
+                                <option value="home">Home / Apartment</option>
+                                <option value="shop">Shop / Office</option>
+                                <option value="factory">Factory / Warehouse</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Backup Hours Needed</label>
+                            <select id="calcBackup">
+                                <option value="0">No Battery Backup</option>
+                                <option value="4">4 Hours</option>
+                                <option value="8" selected>8 Hours</option>
+                                <option value="12">12 Hours</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-full" onclick="calculateSolar()">Calculate System Size</button>
+                    </div>
+                    <div class="calc-result" id="calcResult" style="display:none;">
+                        <h3>Recommended System</h3>
+                        <div class="calc-result-items">
+                            <div class="calc-result-item"><span class="calc-label">System Size</span><span class="calc-value" id="calcSystemSize">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Panels Needed</span><span class="calc-value" id="calcPanels">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Recommended Inverter</span><span class="calc-value" id="calcInverter">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Battery Backup</span><span class="calc-value" id="calcBattery">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Estimated Total Cost</span><span class="calc-value orange" id="calcCost">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Monthly Savings</span><span class="calc-value green" id="calcSavings">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Payback Period</span><span class="calc-value" id="calcPayback">-</span></div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-full" onclick="getQuoteWhatsApp()" style="margin-top:16px;">Get Quote On WhatsApp</a>
+                        <a href="#" class="btn btn-outline btn-full" onclick="showPage('panels')" style="margin-top:8px;">Browse Products</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- EMI Calculator -->
+        <section class="emi-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-tag">Installments</div>
+                    <h2 class="section-title">EMI <span class="highlight">Calculator</span></h2>
+                    <p class="section-sub">Calculate Your Monthly Installment</p>
+                </div>
+                <div class="calc-grid">
+                    <div class="calc-form">
+                        <div class="form-group">
+                            <label>Select Product Or Enter Amount</label>
+                            <select id="emiProduct" onchange="emiProductChange()">
+                                <option value="custom">Custom Amount</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="emiCustomGroup">
+                            <label>Amount (Rs.)</label>
+                            <input type="number" id="emiAmount" placeholder="Enter total amount" min="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Installment Period</label>
+                            <div class="tenure-options">
+                                <label class="tenure-option"><input type="radio" name="emiTenure" value="3" checked><span>3 Months</span></label>
+                                <label class="tenure-option"><input type="radio" name="emiTenure" value="6"><span>6 Months</span></label>
+                                <label class="tenure-option"><input type="radio" name="emiTenure" value="12"><span>12 Months</span></label>
+                                <label class="tenure-option"><input type="radio" name="emiTenure" value="18"><span>18 Months</span></label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-full" onclick="calculateEMI()">Calculate EMI</button>
+                    </div>
+                    <div class="calc-result" id="emiResult" style="display:none;">
+                        <h3>EMI Breakdown</h3>
+                        <div class="calc-result-items">
+                            <div class="calc-result-item"><span class="calc-label">Total Amount</span><span class="calc-value" id="emiTotal">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Tenure</span><span class="calc-value" id="emiTenureDisplay">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Monthly Installment</span><span class="calc-value orange" id="emiMonthly">-</span></div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-full" onclick="getQuoteWhatsApp()" style="margin-top:16px;">Discuss On WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ ORDER TRACKING PAGE ============ -->
+    <div id="page-tracking" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Track Your Order</h1>
+                <p>Enter Your Order ID To Check Status</p>
+            </div>
+        </section>
+        <section class="tracking-section">
+            <div class="container">
+                <div class="tracking-search">
+                    <input type="text" id="trackInput" placeholder="Enter Order ID (e.g. SC-20260601)">
+                    <button class="btn btn-primary" onclick="trackOrder()">Track</button>
+                </div>
+                <div id="trackResult"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ COMPARE PAGE ============ -->
+    <div id="page-compare" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Compare Products</h1>
+                <p>Side By Side Product Comparison</p>
+            </div>
+        </section>
+        <section class="compare-section">
+            <div class="container">
+                <div id="compareContent">
+                    <div class="compare-empty">
+                        <p>No Products Selected For Comparison. Go To Any Product Page And Click "Compare" On Products You Want To Compare.</p>
+                        <a href="#" class="btn btn-primary" onclick="showPage('panels')">Browse Products</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Compare Float Bar -->
+    <div class="compare-bar" id="compareBar" style="display:none;">
+        <div class="container compare-bar-inner">
+            <span id="compareCount">0 Products Selected</span>
+            <div class="compare-bar-thumbs" id="compareBarThumbs"></div>
+            <div class="compare-bar-actions">
+                <button class="btn btn-primary btn-sm" onclick="showComparison()">Compare Now</button>
+                <button class="btn btn-outline btn-sm" onclick="clearCompare()">Clear</button>
+            </div>
+        </div>
+    </div>
+
     <!-- WhatsApp Float -->
     <a href="https://wa.me/923237927923" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
         <span class="wa-icon">W</span>
@@ -648,6 +879,9 @@
                     <h4>Help</h4>
                     <ul>
                         <li><a href="#" onclick="showPage('contact')">Contact Us</a></li>
+                        <li><a href="#" onclick="showPage('faq')">FAQ</a></li>
+                        <li><a href="#" onclick="showPage('tracking')">Track Order</a></li>
+                        <li><a href="#" onclick="showPage('calculator')">Solar Calculator</a></li>
                         <li><a href="#">Delivery: Karachi Only</a></li>
                         <li><a href="#">Delivery Charges: Depending On Location</a></li>
                     </ul>

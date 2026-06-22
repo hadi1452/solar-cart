@@ -176,6 +176,7 @@ function createProductCard(product) {
                     <button class="qty-btn" onclick="changeQtyBtn(this, 1)">+</button>
                 </div>`}
                 ${cartBtnHTML}
+                <label class="compare-check"><input type="checkbox" data-pid="${product.id}" onchange="toggleCompare(${product.id})"> Compare</label>
             </div>
         </div>
     `;
@@ -228,9 +229,8 @@ function showPage(page) {
     if (pageEl) pageEl.classList.add('active');
 
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    const navMap = { home:0, panels:1, inverters:2, batteries:3, ess:4, reviews:5, contact:6 };
-    const links = document.querySelectorAll('.nav-links a');
-    if (links[navMap[page]]) links[navMap[page]].classList.add('active');
+    const activeLink = document.querySelector('.nav-links a[data-page="' + page + '"]');
+    if (activeLink) activeLink.classList.add('active');
 
     const navLinksEl = document.getElementById('navLinks');
     if (navLinksEl) navLinksEl.classList.remove('active');
@@ -265,9 +265,22 @@ function renderCheckout() {
     container.innerHTML = html;
 
     const total = getCartTotal();
+    let discount = 0;
+    const discountLine = document.getElementById('discountLine');
+    if (appliedCoupon) {
+        if (appliedCoupon.type === 'percent') {
+            discount = Math.round(total * appliedCoupon.amount / 100);
+        } else {
+            discount = Math.min(appliedCoupon.amount, total);
+        }
+        discountLine.style.display = 'flex';
+        document.getElementById('summaryDiscount').textContent = '- Rs. ' + discount.toLocaleString();
+    } else {
+        discountLine.style.display = 'none';
+    }
     document.getElementById('summarySubtotal').textContent = 'Rs. ' + total.toLocaleString();
     document.getElementById('summaryDelivery').textContent = 'Rs. 2,000';
-    document.getElementById('summaryTotal').textContent = 'Rs. ' + (total + 2000).toLocaleString();
+    document.getElementById('summaryTotal').textContent = 'Rs. ' + (total - discount + 2000).toLocaleString();
 }
 
 // Payment method - transaction ID always visible
@@ -301,8 +314,17 @@ function placeOrder(e) {
         const p = products.find(pr => pr.id === item.id);
         if (p) msg += `- ${p.name} x${item.qty} = Rs.${(p.price * item.qty).toLocaleString()}%0A`;
     });
-    msg += `%0A*Subtotal:* Rs.${total.toLocaleString()}%0A`;
-    msg += `*Total:* Rs.${total.toLocaleString()}%0A`;
+    let discount = 0;
+    if (appliedCoupon) {
+        discount = appliedCoupon.type === 'percent' ? Math.round(total * appliedCoupon.amount / 100) : Math.min(appliedCoupon.amount, total);
+        msg += `%0A*Subtotal:* Rs.${total.toLocaleString()}%0A`;
+        msg += `*Discount:* -Rs.${discount.toLocaleString()} (${appliedCoupon.code})%0A`;
+    } else {
+        msg += `%0A*Subtotal:* Rs.${total.toLocaleString()}%0A`;
+    }
+    const finalTotal = total - discount + 2000;
+    msg += `*Delivery:* Rs.2,000%0A`;
+    msg += `*Total:* Rs.${finalTotal.toLocaleString()}%0A`;
     msg += `*Payment:* ${paymentNames[payment]}`;
 
     // Build order data for admin dashboard
@@ -464,6 +486,17 @@ function showToast(message) {
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
 }
+
+// ==================== MORE DROPDOWN ====================
+function toggleMoreMenu(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelector('.nav-more-wrap').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    const moreWrap = document.querySelector('.nav-more-wrap');
+    if (moreWrap && !moreWrap.contains(e.target)) moreWrap.classList.remove('open');
+});
 
 // ==================== MOBILE MENU ====================
 if (document.getElementById('menuToggle')) {
@@ -843,6 +876,293 @@ function shareToStatus(productId, platform, btn) {
     draw();
 })();
 
+// ==================== FAQ ====================
+function toggleFaq(el) {
+    const item = el.parentElement;
+    item.classList.toggle('open');
+}
+
+function filterFaq(cat, btn) {
+    document.querySelectorAll('.faq-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.faq-item').forEach(item => {
+        if (cat === 'all' || item.dataset.cat === cat) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+// ==================== SOLAR CALCULATOR ====================
+function calculateSolar() {
+    const bill = parseInt(document.getElementById('calcBill').value);
+    if (!bill || bill < 500) { alert('Enter A Valid Monthly Bill (Min Rs. 500)'); return; }
+
+    const ratePerUnit = 65;
+    const unitsConsumed = Math.round(bill / ratePerUnit);
+    const systemSizeKW = Math.round((unitsConsumed / 120) * 10) / 10;
+    const panelWatt = 550;
+    const panelsNeeded = Math.ceil(systemSizeKW * 1000 / panelWatt);
+    const backupHours = parseInt(document.getElementById('calcBackup').value);
+
+    const inverters = products.filter(p => p.category === 'inverter').sort((a, b) => {
+        const aKW = parseFloat(a.name.match(/(\d+\.?\d*)kW/i)?.[1] || 0);
+        const bKW = parseFloat(b.name.match(/(\d+\.?\d*)kW/i)?.[1] || 0);
+        return aKW - bKW;
+    });
+    let recInverter = inverters[inverters.length - 1];
+    for (const inv of inverters) {
+        const kw = parseFloat(inv.name.match(/(\d+\.?\d*)kW/i)?.[1] || 0);
+        if (kw >= systemSizeKW) { recInverter = inv; break; }
+    }
+
+    let recBattery = null;
+    let batteryText = 'Not Required';
+    if (backupHours > 0) {
+        const batteryKWh = systemSizeKW * backupHours * 0.3;
+        const batteries = products.filter(p => p.category === 'battery').sort((a, b) => {
+            const aKWh = parseFloat(a.name.match(/(\d+\.?\d*)kWh/i)?.[1] || 0);
+            const bKWh = parseFloat(b.name.match(/(\d+\.?\d*)kWh/i)?.[1] || 0);
+            return aKWh - bKWh;
+        });
+        for (const bat of batteries) {
+            const kWh = parseFloat(bat.name.match(/(\d+\.?\d*)kWh/i)?.[1] || 0);
+            if (kWh >= batteryKWh) { recBattery = bat; break; }
+        }
+        if (!recBattery) recBattery = batteries[batteries.length - 1];
+        batteryText = recBattery.name;
+    }
+
+    const panelPrice = 27450;
+    const totalCost = (panelsNeeded * panelPrice) + recInverter.price + (recBattery ? recBattery.price : 0);
+    const monthlySavings = bill;
+    const paybackYears = Math.round((totalCost / (monthlySavings * 12)) * 10) / 10;
+
+    document.getElementById('calcSystemSize').textContent = systemSizeKW + ' kW';
+    document.getElementById('calcPanels').textContent = panelsNeeded + ' x 550W Panels';
+    document.getElementById('calcInverter').textContent = recInverter.name;
+    document.getElementById('calcBattery').textContent = batteryText;
+    document.getElementById('calcCost').textContent = 'Rs. ' + totalCost.toLocaleString();
+    document.getElementById('calcSavings').textContent = 'Rs. ' + monthlySavings.toLocaleString() + ' / Month';
+    document.getElementById('calcPayback').textContent = paybackYears + ' Years';
+
+    document.getElementById('calcResult').style.display = 'block';
+
+    window._lastCalcResult = { systemSizeKW, panelsNeeded, recInverter, recBattery, totalCost, monthlySavings };
+}
+
+function getQuoteWhatsApp() {
+    const r = window._lastCalcResult;
+    let msg = '*Solar Cart - Quote Request*%0A%0A';
+    if (r) {
+        msg += '*System Size:* ' + r.systemSizeKW + ' kW%0A';
+        msg += '*Panels:* ' + r.panelsNeeded + ' x 550W%0A';
+        msg += '*Inverter:* ' + r.recInverter.name + '%0A';
+        msg += '*Battery:* ' + (r.recBattery ? r.recBattery.name : 'None') + '%0A';
+        msg += '*Est. Cost:* Rs. ' + r.totalCost.toLocaleString() + '%0A%0A';
+    }
+    msg += 'I Would Like A Quote For This Solar System.';
+    window.open('https://wa.me/923237927923?text=' + msg, '_blank');
+}
+
+// ==================== EMI CALCULATOR ====================
+function populateEMIProducts() {
+    const sel = document.getElementById('emiProduct');
+    if (!sel) return;
+    products.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.price;
+        opt.textContent = p.name + ' - Rs. ' + p.price.toLocaleString();
+        sel.appendChild(opt);
+    });
+}
+
+function emiProductChange() {
+    const val = document.getElementById('emiProduct').value;
+    document.getElementById('emiCustomGroup').style.display = val === 'custom' ? 'block' : 'none';
+    if (val !== 'custom') document.getElementById('emiAmount').value = val;
+}
+
+function calculateEMI() {
+    const productVal = document.getElementById('emiProduct').value;
+    let amount;
+    if (productVal === 'custom') {
+        amount = parseInt(document.getElementById('emiAmount').value);
+    } else {
+        amount = parseInt(productVal);
+    }
+    if (!amount || amount < 1000) { alert('Enter A Valid Amount (Min Rs. 1,000)'); return; }
+
+    const tenure = parseInt(document.querySelector('input[name="emiTenure"]:checked').value);
+    const monthly = Math.ceil(amount / tenure);
+
+    document.getElementById('emiTotal').textContent = 'Rs. ' + amount.toLocaleString();
+    document.getElementById('emiTenureDisplay').textContent = tenure + ' Months';
+    document.getElementById('emiMonthly').textContent = 'Rs. ' + monthly.toLocaleString();
+
+    document.getElementById('emiResult').style.display = 'block';
+}
+
+// ==================== ORDER TRACKING ====================
+function trackOrder() {
+    const orderId = document.getElementById('trackInput').value.trim().toUpperCase();
+    if (!orderId) { alert('Enter An Order ID'); return; }
+
+    const container = document.getElementById('trackResult');
+    container.innerHTML = '<p style="text-align:center;padding:20px;color:var(--text-dim);">Searching...</p>';
+
+    fetch('orders.json')
+        .then(r => r.json())
+        .then(data => {
+            const orders = data.orders || [];
+            const order = orders.find(o => o.orderId.toUpperCase() === orderId);
+            if (!order) {
+                container.innerHTML = '<div class="tracking-not-found"><h3>Order Not Found</h3><p>Please Check Your Order ID And Try Again.</p></div>';
+                return;
+            }
+
+            const statuses = JSON.parse(localStorage.getItem('order_statuses') || '{}');
+            const status = statuses[order.orderId] || order.status || 'new';
+            const statusFlow = ['new', 'confirmed', 'shipped', 'delivered'];
+            const currentIdx = statusFlow.indexOf(status);
+            const statusLabels = ['New', 'Confirmed', 'Shipped', 'Delivered'];
+
+            let stepperHTML = '<div class="tracking-stepper">';
+            statusFlow.forEach((s, i) => {
+                let cls = '';
+                if (i < currentIdx) cls = 'completed';
+                else if (i === currentIdx) cls = 'active';
+                stepperHTML += '<div class="tracking-step"><div class="step-circle ' + cls + '">' + (i < currentIdx ? '&#10003;' : (i + 1)) + '</div><div class="step-label ' + cls + '">' + statusLabels[i] + '</div></div>';
+            });
+            stepperHTML += '</div>';
+
+            const date = new Date(order.timestamp);
+            const dateStr = date.toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' });
+            const productsStr = (order.products || []).map(p => p.name + ' x' + p.qty).join(', ');
+
+            container.innerHTML = '<div class="tracking-card">' +
+                '<h3 style="text-align:center;margin-bottom:8px;">Order ' + order.orderId + '</h3>' +
+                '<p style="text-align:center;color:var(--text-dim);font-size:0.85rem;margin-bottom:10px;">Current Status: <strong style="color:var(--orange);">' + statusLabels[currentIdx] + '</strong></p>' +
+                stepperHTML +
+                '<div class="tracking-details">' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Customer</span><span class="tracking-detail-value">' + order.name + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Phone</span><span class="tracking-detail-value">' + order.phone + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">City</span><span class="tracking-detail-value">' + order.city + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Products</span><span class="tracking-detail-value">' + productsStr + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Total</span><span class="tracking-detail-value" style="color:var(--orange);font-weight:700;">Rs. ' + order.total + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Order Date</span><span class="tracking-detail-value">' + dateStr + '</span></div>' +
+                    '<div class="tracking-detail-row"><span class="tracking-detail-label">Payment</span><span class="tracking-detail-value">' + order.payment + '</span></div>' +
+                '</div>' +
+            '</div>';
+        })
+        .catch(() => {
+            container.innerHTML = '<div class="tracking-not-found"><h3>Error</h3><p>Could Not Load Order Data. Please Try Again.</p></div>';
+        });
+}
+
+// ==================== PRODUCT COMPARISON ====================
+let compareList = [];
+
+function toggleCompare(productId) {
+    const idx = compareList.indexOf(productId);
+    if (idx > -1) {
+        compareList.splice(idx, 1);
+    } else {
+        if (compareList.length >= 3) {
+            showToast('Maximum 3 Products Can Be Compared');
+            return;
+        }
+        compareList.push(productId);
+    }
+    updateCompareBar();
+    document.querySelectorAll('.compare-check input').forEach(cb => {
+        cb.checked = compareList.includes(parseInt(cb.dataset.pid));
+    });
+}
+
+function updateCompareBar() {
+    const bar = document.getElementById('compareBar');
+    if (compareList.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'block';
+    document.getElementById('compareCount').textContent = compareList.length + ' Product' + (compareList.length > 1 ? 's' : '') + ' Selected';
+    document.getElementById('compareBarThumbs').innerHTML = compareList.map(id => {
+        const p = products.find(pr => pr.id === id);
+        return p ? '<img src="' + p.image + '" alt="' + p.name + '" loading="lazy">' : '';
+    }).join('');
+}
+
+function showComparison() {
+    if (compareList.length < 2) { showToast('Select At Least 2 Products To Compare'); return; }
+    showPage('compare');
+    renderComparison();
+}
+
+function renderComparison() {
+    const container = document.getElementById('compareContent');
+    if (compareList.length < 2) {
+        container.innerHTML = '<div class="compare-empty"><p>Select At Least 2 Products To Compare.</p><a href="#" class="btn btn-primary" onclick="showPage(\'panels\')">Browse Products</a></div>';
+        return;
+    }
+
+    const prods = compareList.map(id => products.find(p => p.id === id)).filter(Boolean);
+    let html = '<div class="compare-table-wrap"><table class="compare-table">';
+    html += '<tr><th>Feature</th>' + prods.map(p => '<th>' + p.name + '</th>').join('') + '</tr>';
+    html += '<tr><td>Image</td>' + prods.map(p => '<td><img src="' + p.image + '" alt="' + p.name + '"></td>').join('') + '</tr>';
+    html += '<tr><td>Model</td>' + prods.map(p => '<td>' + p.model + '</td>').join('') + '</tr>';
+    html += '<tr><td>Price</td>' + prods.map(p => '<td style="font-weight:700;color:var(--orange);">Rs. ' + p.price.toLocaleString() + '</td>').join('') + '</tr>';
+    html += '<tr><td>Warranty</td>' + prods.map(p => '<td>' + (p.warranty || '-') + '</td>').join('') + '</tr>';
+    html += '<tr><td>Rating</td>' + prods.map(p => '<td>' + (p.rating || '-') + ' (' + (p.reviewCount || 0) + ' Reviews)</td>').join('') + '</tr>';
+
+    const maxSpecs = Math.max(...prods.map(p => p.specs.length));
+    for (let i = 0; i < maxSpecs; i++) {
+        const label = prods[0].specs[i] ? prods[0].specs[i].split(':')[0] : 'Spec ' + (i + 1);
+        html += '<tr><td>' + label + '</td>' + prods.map(p => '<td>' + (p.specs[i] ? p.specs[i].split(':').slice(1).join(':') : '-') + '</td>').join('') + '</tr>';
+    }
+    html += '<tr><td>Badge</td>' + prods.map(p => '<td>' + (p.badge || '-') + '</td>').join('') + '</tr>';
+    html += '</table></div>';
+
+    container.innerHTML = html;
+}
+
+function clearCompare() {
+    compareList = [];
+    updateCompareBar();
+    document.querySelectorAll('.compare-check input').forEach(cb => { cb.checked = false; });
+}
+
+// ==================== COUPON SYSTEM ====================
+let appliedCoupon = null;
+
+function applyCoupon() {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    const msgEl = document.getElementById('couponMessage');
+    if (!code) { msgEl.textContent = 'Enter A Promo Code'; msgEl.className = 'coupon-error'; return; }
+
+    const coupons = JSON.parse(localStorage.getItem('solar_coupons') || '[]');
+    const coupon = coupons.find(c => c.code.toUpperCase() === code);
+
+    if (!coupon) {
+        msgEl.textContent = 'Invalid Promo Code'; msgEl.className = 'coupon-error';
+        appliedCoupon = null;
+        renderCheckout();
+        return;
+    }
+
+    if (coupon.expiry && new Date(coupon.expiry) < new Date()) {
+        msgEl.textContent = 'This Promo Code Has Expired'; msgEl.className = 'coupon-error';
+        appliedCoupon = null;
+        renderCheckout();
+        return;
+    }
+
+    appliedCoupon = coupon;
+    msgEl.textContent = 'Coupon Applied! ' + (coupon.type === 'percent' ? coupon.amount + '% Off' : 'Rs. ' + coupon.amount.toLocaleString() + ' Off');
+    msgEl.className = 'coupon-success';
+    renderCheckout();
+}
+
 // ==================== INIT ====================
 renderProducts();
 updateCartUI();
+populateEMIProducts();

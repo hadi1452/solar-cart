@@ -165,6 +165,51 @@
         .inv-bulk-btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--dim); font-size:0.78rem; font-weight:600; cursor:pointer; font-family:inherit; }
         .inv-bulk-btn:hover { border-color:var(--orange); color:var(--orange); }
 
+        /* Customers */
+        .customer-search { display:flex; gap:10px; margin-bottom:20px; }
+        .customer-search input { flex:1; padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; font-family:inherit; }
+        .customer-search input:focus { outline:none; border-color:var(--orange); }
+        .customer-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; cursor:pointer; transition:all 0.2s; }
+        .customer-card:hover { border-color:var(--orange); }
+        .customer-top { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .customer-name { font-weight:700; font-size:0.9rem; }
+        .customer-phone { font-size:0.8rem; color:var(--dim); }
+        .customer-stats-row { display:flex; gap:16px; margin-top:8px; font-size:0.78rem; color:var(--dim); }
+        .customer-orders { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+        .customer-orders.open { display:block; }
+        .customer-order-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:0.78rem; border-bottom:1px solid var(--border); }
+        .customer-order-row:last-child { border-bottom:none; }
+
+        /* Reports */
+        .report-toggle { display:flex; gap:8px; margin-bottom:20px; }
+        .report-toggle button { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--dim); font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit; }
+        .report-toggle button.active { background:var(--orange); border-color:var(--orange); color:#fff; }
+        .report-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
+        .report-card h3 { font-size:0.9rem; margin-bottom:16px; }
+        .report-bar-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+        .report-bar-label { width:80px; font-size:0.75rem; color:var(--dim); text-align:right; flex-shrink:0; }
+        .report-bar-track { flex:1; height:24px; background:rgba(255,255,255,0.04); border-radius:6px; overflow:hidden; }
+        .report-bar-fill { height:100%; border-radius:6px; background:var(--orange); transition:width 0.5s ease; display:flex; align-items:center; padding:0 8px; }
+        .report-bar-value { font-size:0.7rem; font-weight:700; color:#fff; white-space:nowrap; }
+        .report-bar-amount { font-size:0.75rem; color:var(--dim); width:100px; text-align:right; flex-shrink:0; }
+        .top-product-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+        .top-product-row:last-child { border-bottom:none; }
+        .top-product-rank { width:24px; height:24px; border-radius:50%; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; }
+
+        /* Coupons */
+        .coupon-admin-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .coupon-admin-code { font-weight:700; font-size:0.95rem; color:var(--orange); font-family:monospace; letter-spacing:1px; }
+        .coupon-admin-detail { font-size:0.78rem; color:var(--dim); }
+
+        /* Expense Breakdown */
+        .expense-breakdown { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px; }
+        .expense-breakdown h3 { font-size:0.95rem; margin-bottom:16px; }
+        .expense-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+        .expense-bar-cat { width:120px; font-size:0.75rem; color:var(--dim); text-align:right; flex-shrink:0; }
+        .expense-bar-track { flex:1; height:20px; background:rgba(255,255,255,0.04); border-radius:4px; overflow:hidden; }
+        .expense-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+        .expense-bar-pct { width:40px; font-size:0.72rem; color:var(--dim); text-align:right; }
+
         /* Accounting */
         .acc-controls { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
         .acc-controls select, .acc-controls input[type="month"] { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
@@ -255,6 +300,14 @@
             .logout-btn { padding:5px 10px; font-size:0.7rem; }
             #lastRefresh { font-size:0.68rem; }
             .acc-summary { grid-template-columns:1fr 1fr; gap:8px; }
+            #tab-reports > div[style*="grid-template-columns"] { grid-template-columns:1fr !important; }
+            .report-bar-label { width:60px; font-size:0.65rem; }
+            .report-bar-amount { width:80px; font-size:0.65rem; }
+            .top-product-row { flex-direction:column; align-items:flex-start; gap:4px; font-size:0.75rem; }
+            .customer-card { padding:10px 12px; }
+            .customer-stats-row { flex-wrap:wrap; gap:8px; }
+            .coupon-admin-card { flex-direction:column; align-items:flex-start; gap:6px; }
+            .expense-bar-cat { width:80px; font-size:0.65rem; }
             .acc-controls { flex-direction:column; gap:6px; }
             .acc-controls select, .acc-controls input[type="month"] { width:100%; }
             .acc-form-row { flex-direction:column; gap:8px; }
@@ -334,6 +387,9 @@
                 <button class="dash-tab" onclick="switchTab('products', this)">Products</button>
                 <button class="dash-tab" onclick="switchTab('inventory', this)">Inventory</button>
                 <button class="dash-tab" onclick="switchTab('accounting', this)">Accounting</button>
+                <button class="dash-tab" onclick="switchTab('customers', this)">Customers</button>
+                <button class="dash-tab" onclick="switchTab('reports', this)">Reports</button>
+                <button class="dash-tab" onclick="switchTab('coupons', this)">Coupons</button>
                 <button class="dash-tab" onclick="switchTab('social', this)">Social Media</button>
             </div>
 
@@ -546,6 +602,12 @@
                     <button class="refresh-btn" onclick="exportAccounting()">Export CSV</button>
                 </div>
 
+                <!-- Expense Breakdown -->
+                <div class="expense-breakdown" id="expenseBreakdownSection" style="display:none;">
+                    <h3>Expense Breakdown By Category</h3>
+                    <div id="expenseBreakdown"></div>
+                </div>
+
                 <!-- Add Entry Form -->
                 <div class="acc-add-form">
                     <h3>Add New Entry</h3>
@@ -610,6 +672,82 @@
                         </table>
                     </div>
                 </div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div class="tab-content" id="tab-customers">
+                <div class="orders-header">
+                    <h2>Customer Database</h2>
+                    <span style="color:var(--dim);font-size:0.85rem;" id="customerCount">0 Customers</span>
+                </div>
+                <div class="customer-search">
+                    <input type="text" id="customerSearchInput" placeholder="Search By Name Or Phone..." oninput="renderCustomers()">
+                </div>
+                <div class="dash-stats" style="margin-bottom:20px;">
+                    <div class="dash-stat"><div class="dash-stat-label">Total Customers</div><div class="dash-stat-value orange" id="custTotal">0</div></div>
+                    <div class="dash-stat"><div class="dash-stat-label">Repeat Customers</div><div class="dash-stat-value green" id="custRepeat">0</div></div>
+                    <div class="dash-stat"><div class="dash-stat-label">Total Revenue</div><div class="dash-stat-value blue" id="custRevenue" style="font-size:1.1rem;">Rs. 0</div></div>
+                    <div class="dash-stat"><div class="dash-stat-label">Avg. Order Value</div><div class="dash-stat-value yellow" id="custAvg" style="font-size:1.1rem;">Rs. 0</div></div>
+                </div>
+                <div id="customerList"></div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="tab-reports">
+                <h2 style="margin-bottom:20px;">Sales Reports</h2>
+                <div class="report-toggle">
+                    <button class="active" onclick="renderReports('monthly', this)">Monthly</button>
+                    <button onclick="renderReports('weekly', this)">Weekly</button>
+                </div>
+                <div class="report-card">
+                    <h3>Revenue Overview</h3>
+                    <div id="revenueChart"></div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="report-card">
+                        <h3>Top Selling Products</h3>
+                        <div id="topProductsList"></div>
+                    </div>
+                    <div class="report-card">
+                        <h3>Orders By Status</h3>
+                        <div id="statusBreakdown"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coupons Tab -->
+            <div class="tab-content" id="tab-coupons">
+                <h2 style="margin-bottom:20px;">Discount Coupons</h2>
+                <div class="acc-add-form">
+                    <h3>Create New Coupon</h3>
+                    <div class="acc-form-row">
+                        <div class="acc-form-group">
+                            <label>Coupon Code</label>
+                            <input type="text" id="couponCode" placeholder="e.g. SOLAR10" style="text-transform:uppercase;">
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Discount Type</label>
+                            <select id="couponType">
+                                <option value="percent">Percentage (%)</option>
+                                <option value="fixed">Fixed Amount (Rs.)</option>
+                            </select>
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Amount</label>
+                            <input type="number" id="couponAmount" placeholder="e.g. 10" min="1">
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Expiry Date</label>
+                            <input type="date" id="couponExpiry">
+                        </div>
+                        <button class="acc-add-btn" onclick="createCoupon()">+ Create Coupon</button>
+                    </div>
+                </div>
+                <div class="orders-header" style="margin-bottom:16px;">
+                    <h3>Active Coupons</h3>
+                    <span style="color:var(--dim);font-size:0.85rem;" id="couponCount">0 Coupons</span>
+                </div>
+                <div id="couponsList"></div>
             </div>
 
             <!-- Social Media Tab -->
@@ -954,6 +1092,9 @@
             if (tab === 'products') renderAdminProducts();
             if (tab === 'inventory') renderInventory();
             if (tab === 'accounting') renderAccounting();
+            if (tab === 'customers') renderCustomers();
+            if (tab === 'reports') renderReports('monthly', document.querySelector('.report-toggle button'));
+            if (tab === 'coupons') renderCoupons();
         }
 
         // ==================== INVENTORY MANAGEMENT ====================
@@ -1222,6 +1363,8 @@
 
             const categoryNames = { order:'Order Payment', purchase:'Product Purchase', transport:'Transport / Delivery', rent:'Rent', salary:'Salary', utility:'Utility Bills', maintenance:'Maintenance', other:'Other' };
 
+            renderExpenseBreakdown(entries);
+
             document.getElementById('accShowCount').textContent = filtered.length + ' Entries';
             const tbody = document.getElementById('accTableBody');
 
@@ -1263,6 +1406,166 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+        }
+
+        // ==================== CUSTOMER DATABASE ====================
+        function renderCustomers() {
+            const search = (document.getElementById('customerSearchInput').value || '').toLowerCase();
+            const customers = {};
+            allOrders.forEach(o => {
+                const key = o.phone || o.name;
+                if (!customers[key]) customers[key] = { name:o.name, phone:o.phone, city:o.city, orders:[], totalSpent:0 };
+                customers[key].orders.push(o);
+                customers[key].totalSpent += parseInt((o.total||'0').replace(/,/g,''));
+            });
+
+            let custArray = Object.values(customers);
+            if (search) custArray = custArray.filter(c => c.name.toLowerCase().includes(search) || c.phone.includes(search));
+            custArray.sort((a,b) => b.totalSpent - a.totalSpent);
+
+            const allCust = Object.values(customers);
+            document.getElementById('custTotal').textContent = allCust.length;
+            document.getElementById('custRepeat').textContent = allCust.filter(c => c.orders.length > 1).length;
+            const totalRev = allCust.reduce((s,c) => s + c.totalSpent, 0);
+            document.getElementById('custRevenue').textContent = 'Rs. ' + totalRev.toLocaleString();
+            document.getElementById('custAvg').textContent = allCust.length ? 'Rs. ' + Math.round(totalRev / allOrders.length).toLocaleString() : 'Rs. 0';
+            document.getElementById('customerCount').textContent = custArray.length + ' Customers';
+
+            if (custArray.length === 0) {
+                document.getElementById('customerList').innerHTML = '<div class="no-orders"><h3>No Customers Found</h3></div>';
+                return;
+            }
+
+            document.getElementById('customerList').innerHTML = custArray.map((c, i) => {
+                const ordersHTML = c.orders.map(o => {
+                    const status = o.status || 'new';
+                    return '<div class="customer-order-row"><span style="font-weight:600;">' + o.orderId + '</span><span>' + (o.products||[]).map(p=>p.name).join(', ') + '</span><span style="color:var(--orange);font-weight:700;">Rs. ' + o.total + '</span><span class="order-status status-' + status + '">' + status + '</span></div>';
+                }).join('');
+                return '<div class="customer-card" onclick="this.querySelector(\'.customer-orders\').classList.toggle(\'open\')">' +
+                    '<div class="customer-top"><span class="customer-name">' + c.name + '</span><span class="customer-phone">' + c.phone + '</span></div>' +
+                    '<div class="customer-stats-row"><span>City: ' + c.city + '</span><span>Orders: ' + c.orders.length + '</span><span style="color:var(--orange);font-weight:600;">Total: Rs. ' + c.totalSpent.toLocaleString() + '</span></div>' +
+                    '<div class="customer-orders">' + ordersHTML + '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        // ==================== SALES REPORTS ====================
+        function renderReports(period, btn) {
+            document.querySelectorAll('.report-toggle button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const grouped = {};
+            allOrders.forEach(o => {
+                const d = new Date(o.timestamp);
+                let key;
+                if (period === 'monthly') key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+                else {
+                    const weekStart = new Date(d); weekStart.setDate(d.getDate() - d.getDay());
+                    key = weekStart.toLocaleDateString('en-PK',{day:'2-digit',month:'short'});
+                }
+                if (!grouped[key]) grouped[key] = 0;
+                grouped[key] += parseInt((o.total||'0').replace(/,/g,''));
+            });
+
+            const entries = Object.entries(grouped).sort((a,b) => a[0].localeCompare(b[0]));
+            const maxVal = Math.max(...entries.map(e => e[1]), 1);
+
+            document.getElementById('revenueChart').innerHTML = entries.length === 0 ? '<p style="color:var(--dim);">No Data</p>' :
+                entries.map(([label, val]) => {
+                    const pct = (val / maxVal * 100);
+                    return '<div class="report-bar-row"><span class="report-bar-label">' + label + '</span><div class="report-bar-track"><div class="report-bar-fill" style="width:' + pct + '%"><span class="report-bar-value">' + (pct > 15 ? 'Rs.' + val.toLocaleString() : '') + '</span></div></div><span class="report-bar-amount">Rs. ' + val.toLocaleString() + '</span></div>';
+                }).join('');
+
+            const productSales = {};
+            allOrders.forEach(o => {
+                (o.products||[]).forEach(p => {
+                    if (!productSales[p.name]) productSales[p.name] = { qty:0, revenue:0 };
+                    productSales[p.name].qty += p.qty;
+                    productSales[p.name].revenue += parseInt((p.total||'0').replace(/,/g,''));
+                });
+            });
+            const topProducts = Object.entries(productSales).sort((a,b) => b[1].revenue - a[1].revenue).slice(0,5);
+            document.getElementById('topProductsList').innerHTML = topProducts.length === 0 ? '<p style="color:var(--dim);">No Data</p>' :
+                topProducts.map(([name, data], i) => '<div class="top-product-row"><div style="display:flex;align-items:center;gap:10px;"><span class="top-product-rank">' + (i+1) + '</span><span>' + name + '</span></div><span style="color:var(--orange);font-weight:700;">Rs. ' + data.revenue.toLocaleString() + ' (' + data.qty + ' Sold)</span></div>').join('');
+
+            const statusCounts = { new:0, confirmed:0, shipped:0, delivered:0 };
+            allOrders.forEach(o => { const s = o.status || 'new'; if (statusCounts[s] !== undefined) statusCounts[s]++; });
+            const totalOrders = allOrders.length || 1;
+            const statusColors = { new:'var(--blue)', confirmed:'var(--yellow)', shipped:'var(--orange)', delivered:'var(--green)' };
+            document.getElementById('statusBreakdown').innerHTML = Object.entries(statusCounts).map(([s, count]) => {
+                const pct = Math.round(count / totalOrders * 100);
+                return '<div class="report-bar-row"><span class="report-bar-label" style="text-transform:capitalize;">' + s + '</span><div class="report-bar-track"><div class="report-bar-fill" style="width:' + pct + '%;background:' + statusColors[s] + '"></div></div><span class="report-bar-amount">' + count + ' (' + pct + '%)</span></div>';
+            }).join('');
+        }
+
+        // ==================== COUPONS ====================
+        function getCoupons() { return JSON.parse(localStorage.getItem('solar_coupons') || '[]'); }
+
+        function createCoupon() {
+            const code = document.getElementById('couponCode').value.trim().toUpperCase();
+            const type = document.getElementById('couponType').value;
+            const amount = parseInt(document.getElementById('couponAmount').value);
+            const expiry = document.getElementById('couponExpiry').value;
+
+            if (!code) { alert('Enter A Coupon Code'); return; }
+            if (!amount || amount < 1) { alert('Enter A Valid Amount'); return; }
+
+            const coupons = getCoupons();
+            if (coupons.find(c => c.code === code)) { alert('This Code Already Exists'); return; }
+
+            coupons.push({ code, type, amount, expiry: expiry || null, created: new Date().toISOString().slice(0,10) });
+            localStorage.setItem('solar_coupons', JSON.stringify(coupons));
+            document.getElementById('couponCode').value = '';
+            document.getElementById('couponAmount').value = '';
+            renderCoupons();
+        }
+
+        function deleteCoupon(code) {
+            const coupons = getCoupons().filter(c => c.code !== code);
+            localStorage.setItem('solar_coupons', JSON.stringify(coupons));
+            renderCoupons();
+        }
+
+        function renderCoupons() {
+            const coupons = getCoupons();
+            document.getElementById('couponCount').textContent = coupons.length + ' Coupons';
+            const container = document.getElementById('couponsList');
+            if (coupons.length === 0) {
+                container.innerHTML = '<div class="no-orders"><h3>No Coupons Created</h3><p>Create Your First Discount Coupon Above</p></div>';
+                return;
+            }
+            container.innerHTML = coupons.map(c => {
+                const expired = c.expiry && new Date(c.expiry) < new Date();
+                const discountText = c.type === 'percent' ? c.amount + '% Off' : 'Rs. ' + c.amount.toLocaleString() + ' Off';
+                return '<div class="coupon-admin-card' + (expired ? ' style="opacity:0.5;"' : '') + '">' +
+                    '<div><span class="coupon-admin-code">' + c.code + '</span><div class="coupon-admin-detail">' + discountText + (c.expiry ? ' | Expires: ' + c.expiry : ' | No Expiry') + (expired ? ' | EXPIRED' : '') + '</div></div>' +
+                    '<button class="acc-del-btn" onclick="deleteCoupon(\'' + c.code + '\')">Delete</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        // ==================== EXPENSE BREAKDOWN ====================
+        function renderExpenseBreakdown(entries) {
+            const expenses = entries.filter(e => e.type === 'expense');
+            const section = document.getElementById('expenseBreakdownSection');
+            if (expenses.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+
+            const cats = {};
+            const categoryNames = { order:'Order Payment', purchase:'Product Purchase', transport:'Transport / Delivery', rent:'Rent', salary:'Salary', utility:'Utility Bills', maintenance:'Maintenance', other:'Other' };
+            const catColors = ['#e87a1e','#3b82f6','#2ecc71','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899'];
+            expenses.forEach(e => {
+                const amt = parseInt(String(e.amount).replace(/,/g,'')) || 0;
+                cats[e.category] = (cats[e.category] || 0) + amt;
+            });
+
+            const totalExp = Object.values(cats).reduce((s,v) => s+v, 0) || 1;
+            const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
+
+            document.getElementById('expenseBreakdown').innerHTML = sorted.map(([cat, amt], i) => {
+                const pct = Math.round(amt / totalExp * 100);
+                return '<div class="expense-bar-row"><span class="expense-bar-cat">' + (categoryNames[cat]||cat) + '</span><div class="expense-bar-track"><div class="expense-bar-fill" style="width:' + pct + '%;background:' + catColors[i % catColors.length] + ';"></div></div><span class="expense-bar-pct">' + pct + '%</span></div>';
+            }).join('');
         }
 
         // Live listener - check for new orders every 30 seconds
