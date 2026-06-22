@@ -1,5 +1,5 @@
-const CACHE_NAME = 'solar-cart-v1';
-const urlsToCache = ['/', '/index.html', '/style.css', '/script.js', '/logo.png'];
+const CACHE_NAME = 'solar-cart-v2';
+const urlsToCache = ['/', '/index.html', '/admin.html', '/style.css', '/script.js', '/logo.png'];
 
 self.addEventListener('install', event => {
     event.waitUntil(

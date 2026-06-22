@@ -1,0 +1,22 @@
+{
+  "name": "Solar Cart - Admin Dashboard",
+  "short_name": "SC Admin",
+  "description": "Solar Cart Admin Dashboard - Orders, Inventory, Accounting",
+  "start_url": "/admin.html",
+  "display": "standalone",
+  "background_color": "#060d1a",
+  "theme_color": "#e87a1e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

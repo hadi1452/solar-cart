@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Cart - Admin Dashboard</title>
     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="manifest" href="admin-manifest.json">
+    <meta name="theme-color" content="#e87a1e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SC Admin">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --orange:#e87a1e; --navy:#0c1a32; --card:#0e1b30; --border:rgba(255,255,255,0.06); --text:#e2e8f0; --dim:#8892a4; --green:#2ecc71; --red:#ef4444; --yellow:#f59e0b; --blue:#3b82f6; }
@@ -1744,6 +1748,11 @@
             if ('Notification' in window && Notification.permission === 'default') {
                 Notification.requestPermission();
             }
+        }
+
+        // PWA - Install as App
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
         }
     </script>
 </body>
