@@ -287,7 +287,7 @@ function placeOrder(e) {
     const payment = document.querySelector('input[name="payment"]:checked').value;
     const total = getCartTotal();
 
-    const paymentNames = { jazzcash:'JazzCash', easypaisa:'EasyPaisa', bank:'Bank Transfer' };
+    const paymentNames = { bank:'Bank Transfer' };
 
     // Build WhatsApp message
     let msg = `*New Order - Solar Cart*%0A`;
