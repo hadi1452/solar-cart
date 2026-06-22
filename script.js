@@ -123,7 +123,7 @@ function toggleCart() {
 function initInventory() {
     if (!localStorage.getItem('solar_inventory')) {
         const inv = {};
-        products.forEach(p => { inv[p.id] = 20; });
+        products.forEach(p => { inv[p.id] = 50; });
         localStorage.setItem('solar_inventory', JSON.stringify(inv));
     }
 }
@@ -131,7 +131,7 @@ initInventory();
 
 function getProductStock(productId) {
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
-    return inv[productId] !== undefined ? inv[productId] : 20;
+    return inv[productId] !== undefined ? inv[productId] : 50;
 }
 
 // ==================== PRODUCT CARDS ====================
