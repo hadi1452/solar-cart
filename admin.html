@@ -132,6 +132,39 @@
         .btn-share { background:var(--navy); color:var(--dim); border:1px solid var(--border) !important; }
         .btn-share:hover { color:var(--orange); border-color:var(--orange) !important; }
 
+        /* Inventory */
+        .inv-controls { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+        .inv-controls select { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
+        .inv-threshold-box { display:flex; align-items:center; gap:8px; }
+        .inv-threshold-box label { font-size:0.8rem; color:var(--dim); white-space:nowrap; }
+        .inv-threshold-box input { width:60px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; font-family:inherit; text-align:center; }
+        .inv-threshold-box input:focus { outline:none; border-color:var(--orange); }
+        .inv-alert-banner { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:12px 18px; display:flex; align-items:center; gap:10px; }
+        .inv-alert-icon { font-size:1.2rem; }
+        .inv-alert-banner span:last-child { font-size:0.85rem; font-weight:600; color:var(--yellow); }
+        .inv-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; display:grid; grid-template-columns:55px 1fr auto; gap:14px; align-items:center; transition:border-color 0.2s; }
+        .inv-card:hover { border-color:rgba(255,255,255,0.12); }
+        .inv-card.low-stock { border-left:3px solid var(--yellow); }
+        .inv-card.out-of-stock { border-left:3px solid var(--red); opacity:0.75; }
+        .inv-card-img { width:55px; height:55px; object-fit:contain; border-radius:8px; background:var(--navy); padding:4px; }
+        .inv-card-info h4 { font-size:0.85rem; font-weight:600; margin-bottom:2px; }
+        .inv-card-meta { font-size:0.72rem; color:var(--dim); margin-bottom:4px; }
+        .inv-card-price { font-size:0.8rem; font-weight:700; color:var(--orange); }
+        .inv-stock-controls { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+        .inv-stock-row { display:flex; align-items:center; gap:6px; }
+        .inv-stock-btn { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:inherit; transition:all 0.2s; }
+        .inv-stock-btn:hover { border-color:var(--orange); color:var(--orange); }
+        .inv-stock-input { width:60px; padding:6px 8px; border-radius:8px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.9rem; font-weight:700; text-align:center; font-family:inherit; }
+        .inv-stock-input:focus { outline:none; border-color:var(--orange); }
+        .inv-stock-badge { padding:3px 10px; border-radius:50px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+        .inv-badge-instock { background:rgba(46,204,113,0.15); color:var(--green); }
+        .inv-badge-low { background:rgba(245,158,11,0.15); color:var(--yellow); }
+        .inv-badge-out { background:rgba(239,68,68,0.15); color:var(--red); }
+        .inv-stock-value { font-size:0.72rem; color:var(--dim); text-align:right; }
+        .inv-bulk-row { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+        .inv-bulk-btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--dim); font-size:0.78rem; font-weight:600; cursor:pointer; font-family:inherit; }
+        .inv-bulk-btn:hover { border-color:var(--orange); color:var(--orange); }
+
         /* Notification sound indicator */
         .notif-indicator { display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--green); }
         .notif-dot { width:8px; height:8px; background:var(--green); border-radius:50%; animation:pulse-notif 2s infinite; }
@@ -189,6 +222,22 @@
             .notif-dot { width:6px; height:6px; }
             .logout-btn { padding:5px 10px; font-size:0.7rem; }
             #lastRefresh { font-size:0.68rem; }
+            .inv-controls { flex-direction:column; gap:8px; }
+            .inv-controls select { width:100%; padding:8px 12px; font-size:0.8rem; }
+            .inv-threshold-box { width:100%; justify-content:space-between; }
+            .inv-threshold-box input { flex:1; }
+            .inv-card { grid-template-columns:45px 1fr; gap:10px; padding:12px 10px; }
+            .inv-card-img { width:45px; height:45px; }
+            .inv-card-info h4 { font-size:0.78rem; }
+            .inv-stock-controls { grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+            .inv-stock-row { width:auto; }
+            .inv-stock-btn { width:28px; height:28px; font-size:0.85rem; }
+            .inv-stock-input { width:50px; font-size:0.8rem; }
+            .inv-alert-banner { padding:10px 12px; }
+            .inv-alert-banner span:last-child { font-size:0.78rem; }
+            .inv-bulk-row { gap:4px; }
+            .inv-bulk-btn { padding:6px 10px; font-size:0.7rem; }
+            .refresh-btn { width:100%; text-align:center; }
         }
         @media(max-width:400px) {
             .dash-stats { grid-template-columns:1fr 1fr; gap:5px; }
@@ -243,6 +292,7 @@
                 <button class="dash-tab active" onclick="switchTab('dashboard', this)">Dashboard</button>
                 <button class="dash-tab" onclick="switchTab('orders', this)">Orders</button>
                 <button class="dash-tab" onclick="switchTab('products', this)">Products</button>
+                <button class="dash-tab" onclick="switchTab('inventory', this)">Inventory</button>
                 <button class="dash-tab" onclick="switchTab('social', this)">Social Media</button>
             </div>
 
@@ -341,6 +391,73 @@
                     <span style="color:var(--dim);font-size:0.85rem;" id="productCount">0 products</span>
                 </div>
                 <div id="adminProductsList" style="display:grid;grid-template-columns:1fr;gap:12px;"></div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div class="tab-content" id="tab-inventory">
+                <!-- Inventory Stats -->
+                <div class="dash-stats">
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Total Products</div>
+                        <div class="dash-stat-value orange" id="invTotal">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">In Stock</div>
+                        <div class="dash-stat-value green" id="invInStock">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Low Stock</div>
+                        <div class="dash-stat-value yellow" id="invLowStock">0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Out Of Stock</div>
+                        <div class="dash-stat-value" style="color:var(--red);" id="invOutStock">0</div>
+                    </div>
+                </div>
+                <div class="dash-stats-2">
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Total Inventory Value</div>
+                        <div class="dash-stat-value orange" id="invValue" style="font-size:1.3rem;">Rs. 0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Total Units</div>
+                        <div class="dash-stat-value blue" id="invUnits" style="font-size:1.3rem;">0</div>
+                    </div>
+                </div>
+
+                <!-- Inventory Controls -->
+                <div class="inv-controls">
+                    <select id="invCategoryFilter" onchange="renderInventory()">
+                        <option value="all">All Categories</option>
+                        <option value="longi">Longi Panels</option>
+                        <option value="jinko">Jinko Panels</option>
+                        <option value="inverter">Inverters</option>
+                        <option value="battery">Batteries</option>
+                        <option value="ess">ESS Solution</option>
+                    </select>
+                    <select id="invStockFilter" onchange="renderInventory()">
+                        <option value="all">All Stock Status</option>
+                        <option value="instock">In Stock</option>
+                        <option value="low">Low Stock</option>
+                        <option value="out">Out Of Stock</option>
+                    </select>
+                    <div class="inv-threshold-box">
+                        <label>Low Stock Alert:</label>
+                        <input type="number" id="invThreshold" value="5" min="1" max="50" onchange="saveThreshold(); renderInventory();">
+                    </div>
+                    <button class="refresh-btn" onclick="exportInventory()">Export CSV</button>
+                </div>
+
+                <!-- Low Stock Alerts -->
+                <div id="invAlerts" style="display:none;margin-bottom:20px;">
+                    <div class="inv-alert-banner">
+                        <span class="inv-alert-icon">&#9888;</span>
+                        <span id="invAlertText">0 Products Need Restocking</span>
+                    </div>
+                </div>
+
+                <!-- Inventory List -->
+                <div id="inventoryList" style="display:grid;grid-template-columns:1fr;gap:10px;"></div>
             </div>
 
             <!-- Social Media Tab -->
@@ -630,6 +747,169 @@
             if (tab === 'social') generateSocialPosts();
             if (tab === 'orders') loadOrders();
             if (tab === 'products') renderAdminProducts();
+            if (tab === 'inventory') renderInventory();
+        }
+
+        // ==================== INVENTORY MANAGEMENT ====================
+        function getInventory() {
+            return JSON.parse(localStorage.getItem('solar_inventory') || '{}');
+        }
+
+        function saveInventory(inv) {
+            localStorage.setItem('solar_inventory', JSON.stringify(inv));
+        }
+
+        function getStock(productId) {
+            const inv = getInventory();
+            return inv[productId] !== undefined ? inv[productId] : 0;
+        }
+
+        function setStock(productId, qty) {
+            const inv = getInventory();
+            inv[productId] = Math.max(0, parseInt(qty) || 0);
+            saveInventory(inv);
+            renderInventory();
+        }
+
+        function adjustStock(productId, change) {
+            const current = getStock(productId);
+            setStock(productId, current + change);
+        }
+
+        function onStockInput(productId, inputEl) {
+            const val = parseInt(inputEl.value) || 0;
+            setStock(productId, val);
+        }
+
+        function getThreshold() {
+            return parseInt(localStorage.getItem('inv_threshold') || '5');
+        }
+
+        function saveThreshold() {
+            const val = parseInt(document.getElementById('invThreshold').value) || 5;
+            localStorage.setItem('inv_threshold', val);
+        }
+
+        function getStockStatus(qty, threshold) {
+            if (qty <= 0) return 'out';
+            if (qty <= threshold) return 'low';
+            return 'instock';
+        }
+
+        function renderInventory() {
+            const inv = getInventory();
+            const threshold = getThreshold();
+            const catFilter = document.getElementById('invCategoryFilter').value;
+            const stockFilter = document.getElementById('invStockFilter').value;
+            document.getElementById('invThreshold').value = threshold;
+
+            let filtered = products;
+            if (catFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === catFilter);
+            }
+
+            if (stockFilter !== 'all') {
+                filtered = filtered.filter(p => {
+                    const qty = inv[p.id] !== undefined ? inv[p.id] : 0;
+                    const status = getStockStatus(qty, threshold);
+                    return status === stockFilter;
+                });
+            }
+
+            let totalProducts = products.length;
+            let inStock = 0, lowStock = 0, outStock = 0, totalValue = 0, totalUnits = 0;
+            products.forEach(p => {
+                const qty = inv[p.id] !== undefined ? inv[p.id] : 0;
+                const status = getStockStatus(qty, threshold);
+                if (status === 'instock') inStock++;
+                else if (status === 'low') lowStock++;
+                else outStock++;
+                totalValue += p.price * qty;
+                totalUnits += qty;
+            });
+
+            document.getElementById('invTotal').textContent = totalProducts;
+            document.getElementById('invInStock').textContent = inStock;
+            document.getElementById('invLowStock').textContent = lowStock;
+            document.getElementById('invOutStock').textContent = outStock;
+            document.getElementById('invValue').textContent = 'Rs. ' + totalValue.toLocaleString();
+            document.getElementById('invUnits').textContent = totalUnits;
+
+            const alertCount = lowStock + outStock;
+            const alertEl = document.getElementById('invAlerts');
+            if (alertCount > 0) {
+                alertEl.style.display = 'block';
+                document.getElementById('invAlertText').textContent = alertCount + ' Product' + (alertCount > 1 ? 's' : '') + ' Need Restocking';
+            } else {
+                alertEl.style.display = 'none';
+            }
+
+            const container = document.getElementById('inventoryList');
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-orders"><h3>No Products Found</h3><p>Try a different filter</p></div>';
+                return;
+            }
+
+            const categoryNames = { longi:'Longi Panel', jinko:'Jinko Panel', inverter:'Inverter', battery:'Battery', ess:'ESS Solution' };
+
+            container.innerHTML = filtered.map(p => {
+                const qty = inv[p.id] !== undefined ? inv[p.id] : 0;
+                const status = getStockStatus(qty, threshold);
+                const statusClass = status === 'instock' ? '' : status === 'low' ? ' low-stock' : ' out-of-stock';
+                const badgeClass = status === 'instock' ? 'inv-badge-instock' : status === 'low' ? 'inv-badge-low' : 'inv-badge-out';
+                const badgeText = status === 'instock' ? 'In Stock' : status === 'low' ? 'Low Stock' : 'Out Of Stock';
+                const stockValue = 'Value: Rs. ' + (p.price * qty).toLocaleString();
+
+                return '<div class="inv-card' + statusClass + '">' +
+                    '<img src="' + p.image + '" class="inv-card-img" loading="lazy">' +
+                    '<div class="inv-card-info">' +
+                        '<h4>' + p.name + '</h4>' +
+                        '<div class="inv-card-meta">' + p.model + ' | ' + (categoryNames[p.category] || p.category) + '</div>' +
+                        '<div class="inv-card-price">Rs. ' + p.price.toLocaleString() + ' / unit</div>' +
+                    '</div>' +
+                    '<div class="inv-stock-controls">' +
+                        '<span class="inv-stock-badge ' + badgeClass + '">' + badgeText + '</span>' +
+                        '<div class="inv-stock-row">' +
+                            '<button class="inv-stock-btn" onclick="adjustStock(' + p.id + ', -1)">−</button>' +
+                            '<input type="number" class="inv-stock-input" value="' + qty + '" min="0" onchange="onStockInput(' + p.id + ', this)" onkeydown="if(event.key===\'Enter\')onStockInput(' + p.id + ', this)">' +
+                            '<button class="inv-stock-btn" onclick="adjustStock(' + p.id + ', 1)">+</button>' +
+                        '</div>' +
+                        '<div class="inv-stock-value">' + stockValue + '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function setAllStock(qty) {
+            const inv = getInventory();
+            products.forEach(p => { inv[p.id] = qty; });
+            saveInventory(inv);
+            renderInventory();
+        }
+
+        function exportInventory() {
+            const inv = getInventory();
+            const threshold = getThreshold();
+            const categoryNames = { longi:'Longi Panel', jinko:'Jinko Panel', inverter:'Inverter', battery:'Battery', ess:'ESS Solution' };
+
+            let csv = 'Product Name,Model,Category,Price,Stock Qty,Stock Status,Stock Value\n';
+            products.forEach(p => {
+                const qty = inv[p.id] !== undefined ? inv[p.id] : 0;
+                const status = getStockStatus(qty, threshold);
+                const statusText = status === 'instock' ? 'In Stock' : status === 'low' ? 'Low Stock' : 'Out Of Stock';
+                const value = p.price * qty;
+                csv += '"' + p.name + '","' + p.model + '","' + (categoryNames[p.category] || p.category) + '",' + p.price + ',' + qty + ',"' + statusText + '",' + value + '\n';
+            });
+
+            const blob = new Blob([csv], { type:'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'solar-cart-inventory-' + new Date().toISOString().slice(0,10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Live listener - check for new orders every 30 seconds

@@ -155,6 +155,11 @@ a { text-decoration:none; color:inherit; }
 .product-badge { position:absolute; top:14px; left:14px; background:var(--orange); color:#fff; padding:4px 12px; border-radius:6px; font-size:0.7rem; font-weight:700; z-index:5; text-transform:uppercase; letter-spacing:0.5px; }
 .product-badge.best { background:var(--green); }
 .product-badge.premium { background:#4d3f2d; color:#fff; border:1px solid var(--card-border); }
+.product-badge.out-of-stock-badge { background:var(--danger); }
+.out-of-stock-card { opacity:0.65; }
+.out-of-stock-card .product-img { filter:grayscale(40%); }
+.btn-out-of-stock { background:#999 !important; cursor:not-allowed !important; box-shadow:none !important; }
+.btn-out-of-stock:hover { background:#999 !important; box-shadow:none !important; }
 .product-img { height:200px; background:#F7EFE2; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer; position:relative; }
 .product-img.has-bg { }
 .product-img img { width:100%; height:100%; object-fit:contain; padding:20px; transition:transform 0.4s ease; }

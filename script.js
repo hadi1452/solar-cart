@@ -120,19 +120,32 @@ function toggleCart() {
 }
 
 // ==================== PRODUCT CARDS ====================
+function getProductStock(productId) {
+    const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
+    return inv[productId] !== undefined ? inv[productId] : -1;
+}
+
 function createProductCard(product) {
-    const badgeHTML = product.badge ? `<div class="product-badge ${product.badgeClass || ''}">${product.badge}</div>` : '';
+    const stock = getProductStock(product.id);
+    const isOutOfStock = stock === 0;
+    const badgeHTML = isOutOfStock
+        ? '<div class="product-badge out-of-stock-badge">Out Of Stock</div>'
+        : (product.badge ? `<div class="product-badge ${product.badgeClass || ''}">${product.badge}</div>` : '');
     const topSpecs = product.specs.slice(0, 3);
     const specsHTML = topSpecs.map(s => `<li><strong>${s.split(':')[0]}:</strong>${s.split(':')[1]}</li>`).join('');
     const perWattHTML = product.perWatt ? `<span class="price-per-watt">${product.perWatt}</span>` : '';
     const warrantyHTML = product.warranty ? `<div class="warranty-badge">&#128737; ${product.warranty} Official Warranty</div>` : '';
+    const disabledClass = isOutOfStock ? ' out-of-stock-card' : '';
+    const cartBtnHTML = isOutOfStock
+        ? '<button class="btn-add-cart btn-out-of-stock" disabled>Out Of Stock</button>'
+        : `<button class="btn-add-cart" onclick="addToCartBtn(this, ${product.id})">Add To Cart &#128722;</button>`;
 
     return `
-        <div class="product-card" data-name="${product.name.toLowerCase()}" data-category="${product.category}">
+        <div class="product-card${disabledClass}" data-name="${product.name.toLowerCase()}" data-category="${product.category}">
             ${badgeHTML}
             <div class="product-img ${product.bgColor ? 'has-bg' : ''}" style="${product.bgColor ? 'background:' + product.bgColor : ''}" onclick="openZoom('${product.image}', '${product.name.replace(/'/g, "\\'")}')">
                 <img src="${product.image}" alt="${product.name}" loading="lazy" style="${product.bgColor ? 'object-fit:contain;padding:15px;' : ''}">
-                <div class="img-zoom-hint">Click to zoom</div>
+                <div class="img-zoom-hint">Click To Zoom</div>
             </div>
             <div class="product-info">
                 <h3>${product.name}</h3>
@@ -145,12 +158,12 @@ function createProductCard(product) {
                     ${product.category === 'panel' ? '<span class="price-unit"> / panel</span>' : ''}
                 </div>
                 ${perWattHTML}
-                <div class="qty-row">
+                ${isOutOfStock ? '' : `<div class="qty-row">
                     <button class="qty-btn" onclick="changeQtyBtn(this, -1)">-</button>
                     <input type="number" class="qty-input" data-pid="${product.id}" value="1" min="1" max="99">
                     <button class="qty-btn" onclick="changeQtyBtn(this, 1)">+</button>
-                </div>
-                <button class="btn-add-cart" onclick="addToCartBtn(this, ${product.id})">Add to Cart &#128722;</button>
+                </div>`}
+                ${cartBtnHTML}
             </div>
         </div>
     `;
