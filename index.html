@@ -65,6 +65,8 @@
                         <li><a href="#" data-page="tracking" onclick="showPage('tracking')">Track Order</a></li>
                         <li><a href="#" data-page="blog" onclick="showPage('blog')">Blog</a></li>
                         <li><a href="#" data-page="wishlist" onclick="showPage('wishlist')">Wishlist</a></li>
+                        <li><a href="#" data-page="quiz" onclick="showPage('quiz')">Solar Quiz</a></li>
+                        <li><a href="#" data-page="about" onclick="showPage('about')">About Us</a></li>
                         <li><a href="#" data-page="contact" onclick="showPage('contact')">Contact</a></li>
                     </ul>
                 </li>
@@ -114,6 +116,14 @@
         <!-- Hero - Cinematic Centered -->
         <section class="hero">
             <div class="container">
+                <!-- Solar Widget -->
+                <div class="solar-widget" id="solarWidget">
+                    <div class="solar-widget-icon" id="weatherIcon">&#9728;</div>
+                    <div class="solar-widget-data"><h4>Karachi Solar Potential Today</h4><p id="weatherText">Excellent solar generation expected</p></div>
+                    <div class="solar-widget-gen"><div class="gen-num" id="weatherGen">5.2</div><div class="gen-label">kWh/kW Today</div></div>
+                </div>
+                <!-- Tip of the Day -->
+                <div class="tip-banner"><span class="tip-icon">&#128161;</span><span class="tip-text" id="tipText"><strong>Solar Tip:</strong> Loading...</span></div>
                 <div class="hero-center">
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span> iTel Solar Products In Pakistan
@@ -933,6 +943,297 @@
         </section>
     </div>
 
+    <!-- ============ ABOUT US PAGE ============ -->
+    <div id="page-about" class="page">
+        <section class="page-header"><div class="container"><h1>About Solar Cart</h1><p>Your Trusted Solar Energy Partner In Karachi</p></div></section>
+        <section class="about-section">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h2>Powering Karachi With <span class="highlight">Clean Energy</span></h2>
+                        <p>Solar Cart was founded with a simple mission — make solar energy accessible and affordable for every home and business in Karachi. We are authorized dealers of iTel Solar products, Longi and Jinko solar panels.</p>
+                        <p>Our team of solar experts helps you choose the right system, handles delivery, and connects you with trusted installers. From a single panel to a complete 10kW system, we have got you covered.</p>
+                        <p><strong>Location:</strong> Plot No 9c Ayubi Commercial, Street 3, Phase 7 Ext DHA, Karachi</p>
+                        <p><strong>Phone:</strong> +92 323 7927923</p>
+                    </div>
+                    <div><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3620.8!2d67.06!3d24.82!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sDHA+Phase+7+Karachi!5e0!3m2!1sen!2spk!4v1" width="100%" height="350" style="border:0;border-radius:var(--radius);" allowfullscreen loading="lazy"></iframe></div>
+                </div>
+                <div class="about-values">
+                    <div class="about-value-card"><div class="av-icon">&#9889;</div><h4>100% Genuine</h4><p>Only Tier-1 Certified Products</p></div>
+                    <div class="about-value-card"><div class="av-icon">&#128722;</div><h4>Easy Shopping</h4><p>Order Online, Pay Via Bank</p></div>
+                    <div class="about-value-card"><div class="av-icon">&#128666;</div><h4>Fast Delivery</h4><p>2-5 Days Across Karachi</p></div>
+                    <div class="about-value-card"><div class="av-icon">&#128737;</div><h4>Official Warranty</h4><p>Up To 30 Years Coverage</p></div>
+                    <div class="about-value-card"><div class="av-icon">&#128222;</div><h4>Expert Support</h4><p>WhatsApp Support Available</p></div>
+                    <div class="about-value-card"><div class="av-icon">&#127793;</div><h4>Go Green</h4><p>Reduce Carbon Footprint</p></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ INSTALLATION BOOKING PAGE ============ -->
+    <div id="page-installation" class="page">
+        <section class="page-header"><div class="container"><h1>Book Installation</h1><p>Schedule Your Solar System Installation</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="service-grid">
+                    <div class="service-info">
+                        <h3>Professional Installation Service</h3>
+                        <p>Our certified installation partners ensure your solar system is set up correctly for maximum performance.</p>
+                        <ul><li>Site Assessment & Planning</li><li>Panel Mounting & Wiring</li><li>Inverter & Battery Setup</li><li>System Testing & Commissioning</li><li>Post-Installation Support</li></ul>
+                    </div>
+                    <div class="service-form">
+                        <h3>Book Your Installation</h3>
+                        <form onsubmit="submitBooking(event)">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="bookName" required placeholder="Your Name"></div>
+                            <div class="form-group"><label>Phone *</label><input type="tel" id="bookPhone" required placeholder="0321-1234567"></div>
+                            <div class="form-group"><label>Address *</label><textarea id="bookAddress" required placeholder="Installation Address" rows="2"></textarea></div>
+                            <div class="form-group"><label>System Size</label><select id="bookSize"><option>3kW</option><option>5kW</option><option selected>8kW</option><option>10kW</option><option>Other</option></select></div>
+                            <div class="form-group"><label>Preferred Date *</label><input type="date" id="bookDate" required></div>
+                            <div class="form-group"><label>Notes</label><textarea id="bookNotes" placeholder="Any special requirements" rows="2"></textarea></div>
+                            <button type="submit" class="btn btn-primary btn-full">Submit Booking</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ MAINTENANCE PAGE ============ -->
+    <div id="page-maintenance" class="page">
+        <section class="page-header"><div class="container"><h1>Maintenance Packages</h1><p>Keep Your Solar System Running At Peak Performance</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="maint-grid">
+                    <div class="maint-card">
+                        <h3>Basic</h3><p style="color:var(--text-dim);font-size:0.82rem;">For Small Systems</p>
+                        <div class="maint-price">Rs. 3,000<span>/visit</span></div>
+                        <ul class="maint-features"><li>Panel Cleaning</li><li>Visual Inspection</li><li>Performance Check</li><li>Basic Report</li></ul>
+                        <a href="https://wa.me/923237927923?text=I want to book Basic Maintenance Package" target="_blank" class="btn btn-outline btn-full">Book Now</a>
+                    </div>
+                    <div class="maint-card featured">
+                        <div class="package-badge">Popular</div>
+                        <h3>Standard</h3><p style="color:var(--text-dim);font-size:0.82rem;">For Home Systems</p>
+                        <div class="maint-price">Rs. 5,000<span>/visit</span></div>
+                        <ul class="maint-features"><li>Panel Deep Cleaning</li><li>Wiring Inspection</li><li>Inverter Health Check</li><li>Battery Test</li><li>Detailed Report</li></ul>
+                        <a href="https://wa.me/923237927923?text=I want to book Standard Maintenance Package" target="_blank" class="btn btn-primary btn-full">Book Now</a>
+                    </div>
+                    <div class="maint-card">
+                        <h3>Premium</h3><p style="color:var(--text-dim);font-size:0.82rem;">Annual Contract</p>
+                        <div class="maint-price">Rs. 15,000<span>/year</span></div>
+                        <ul class="maint-features"><li>4 Visits Per Year</li><li>Everything In Standard</li><li>Thermal Imaging Scan</li><li>Priority Support</li><li>10% Off Repairs</li></ul>
+                        <a href="https://wa.me/923237927923?text=I want to book Premium Maintenance Package" target="_blank" class="btn btn-outline btn-full">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ SITE SURVEY PAGE ============ -->
+    <div id="page-survey" class="page">
+        <section class="page-header"><div class="container"><h1>Request Site Survey</h1><p>We Visit Your Location To Design The Perfect Solar System</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="service-grid">
+                    <div class="service-info">
+                        <h3>Free Site Survey</h3>
+                        <p>Our expert team visits your home or business to assess your roof, electricity usage, and recommend the ideal solar system.</p>
+                        <ul><li>Roof Area Measurement</li><li>Shading Analysis</li><li>Electricity Usage Review</li><li>System Design & Quote</li><li>Net Metering Feasibility</li></ul>
+                    </div>
+                    <div class="service-form">
+                        <h3>Request A Survey</h3>
+                        <form onsubmit="submitSurvey(event)">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="surveyName" required placeholder="Your Name"></div>
+                            <div class="form-group"><label>Phone *</label><input type="tel" id="surveyPhone" required placeholder="0321-1234567"></div>
+                            <div class="form-group"><label>Address *</label><textarea id="surveyAddress" required placeholder="Complete Address" rows="2"></textarea></div>
+                            <div class="form-group"><label>Property Type</label><select id="surveyProperty"><option>House</option><option>Apartment</option><option>Shop</option><option>Office</option><option>Factory</option></select></div>
+                            <div class="form-group"><label>Roof Type</label><select id="surveyRoof"><option>Flat / Concrete</option><option>Sloped / Tin</option><option>Mixed</option><option>Not Sure</option></select></div>
+                            <div class="form-group"><label>Monthly Bill (Rs.)</label><input type="number" id="surveyBill" placeholder="e.g. 15000"></div>
+                            <button type="submit" class="btn btn-primary btn-full">Submit Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ NET METERING SERVICE PAGE ============ -->
+    <div id="page-netmetering" class="page">
+        <section class="page-header"><div class="container"><h1>Net Metering Service</h1><p>We Handle Your WAPDA Net Metering Application</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="service-grid">
+                    <div class="service-info">
+                        <h3>Complete Net Metering Assistance</h3>
+                        <p>Sell excess solar electricity back to WAPDA and earn credits. We handle the entire application process for you.</p>
+                        <ul><li>Application Filing With DISCO</li><li>Document Preparation</li><li>Bidirectional Meter Installation</li><li>NEPRA Approval Follow-up</li><li>Post-Connection Support</li></ul>
+                        <p style="margin-top:16px;"><strong>Service Fee:</strong> Contact for quote</p>
+                    </div>
+                    <div class="service-form">
+                        <h3>Apply For Net Metering</h3>
+                        <form onsubmit="submitNetMetering(event)">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="nmName" required placeholder="Your Name"></div>
+                            <div class="form-group"><label>Phone *</label><input type="tel" id="nmPhone" required placeholder="0321-1234567"></div>
+                            <div class="form-group"><label>System Size (kW) *</label><input type="number" id="nmSize" required placeholder="e.g. 5" min="1"></div>
+                            <div class="form-group"><label>DISCO *</label><select id="nmDisco"><option>KESC / KE</option><option>HESCO</option><option>Other</option></select></div>
+                            <div class="form-group"><label>Address *</label><textarea id="nmAddr" required placeholder="Installation Address" rows="2"></textarea></div>
+                            <button type="submit" class="btn btn-primary btn-full">Submit Application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ WARRANTY REGISTRATION PAGE ============ -->
+    <div id="page-warranty" class="page">
+        <section class="page-header"><div class="container"><h1>Warranty Registration</h1><p>Register Your Product For Official Warranty Coverage</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="service-grid">
+                    <div class="service-info">
+                        <h3>Why Register?</h3>
+                        <p>Registering your product ensures you receive full warranty coverage and faster support when needed.</p>
+                        <ul><li>Official Warranty Activation</li><li>Priority Customer Support</li><li>Easy Warranty Claims</li><li>Product Updates & Safety Notices</li></ul>
+                    </div>
+                    <div class="service-form">
+                        <h3>Register Your Product</h3>
+                        <form onsubmit="submitWarranty(event)">
+                            <div class="form-group"><label>Full Name *</label><input type="text" id="warName" required placeholder="Your Name"></div>
+                            <div class="form-group"><label>Phone *</label><input type="tel" id="warPhone" required placeholder="0321-1234567"></div>
+                            <div class="form-group"><label>Order ID *</label><input type="text" id="warOrderId" required placeholder="e.g. SC-20260601"></div>
+                            <div class="form-group"><label>Product *</label><select id="warProduct"></select></div>
+                            <div class="form-group"><label>Serial Number</label><input type="text" id="warSerial" placeholder="Found on product label"></div>
+                            <div class="form-group"><label>Purchase Date *</label><input type="date" id="warDate" required></div>
+                            <button type="submit" class="btn btn-primary btn-full">Register Warranty</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ CAREERS PAGE ============ -->
+    <div id="page-careers" class="page">
+        <section class="page-header"><div class="container"><h1>Careers</h1><p>Join The Solar Cart Team</p></div></section>
+        <section class="service-section">
+            <div class="container" style="max-width:800px;">
+                <div class="job-card"><div class="job-type">Full Time</div><h3>Solar System Installer</h3><p>Install solar panels, inverters, and batteries at customer locations. Experience with electrical wiring required.</p><div class="job-tags"><span class="job-tag">Karachi</span><span class="job-tag">Experience Required</span><span class="job-tag">Rs. 40-60K</span></div><a href="https://wa.me/923237927923?text=I want to apply for Solar Installer position" target="_blank" class="btn btn-primary btn-sm">Apply On WhatsApp</a></div>
+                <div class="job-card"><div class="job-type">Full Time</div><h3>Delivery Driver</h3><p>Deliver solar products across Karachi. Must have valid driving license and own vehicle (bike/pickup).</p><div class="job-tags"><span class="job-tag">Karachi</span><span class="job-tag">Own Vehicle</span><span class="job-tag">Rs. 30-40K</span></div><a href="https://wa.me/923237927923?text=I want to apply for Delivery Driver position" target="_blank" class="btn btn-primary btn-sm">Apply On WhatsApp</a></div>
+                <div class="job-card"><div class="job-type">Full Time</div><h3>Sales Executive</h3><p>Handle customer inquiries, process orders, and manage WhatsApp communication. Solar knowledge preferred.</p><div class="job-tags"><span class="job-tag">Karachi</span><span class="job-tag">Sales Experience</span><span class="job-tag">Rs. 35-50K</span></div><a href="https://wa.me/923237927923?text=I want to apply for Sales Executive position" target="_blank" class="btn btn-primary btn-sm">Apply On WhatsApp</a></div>
+                <div class="job-card"><div class="job-type">Part Time</div><h3>Customer Support</h3><p>Respond to customer queries on WhatsApp and phone. Good communication skills required.</p><div class="job-tags"><span class="job-tag">Remote / Karachi</span><span class="job-tag">Flexible Hours</span><span class="job-tag">Rs. 20-30K</span></div><a href="https://wa.me/923237927923?text=I want to apply for Customer Support position" target="_blank" class="btn btn-primary btn-sm">Apply On WhatsApp</a></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ DEALER PORTAL PAGE ============ -->
+    <div id="page-dealer" class="page">
+        <section class="page-header"><div class="container"><h1>Dealer / Reseller Portal</h1><p>Partner With Us For Wholesale Pricing</p></div></section>
+        <section class="service-section">
+            <div class="container">
+                <div class="service-grid">
+                    <div class="service-info">
+                        <h3>Become A Solar Cart Dealer</h3>
+                        <p>Get wholesale pricing on iTel, Longi, and Jinko products. Perfect for electricians, contractors, and solar businesses.</p>
+                        <ul><li>Wholesale Pricing (Up To 20% Off)</li><li>Priority Stock Access</li><li>Marketing Materials</li><li>Dedicated Account Manager</li><li>Bulk Delivery Across Pakistan</li></ul>
+                    </div>
+                    <div class="service-form">
+                        <h3>Register As Dealer</h3>
+                        <form onsubmit="submitDealer(event)">
+                            <div class="form-group"><label>Business Name *</label><input type="text" id="dealerBiz" required placeholder="Your Business Name"></div>
+                            <div class="form-group"><label>Contact Person *</label><input type="text" id="dealerName" required placeholder="Your Name"></div>
+                            <div class="form-group"><label>Phone *</label><input type="tel" id="dealerPhone" required placeholder="0321-1234567"></div>
+                            <div class="form-group"><label>City *</label><input type="text" id="dealerCity" required placeholder="Your City"></div>
+                            <div class="form-group"><label>NTN Number</label><input type="text" id="dealerNTN" placeholder="Optional"></div>
+                            <div class="form-group"><label>Monthly Volume</label><select id="dealerVolume"><option>5-20 Units</option><option>20-50 Units</option><option>50-100 Units</option><option>100+ Units</option></select></div>
+                            <button type="submit" class="btn btn-primary btn-full">Submit Application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ AFFILIATE PAGE ============ -->
+    <div id="page-affiliate" class="page">
+        <section class="page-header"><div class="container"><h1>Affiliate Program</h1><p>Earn Commission By Referring Customers</p></div></section>
+        <section class="service-section">
+            <div class="container" style="max-width:800px;">
+                <div class="about-grid" style="grid-template-columns:1fr;">
+                    <div class="about-text" style="text-align:center;">
+                        <h2>Earn <span class="highlight">5% Commission</span> On Every Sale</h2>
+                        <p>Refer customers to Solar Cart and earn 5% commission on every successful order. No investment needed — just share your referral link!</p>
+                        <div class="about-values" style="margin-top:30px;">
+                            <div class="about-value-card"><div class="av-icon">1</div><h4>Register</h4><p>WhatsApp us to join</p></div>
+                            <div class="about-value-card"><div class="av-icon">2</div><h4>Share</h4><p>Share your referral code</p></div>
+                            <div class="about-value-card"><div class="av-icon">3</div><h4>Earn</h4><p>Get 5% on every sale</p></div>
+                        </div>
+                        <a href="https://wa.me/923237927923?text=I want to join the Affiliate Program" target="_blank" class="btn btn-primary btn-lg" style="margin-top:30px;">Join Affiliate Program</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ QUIZ PAGE ============ -->
+    <div id="page-quiz" class="page">
+        <section class="page-header"><div class="container"><h1>Find Your Perfect Solar System</h1><p>Answer 5 Quick Questions To Get A Recommendation</p></div></section>
+        <section class="quiz-section">
+            <div class="container">
+                <div class="quiz-card" id="quizCard"></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ RATE CALCULATOR PAGE ============ -->
+    <div id="page-rates" class="page">
+        <section class="page-header"><div class="container"><h1>Electricity Rate Calculator</h1><p>Calculate Your Electricity Bill Based On Units Consumed</p></div></section>
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-grid">
+                    <div class="calc-form">
+                        <h3>Enter Details</h3>
+                        <div class="form-group"><label>Units Consumed</label><input type="number" id="rateUnits" placeholder="e.g. 300" min="1"></div>
+                        <div class="form-group"><label>Distribution Company</label><select id="rateDisco"><option value="ke">K-Electric (Karachi)</option><option value="hesco">HESCO</option></select></div>
+                        <button class="btn btn-primary btn-full" onclick="calculateRate()">Calculate Bill</button>
+                    </div>
+                    <div class="calc-result" id="rateResult" style="display:none;">
+                        <h3>Estimated Bill</h3>
+                        <div class="calc-result-items">
+                            <div class="calc-result-item"><span class="calc-label">Units Consumed</span><span class="calc-value" id="rateUnitsDisplay">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Per Unit Rate</span><span class="calc-value" id="ratePerUnit">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Energy Charges</span><span class="calc-value" id="rateEnergy">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Fuel Adjustment</span><span class="calc-value" id="rateFuel">-</span></div>
+                            <div class="calc-result-item"><span class="calc-label">Taxes & Surcharges</span><span class="calc-value" id="rateTax">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">Estimated Total Bill</span><span class="calc-value orange" id="rateTotalBill">-</span></div>
+                            <div class="calc-result-item highlight"><span class="calc-label">With Solar You Save</span><span class="calc-value green" id="rateSavings">-</span></div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-full" onclick="showPage('calculator')" style="margin-top:16px;">Try Solar Calculator</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ============ SAVINGS TRACKER PAGE ============ -->
+    <div id="page-tracker" class="page">
+        <section class="page-header"><div class="container"><h1>Savings Tracker</h1><p>Track Your Monthly Electricity Bill Savings With Solar</p></div></section>
+        <section class="calculator-section">
+            <div class="container" style="max-width:700px;">
+                <div class="calc-form" style="margin-bottom:30px;">
+                    <h3>Add Monthly Record</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;">
+                        <div class="form-group"><label>Month</label><input type="month" id="trackerMonth"></div>
+                        <div class="form-group"><label>Bill Before Solar (Rs.)</label><input type="number" id="trackerBefore" placeholder="e.g. 15000"></div>
+                        <div class="form-group"><label>Bill After Solar (Rs.)</label><input type="number" id="trackerAfter" placeholder="e.g. 3000"></div>
+                        <button class="btn btn-primary" onclick="addTrackerEntry()" style="height:42px;">Add</button>
+                    </div>
+                </div>
+                <div id="trackerChart"></div>
+                <div id="trackerSummary"></div>
+            </div>
+        </section>
+    </div>
+
     <!-- ============ PRIVACY POLICY PAGE ============ -->
     <div id="page-privacy" class="page">
         <section class="page-header">
@@ -1132,6 +1433,12 @@
                         <li><a href="#" onclick="showPage('packages')">System Packages</a></li>
                         <li><a href="#" onclick="showPage('blog')">Blog</a></li>
                         <li><a href="#" onclick="showPage('wishlist')">Wishlist</a></li>
+                        <li><a href="#" onclick="showPage('about')">About Us</a></li>
+                        <li><a href="#" onclick="showPage('installation')">Installation</a></li>
+                        <li><a href="#" onclick="showPage('maintenance')">Maintenance</a></li>
+                        <li><a href="#" onclick="showPage('warranty')">Warranty Registration</a></li>
+                        <li><a href="#" onclick="showPage('careers')">Careers</a></li>
+                        <li><a href="#" onclick="showPage('dealer')">Dealer Portal</a></li>
                         <li><a href="#" onclick="showPage('privacy')">Privacy Policy</a></li>
                         <li><a href="#">Delivery: Karachi Only</a></li>
                         <li><a href="#">Delivery Charges: Depending On Location</a></li>

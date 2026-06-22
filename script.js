@@ -245,6 +245,8 @@ function showPage(page) {
     if (page === 'checkout') renderCheckout();
     if (page === 'wishlist') renderWishlist();
     if (page === 'blog') { document.getElementById('blogContent').innerHTML = '<div class="blog-grid" id="blogGrid"></div>'; renderBlog(); }
+    if (page === 'quiz') { quizStep = 0; quizAnswers = []; renderQuiz(); }
+    if (page === 'tracker') renderTracker();
 }
 
 // ==================== CHECKOUT ====================
@@ -1671,7 +1673,19 @@ const pageTitles = {
     wishlist: 'My Wishlist | Solar Cart',
     compare: 'Compare Products | Solar Cart',
     checkout: 'Checkout | Solar Cart',
-    privacy: 'Privacy Policy | Solar Cart'
+    privacy: 'Privacy Policy | Solar Cart',
+    about: 'About Us | Solar Cart',
+    installation: 'Book Installation | Solar Cart',
+    maintenance: 'Maintenance Packages | Solar Cart',
+    survey: 'Site Survey Request | Solar Cart',
+    netmetering: 'Net Metering Service | Solar Cart',
+    warranty: 'Warranty Registration | Solar Cart',
+    careers: 'Careers | Solar Cart',
+    dealer: 'Dealer Portal | Solar Cart',
+    affiliate: 'Affiliate Program | Solar Cart',
+    quiz: 'Solar System Quiz | Solar Cart',
+    rates: 'Electricity Rate Calculator | Solar Cart',
+    tracker: 'Savings Tracker | Solar Cart'
 };
 
 const _origShowPage = showPage;
@@ -1679,6 +1693,213 @@ showPage = function(page) {
     _origShowPage(page);
     if (pageTitles[page]) document.title = pageTitles[page];
 };
+
+// ==================== SERVICE FORMS ====================
+function submitBooking(e) {
+    e.preventDefault();
+    const booking = { name:document.getElementById('bookName').value, phone:document.getElementById('bookPhone').value, address:document.getElementById('bookAddress').value, size:document.getElementById('bookSize').value, date:document.getElementById('bookDate').value, notes:document.getElementById('bookNotes').value, timestamp:Date.now() };
+    const bookings = JSON.parse(localStorage.getItem('solar_bookings') || '[]');
+    bookings.unshift(booking); localStorage.setItem('solar_bookings', JSON.stringify(bookings));
+    showToast('Installation Booking Submitted!');
+    e.target.reset();
+    window.open('https://wa.me/923237927923?text=New Installation Booking:%0AName: ' + booking.name + '%0APhone: ' + booking.phone + '%0ASize: ' + booking.size + '%0ADate: ' + booking.date, '_blank');
+}
+
+function submitSurvey(e) {
+    e.preventDefault();
+    const survey = { name:document.getElementById('surveyName').value, phone:document.getElementById('surveyPhone').value, address:document.getElementById('surveyAddress').value, property:document.getElementById('surveyProperty').value, roof:document.getElementById('surveyRoof').value, bill:document.getElementById('surveyBill').value, timestamp:Date.now() };
+    const surveys = JSON.parse(localStorage.getItem('survey_requests') || '[]');
+    surveys.unshift(survey); localStorage.setItem('survey_requests', JSON.stringify(surveys));
+    showToast('Site Survey Request Submitted!'); e.target.reset();
+}
+
+function submitNetMetering(e) {
+    e.preventDefault();
+    const nm = { name:document.getElementById('nmName').value, phone:document.getElementById('nmPhone').value, size:document.getElementById('nmSize').value, disco:document.getElementById('nmDisco').value, address:document.getElementById('nmAddr').value, timestamp:Date.now() };
+    const nms = JSON.parse(localStorage.getItem('nm_applications') || '[]');
+    nms.unshift(nm); localStorage.setItem('nm_applications', JSON.stringify(nms));
+    showToast('Net Metering Application Submitted!'); e.target.reset();
+}
+
+function submitWarranty(e) {
+    e.preventDefault();
+    const war = { name:document.getElementById('warName').value, phone:document.getElementById('warPhone').value, orderId:document.getElementById('warOrderId').value, product:document.getElementById('warProduct').value, serial:document.getElementById('warSerial').value, date:document.getElementById('warDate').value, timestamp:Date.now() };
+    const wars = JSON.parse(localStorage.getItem('warranty_registrations') || '[]');
+    wars.unshift(war); localStorage.setItem('warranty_registrations', JSON.stringify(wars));
+    showToast('Warranty Registered Successfully!'); e.target.reset();
+}
+
+function submitDealer(e) {
+    e.preventDefault();
+    const dealer = { business:document.getElementById('dealerBiz').value, name:document.getElementById('dealerName').value, phone:document.getElementById('dealerPhone').value, city:document.getElementById('dealerCity').value, ntn:document.getElementById('dealerNTN').value, volume:document.getElementById('dealerVolume').value, timestamp:Date.now() };
+    const dealers = JSON.parse(localStorage.getItem('dealer_applications') || '[]');
+    dealers.unshift(dealer); localStorage.setItem('dealer_applications', JSON.stringify(dealers));
+    showToast('Dealer Application Submitted!'); e.target.reset();
+}
+
+function populateWarrantyProducts() {
+    const sel = document.getElementById('warProduct');
+    if (!sel) return;
+    products.forEach(p => { const o = document.createElement('option'); o.value = p.name; o.textContent = p.name; sel.appendChild(o); });
+}
+
+// ==================== SOLAR QUIZ ====================
+const quizSteps = [
+    { q:'What Type Of Property?', opts:['Home / Apartment','Shop / Office','Factory / Warehouse'] },
+    { q:'Your Monthly Electricity Bill?', opts:['Under Rs. 10,000','Rs. 10,000 - 20,000','Rs. 20,000 - 40,000','Rs. 40,000+'] },
+    { q:'Which Appliances Do You Run?', opts:['Lights, Fans, TV Only','+ 1 AC + Fridge','+ 2-3 ACs + Fridge + Washing Machine','+ Heavy Machinery'] },
+    { q:'How Many Hours Backup Needed?', opts:['No Backup Needed','4-6 Hours','8-12 Hours','24 Hours'] },
+    { q:'Your Budget Range?', opts:['Under Rs. 3 Lac','Rs. 3-6 Lac','Rs. 6-12 Lac','Rs. 12 Lac+'] }
+];
+let quizStep = 0, quizAnswers = [];
+
+function renderQuiz() {
+    const card = document.getElementById('quizCard');
+    if (!card) return;
+    if (quizStep >= quizSteps.length) { showQuizResult(); return; }
+    const s = quizSteps[quizStep];
+    const pct = ((quizStep) / quizSteps.length) * 100;
+    card.innerHTML = '<div class="quiz-progress"><div class="quiz-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="quiz-question">Step ' + (quizStep + 1) + ' of ' + quizSteps.length + ': ' + s.q + '</div>' +
+        '<div class="quiz-options">' + s.opts.map((o, i) => '<button class="quiz-option" onclick="quizSelect(' + i + ')">' + o + '</button>').join('') + '</div>';
+}
+
+function quizSelect(idx) {
+    quizAnswers.push(idx);
+    quizStep++;
+    renderQuiz();
+}
+
+function showQuizResult() {
+    const billIdx = quizAnswers[1] || 0;
+    const sizes = ['3kW', '5kW', '8kW', '10kW+'];
+    const recSize = sizes[Math.min(billIdx, 3)];
+    const card = document.getElementById('quizCard');
+    card.innerHTML = '<div class="quiz-progress"><div class="quiz-progress-fill" style="width:100%"></div></div>' +
+        '<div style="text-align:center;padding:20px 0;">' +
+        '<h2 style="color:var(--orange);margin-bottom:12px;">&#9889; Your Recommended System: ' + recSize + '</h2>' +
+        '<p style="color:var(--text-dim);margin-bottom:24px;">Based on your answers, we recommend a ' + recSize + ' solar system for your needs.</p>' +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+        '<a href="#" class="btn btn-primary" onclick="showPage(\'packages\')">View Packages</a>' +
+        '<a href="#" class="btn btn-outline" onclick="showPage(\'calculator\')">Detailed Calculator</a>' +
+        '<a href="#" class="btn btn-outline" onclick="quizStep=0;quizAnswers=[];renderQuiz();">Retake Quiz</a>' +
+        '</div></div>';
+}
+
+// ==================== ELECTRICITY RATE CALCULATOR ====================
+function calculateRate() {
+    const units = parseInt(document.getElementById('rateUnits').value);
+    if (!units || units < 1) { alert('Enter Valid Units'); return; }
+    let rate;
+    if (units <= 100) rate = 12;
+    else if (units <= 200) rate = 22;
+    else if (units <= 300) rate = 35;
+    else if (units <= 500) rate = 50;
+    else if (units <= 700) rate = 58;
+    else rate = 65;
+    const energy = units * rate;
+    const fuel = Math.round(units * 5.5);
+    const tax = Math.round(energy * 0.17);
+    const total = energy + fuel + tax + 250;
+    document.getElementById('rateUnitsDisplay').textContent = units + ' Units';
+    document.getElementById('ratePerUnit').textContent = 'Rs. ' + rate;
+    document.getElementById('rateEnergy').textContent = 'Rs. ' + energy.toLocaleString();
+    document.getElementById('rateFuel').textContent = 'Rs. ' + fuel.toLocaleString();
+    document.getElementById('rateTax').textContent = 'Rs. ' + tax.toLocaleString();
+    document.getElementById('rateTotalBill').textContent = 'Rs. ' + total.toLocaleString();
+    document.getElementById('rateSavings').textContent = 'Rs. ' + Math.round(total * 0.85).toLocaleString() + ' / Month';
+    document.getElementById('rateResult').style.display = 'block';
+}
+
+// ==================== SAVINGS TRACKER ====================
+function addTrackerEntry() {
+    const month = document.getElementById('trackerMonth').value;
+    const before = parseInt(document.getElementById('trackerBefore').value);
+    const after = parseInt(document.getElementById('trackerAfter').value);
+    if (!month || !before) { alert('Enter Month And Bill Amount'); return; }
+    const tracker = JSON.parse(localStorage.getItem('savings_tracker') || '[]');
+    tracker.push({ month, before, after: after || 0 });
+    tracker.sort((a, b) => a.month.localeCompare(b.month));
+    localStorage.setItem('savings_tracker', JSON.stringify(tracker));
+    document.getElementById('trackerBefore').value = '';
+    document.getElementById('trackerAfter').value = '';
+    renderTracker();
+}
+
+function renderTracker() {
+    const tracker = JSON.parse(localStorage.getItem('savings_tracker') || '[]');
+    const chart = document.getElementById('trackerChart');
+    const summary = document.getElementById('trackerSummary');
+    if (!chart) return;
+    if (tracker.length === 0) { chart.innerHTML = '<p style="text-align:center;color:var(--text-dim);padding:20px;">No Records Yet. Add Your Monthly Bills Above.</p>'; summary.innerHTML = ''; return; }
+    const maxVal = Math.max(...tracker.map(t => t.before), 1);
+    chart.innerHTML = '<h3 style="margin-bottom:16px;">Monthly Comparison</h3><div class="tracker-bars">' +
+        tracker.map(t => '<div class="tracker-bar-col"><div class="tracker-bar before" style="height:' + (t.before / maxVal * 100) + '%;" title="Before: Rs.' + t.before.toLocaleString() + '"></div><div class="tracker-bar after" style="height:' + ((t.after || 0) / maxVal * 100) + '%;" title="After: Rs.' + (t.after || 0).toLocaleString() + '"></div><div class="tracker-bar-label">' + t.month.slice(5) + '</div></div>').join('') +
+        '</div><div style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:0.78rem;"><span style="color:var(--danger);">&#9632; Before Solar</span><span style="color:var(--green);">&#9632; After Solar</span></div>';
+    const totalSaved = tracker.reduce((s, t) => s + (t.before - (t.after || 0)), 0);
+    summary.innerHTML = '<div style="text-align:center;margin-top:20px;padding:20px;background:rgba(232,122,30,0.06);border-radius:var(--radius-sm);"><p style="font-size:0.85rem;color:var(--text-dim);">Total Saved</p><p style="font-size:1.8rem;font-weight:900;color:var(--green);">Rs. ' + totalSaved.toLocaleString() + '</p></div>';
+}
+
+// ==================== TIP OF THE DAY ====================
+const solarTips = [
+    'Clean your solar panels every 2 weeks for maximum efficiency.',
+    'A 5kW system can save up to Rs. 15,000/month on electricity.',
+    'LiFePO4 batteries last 6000+ cycles — 10x more than lead acid.',
+    'Solar panels work even on cloudy days, just at reduced output.',
+    'Net metering lets you sell excess electricity back to WAPDA.',
+    'Hybrid inverters can work with both solar and grid power.',
+    'Solar panels have a 25-30 year performance warranty.',
+    'A 1kW solar system generates about 4-5 units per day in Karachi.',
+    'Summer is the best time for solar — longer days mean more power.',
+    'Dust can reduce solar panel output by 15-25% — keep them clean.',
+    'Solar energy is the cheapest source of electricity in Pakistan.',
+    'A properly sized battery can provide 8-12 hours of backup.',
+    'N-Type solar panels perform better in hot climates like Karachi.',
+    'Solar panels add 4-6% value to your property.',
+    'The payback period for solar in Pakistan is typically 3-4 years.',
+    'Solar systems require almost zero maintenance after installation.',
+    'Inverter efficiency matters — look for 97%+ efficiency rating.',
+    'Bifacial panels can generate up to 10% more power from reflected light.',
+    'Solar energy reduces your carbon footprint by 6 tons CO2 per year.',
+    'Peak solar generation in Karachi is between 10 AM and 3 PM.',
+    'Always buy Tier-1 certified solar panels for reliability.',
+    'WiFi-enabled inverters let you monitor power generation on your phone.',
+    'Solar panel angle matters — 25-30 degrees is ideal for Karachi.',
+    'DC wiring should be done by certified professionals only.',
+    'Solar panels are rated to withstand winds up to 140 km/h.',
+    'A 10kW system can power a large villa with 3-4 ACs.',
+    'Battery backup eliminates the need for generators during load shedding.',
+    'Solar energy is tax-free under current Pakistani regulations.',
+    'IP65/IP66 rated inverters are weather-resistant for outdoor installation.',
+    'Regular monitoring helps detect performance drops early.'
+];
+
+function showTipOfDay() {
+    const el = document.getElementById('tipText');
+    if (!el) return;
+    const dayIndex = new Date().getDate() % solarTips.length;
+    el.innerHTML = '<strong>Solar Tip:</strong> ' + solarTips[dayIndex];
+}
+
+// ==================== SOLAR WEATHER WIDGET ====================
+function showSolarWidget() {
+    const month = new Date().getMonth();
+    const data = [
+        {icon:'&#9728;',text:'Good solar day',gen:'4.5'},{icon:'&#9728;',text:'Good solar day',gen:'5.0'},
+        {icon:'&#9728;',text:'Excellent solar day',gen:'5.8'},{icon:'&#9728;',text:'Peak solar season',gen:'6.2'},
+        {icon:'&#9728;',text:'Maximum solar generation',gen:'6.5'},{icon:'&#9728;',text:'Hot & sunny - great for solar',gen:'6.0'},
+        {icon:'&#127783;',text:'Monsoon - variable output',gen:'3.5'},{icon:'&#127783;',text:'Monsoon - reduced output',gen:'3.8'},
+        {icon:'&#9728;',text:'Good solar recovery',gen:'5.2'},{icon:'&#9728;',text:'Excellent solar day',gen:'5.5'},
+        {icon:'&#9728;',text:'Good solar generation',gen:'4.8'},{icon:'&#9728;',text:'Moderate solar day',gen:'4.2'}
+    ];
+    const d = data[month];
+    const iconEl = document.getElementById('weatherIcon');
+    const textEl = document.getElementById('weatherText');
+    const genEl = document.getElementById('weatherGen');
+    if (iconEl) iconEl.innerHTML = d.icon;
+    if (textEl) textEl.textContent = d.text + ' expected in Karachi';
+    if (genEl) genEl.textContent = d.gen;
+}
 
 // ==================== INIT ====================
 renderProducts();
@@ -1693,6 +1914,10 @@ initTheme();
 initLanguage();
 updateWishlistHearts();
 renderRecentlyViewed();
+populateWarrantyProducts();
+showTipOfDay();
+showSolarWidget();
+renderTracker();
 startOrderTicker();
 initLeadPopup();
 initCartReminder();
