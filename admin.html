@@ -165,6 +165,38 @@
         .inv-bulk-btn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:none; color:var(--dim); font-size:0.78rem; font-weight:600; cursor:pointer; font-family:inherit; }
         .inv-bulk-btn:hover { border-color:var(--orange); color:var(--orange); }
 
+        /* Accounting */
+        .acc-controls { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+        .acc-controls select, .acc-controls input[type="month"] { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
+        .acc-controls input[type="month"]:focus { outline:none; border-color:var(--orange); }
+        .acc-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        .acc-card-green .dash-stat-value { color:var(--green) !important; }
+        .acc-card-red .dash-stat-value { color:var(--red) !important; }
+        .acc-add-form { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px; }
+        .acc-add-form h3 { font-size:0.95rem; margin-bottom:14px; }
+        .acc-form-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+        .acc-form-group { flex:1; min-width:140px; }
+        .acc-form-group label { display:block; font-size:0.7rem; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+        .acc-form-group input, .acc-form-group select { width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; font-family:inherit; }
+        .acc-form-group input:focus, .acc-form-group select:focus { outline:none; border-color:var(--orange); }
+        .acc-add-btn { padding:10px 24px; background:var(--orange); color:#fff; border:none; border-radius:8px; font-size:0.85rem; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; align-self:flex-end; }
+        .acc-add-btn:hover { background:#d06810; }
+        .acc-table { width:100%; border-collapse:collapse; }
+        .acc-table-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+        .acc-table-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--border); }
+        .acc-table-header h3 { font-size:0.95rem; }
+        .acc-table th { text-align:left; padding:12px 16px; font-size:0.7rem; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.02); }
+        .acc-table td { padding:12px 16px; font-size:0.82rem; border-bottom:1px solid var(--border); }
+        .acc-table tr:last-child td { border-bottom:none; }
+        .acc-table tr:hover td { background:rgba(255,255,255,0.02); }
+        .acc-type-income { color:var(--green); font-weight:600; }
+        .acc-type-expense { color:var(--red); font-weight:600; }
+        .acc-del-btn { background:none; border:1px solid var(--border); color:var(--dim); padding:4px 10px; border-radius:6px; font-size:0.7rem; cursor:pointer; font-family:inherit; }
+        .acc-del-btn:hover { border-color:var(--red); color:var(--red); }
+        .acc-empty { text-align:center; padding:40px 20px; color:var(--dim); }
+        .acc-profit-bar { height:6px; border-radius:3px; background:var(--border); margin-top:8px; overflow:hidden; }
+        .acc-profit-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
+
         /* Notification sound indicator */
         .notif-indicator { display:flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--green); }
         .notif-dot { width:8px; height:8px; background:var(--green); border-radius:50%; animation:pulse-notif 2s infinite; }
@@ -222,6 +254,14 @@
             .notif-dot { width:6px; height:6px; }
             .logout-btn { padding:5px 10px; font-size:0.7rem; }
             #lastRefresh { font-size:0.68rem; }
+            .acc-summary { grid-template-columns:1fr 1fr; gap:8px; }
+            .acc-controls { flex-direction:column; gap:6px; }
+            .acc-controls select, .acc-controls input[type="month"] { width:100%; }
+            .acc-form-row { flex-direction:column; gap:8px; }
+            .acc-form-group { min-width:100%; }
+            .acc-add-btn { width:100%; }
+            .acc-table th, .acc-table td { padding:8px 10px; font-size:0.72rem; }
+            .acc-table-header { padding:12px 14px; flex-direction:column; gap:6px; align-items:flex-start; }
             .inv-controls { flex-direction:column; gap:8px; }
             .inv-controls select { width:100%; padding:8px 12px; font-size:0.8rem; }
             .inv-threshold-box { width:100%; justify-content:space-between; }
@@ -293,6 +333,7 @@
                 <button class="dash-tab" onclick="switchTab('orders', this)">Orders</button>
                 <button class="dash-tab" onclick="switchTab('products', this)">Products</button>
                 <button class="dash-tab" onclick="switchTab('inventory', this)">Inventory</button>
+                <button class="dash-tab" onclick="switchTab('accounting', this)">Accounting</button>
                 <button class="dash-tab" onclick="switchTab('social', this)">Social Media</button>
             </div>
 
@@ -458,6 +499,117 @@
 
                 <!-- Inventory List -->
                 <div id="inventoryList" style="display:grid;grid-template-columns:1fr;gap:10px;"></div>
+            </div>
+
+            <!-- Accounting Tab -->
+            <div class="tab-content" id="tab-accounting">
+                <!-- Summary Stats -->
+                <div class="acc-summary">
+                    <div class="dash-stat acc-card-green">
+                        <div class="dash-stat-label">Total Income</div>
+                        <div class="dash-stat-value" id="accIncome" style="font-size:1.2rem;">Rs. 0</div>
+                    </div>
+                    <div class="dash-stat acc-card-red">
+                        <div class="dash-stat-label">Total Expenses</div>
+                        <div class="dash-stat-value" id="accExpense" style="font-size:1.2rem;">Rs. 0</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Net Profit / Loss</div>
+                        <div class="dash-stat-value" id="accProfit" style="font-size:1.2rem;">Rs. 0</div>
+                        <div class="acc-profit-bar"><div class="acc-profit-fill" id="accProfitBar"></div></div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-label">Total Entries</div>
+                        <div class="dash-stat-value blue" id="accEntries" style="font-size:1.2rem;">0</div>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="acc-controls">
+                    <select id="accFilterType" onchange="renderAccounting()">
+                        <option value="all">All Types</option>
+                        <option value="income">Income Only</option>
+                        <option value="expense">Expense Only</option>
+                    </select>
+                    <select id="accFilterCategory" onchange="renderAccounting()">
+                        <option value="all">All Categories</option>
+                        <option value="order">Order Payment</option>
+                        <option value="purchase">Product Purchase</option>
+                        <option value="transport">Transport / Delivery</option>
+                        <option value="rent">Rent</option>
+                        <option value="salary">Salary</option>
+                        <option value="utility">Utility Bills</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <input type="month" id="accFilterMonth" onchange="renderAccounting()">
+                    <button class="refresh-btn" onclick="exportAccounting()">Export CSV</button>
+                </div>
+
+                <!-- Add Entry Form -->
+                <div class="acc-add-form">
+                    <h3>Add New Entry</h3>
+                    <div class="acc-form-row">
+                        <div class="acc-form-group">
+                            <label>Type</label>
+                            <select id="accType">
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Category</label>
+                            <select id="accCategory">
+                                <option value="order">Order Payment</option>
+                                <option value="purchase">Product Purchase</option>
+                                <option value="transport">Transport / Delivery</option>
+                                <option value="rent">Rent</option>
+                                <option value="salary">Salary</option>
+                                <option value="utility">Utility Bills</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Amount (Rs.)</label>
+                            <input type="number" id="accAmount" placeholder="Enter Amount" min="1">
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Description</label>
+                            <input type="text" id="accDesc" placeholder="e.g. 6kW Inverter Sale">
+                        </div>
+                        <div class="acc-form-group">
+                            <label>Date</label>
+                            <input type="date" id="accDate">
+                        </div>
+                        <button class="acc-add-btn" onclick="addAccEntry()">+ Add Entry</button>
+                    </div>
+                </div>
+
+                <!-- Entries Table -->
+                <div class="acc-table-wrap">
+                    <div class="acc-table-header">
+                        <h3>Transaction History</h3>
+                        <span style="color:var(--dim);font-size:0.8rem;" id="accShowCount">0 Entries</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="acc-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accTableBody">
+                                <tr><td colspan="6" class="acc-empty">No Entries Yet</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Social Media Tab -->
@@ -748,6 +900,7 @@
             if (tab === 'orders') loadOrders();
             if (tab === 'products') renderAdminProducts();
             if (tab === 'inventory') renderInventory();
+            if (tab === 'accounting') renderAccounting();
         }
 
         // ==================== INVENTORY MANAGEMENT ====================
@@ -916,6 +1069,130 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = 'solar-cart-inventory-' + new Date().toISOString().slice(0,10) + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ==================== ACCOUNTING ====================
+        function getAccEntries() {
+            return JSON.parse(localStorage.getItem('solar_accounting') || '[]');
+        }
+
+        function saveAccEntries(entries) {
+            localStorage.setItem('solar_accounting', JSON.stringify(entries));
+        }
+
+        function addAccEntry() {
+            const type = document.getElementById('accType').value;
+            const category = document.getElementById('accCategory').value;
+            const amount = parseInt(document.getElementById('accAmount').value);
+            const desc = document.getElementById('accDesc').value.trim();
+            const date = document.getElementById('accDate').value;
+
+            if (!amount || amount <= 0) { alert('Enter A Valid Amount'); return; }
+            if (!desc) { alert('Enter A Description'); return; }
+            if (!date) { alert('Select A Date'); return; }
+
+            const entries = getAccEntries();
+            entries.unshift({
+                id: Date.now(),
+                type: type,
+                category: category,
+                amount: amount,
+                desc: desc,
+                date: date
+            });
+            saveAccEntries(entries);
+
+            document.getElementById('accAmount').value = '';
+            document.getElementById('accDesc').value = '';
+            renderAccounting();
+        }
+
+        function deleteAccEntry(id) {
+            const entries = getAccEntries().filter(e => e.id !== id);
+            saveAccEntries(entries);
+            renderAccounting();
+        }
+
+        function renderAccounting() {
+            const entries = getAccEntries();
+            const typeFilter = document.getElementById('accFilterType').value;
+            const catFilter = document.getElementById('accFilterCategory').value;
+            const monthFilter = document.getElementById('accFilterMonth').value;
+
+            if (!document.getElementById('accDate').value) {
+                document.getElementById('accDate').value = new Date().toISOString().slice(0, 10);
+            }
+
+            let totalIncome = 0, totalExpense = 0;
+            entries.forEach(e => {
+                if (e.type === 'income') totalIncome += e.amount;
+                else totalExpense += e.amount;
+            });
+            const profit = totalIncome - totalExpense;
+
+            document.getElementById('accIncome').textContent = 'Rs. ' + totalIncome.toLocaleString();
+            document.getElementById('accExpense').textContent = 'Rs. ' + totalExpense.toLocaleString();
+            document.getElementById('accProfit').textContent = (profit >= 0 ? 'Rs. ' : '- Rs. ') + Math.abs(profit).toLocaleString();
+            document.getElementById('accProfit').style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+            document.getElementById('accEntries').textContent = entries.length;
+
+            const bar = document.getElementById('accProfitBar');
+            if (totalIncome > 0) {
+                const pct = Math.min((totalIncome / (totalIncome + totalExpense)) * 100, 100);
+                bar.style.width = pct + '%';
+                bar.style.background = profit >= 0 ? 'var(--green)' : 'var(--red)';
+            } else {
+                bar.style.width = '0%';
+            }
+
+            let filtered = entries;
+            if (typeFilter !== 'all') filtered = filtered.filter(e => e.type === typeFilter);
+            if (catFilter !== 'all') filtered = filtered.filter(e => e.category === catFilter);
+            if (monthFilter) filtered = filtered.filter(e => e.date.startsWith(monthFilter));
+
+            const categoryNames = { order:'Order Payment', purchase:'Product Purchase', transport:'Transport / Delivery', rent:'Rent', salary:'Salary', utility:'Utility Bills', maintenance:'Maintenance', other:'Other' };
+
+            document.getElementById('accShowCount').textContent = filtered.length + ' Entries';
+            const tbody = document.getElementById('accTableBody');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="acc-empty">No Entries Found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(e => {
+                const typeClass = e.type === 'income' ? 'acc-type-income' : 'acc-type-expense';
+                const typeLabel = e.type === 'income' ? '+ Income' : '- Expense';
+                const dateStr = new Date(e.date).toLocaleDateString('en-PK', { day:'2-digit', month:'short', year:'numeric' });
+                return '<tr>' +
+                    '<td>' + dateStr + '</td>' +
+                    '<td class="' + typeClass + '">' + typeLabel + '</td>' +
+                    '<td>' + (categoryNames[e.category] || e.category) + '</td>' +
+                    '<td>' + e.desc + '</td>' +
+                    '<td style="font-weight:700;' + (e.type === 'income' ? 'color:var(--green)' : 'color:var(--red)') + '">Rs. ' + e.amount.toLocaleString() + '</td>' +
+                    '<td><button class="acc-del-btn" onclick="deleteAccEntry(' + e.id + ')">Delete</button></td>' +
+                '</tr>';
+            }).join('');
+        }
+
+        function exportAccounting() {
+            const entries = getAccEntries();
+            const categoryNames = { order:'Order Payment', purchase:'Product Purchase', transport:'Transport / Delivery', rent:'Rent', salary:'Salary', utility:'Utility Bills', maintenance:'Maintenance', other:'Other' };
+
+            let csv = 'Date,Type,Category,Description,Amount\n';
+            entries.forEach(e => {
+                csv += e.date + ',' + e.type + ',"' + (categoryNames[e.category] || e.category) + '","' + e.desc + '",' + e.amount + '\n';
+            });
+
+            const blob = new Blob([csv], { type:'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'solar-cart-accounting-' + new Date().toISOString().slice(0, 10) + '.csv';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
