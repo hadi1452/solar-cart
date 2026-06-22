@@ -270,11 +270,7 @@ function renderCheckout() {
     document.getElementById('summaryTotal').textContent = 'Rs. ' + total.toLocaleString();
 }
 
-// Payment method - Meezan Bank only, always show transaction ID
-if (document.getElementById('trxIdGroup')) {
-    document.getElementById('trxIdGroup').style.display = 'block';
-    document.getElementById('trxId').setAttribute('required', 'required');
-}
+// Payment method - transaction ID always visible
 
 function placeOrder(e) {
     e.preventDefault();
@@ -291,7 +287,7 @@ function placeOrder(e) {
     const payment = document.querySelector('input[name="payment"]:checked').value;
     const total = getCartTotal();
 
-    const paymentNames = { meezan:'Meezan Bank' };
+    const paymentNames = { jazzcash:'JazzCash', easypaisa:'EasyPaisa', bank:'Bank Transfer' };
 
     // Build WhatsApp message
     let msg = `*New Order - Solar Cart*%0A`;
