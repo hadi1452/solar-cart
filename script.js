@@ -1695,7 +1695,6 @@ initTheme();
 initLanguage();
 updateWishlistHearts();
 renderRecentlyViewed();
-initFlashSale();
 startOrderTicker();
 initLeadPopup();
 initCartReminder();
