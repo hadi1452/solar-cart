@@ -670,6 +670,56 @@
             startLiveListener();
         }
 
+        // Sync orders to inventory & accounting
+        function syncOrdersToInventoryAndAccounting(orders) {
+            const synced = JSON.parse(localStorage.getItem('synced_orders') || '[]');
+            const newOrders = orders.filter(o => !synced.includes(o.orderId));
+            if (newOrders.length === 0) return;
+
+            // Update Inventory
+            const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
+            newOrders.forEach(order => {
+                if (order.products) {
+                    order.products.forEach(op => {
+                        const opName = (op.name || '').toLowerCase();
+                        const matched = products.find(p => {
+                            const pName = p.name.toLowerCase();
+                            if (pName === opName) return true;
+                            if (opName.includes(p.model.toLowerCase())) return true;
+                            const opWords = opName.split(/[\s\-]+/).filter(w => w.length > 2);
+                            const matchCount = opWords.filter(w => pName.includes(w)).length;
+                            return matchCount >= 3;
+                        });
+                        if (matched && inv[matched.id] !== undefined) {
+                            inv[matched.id] = Math.max(0, inv[matched.id] - (op.qty || 1));
+                        }
+                    });
+                }
+            });
+            localStorage.setItem('solar_inventory', JSON.stringify(inv));
+
+            // Update Accounting
+            const accEntries = JSON.parse(localStorage.getItem('solar_accounting') || '[]');
+            newOrders.forEach(order => {
+                const amount = parseInt((order.total || '0').replace(/,/g, ''));
+                const productNames = (order.products || []).map(p => p.name + ' x' + p.qty).join(', ');
+                const date = order.timestamp ? new Date(order.timestamp).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                accEntries.push({
+                    id: Date.now() + Math.random(),
+                    type: 'income',
+                    category: 'order',
+                    amount: amount,
+                    desc: order.orderId + ' - ' + order.name + ' (' + productNames + ')',
+                    date: date
+                });
+            });
+            localStorage.setItem('solar_accounting', JSON.stringify(accEntries));
+
+            // Mark as synced
+            const allSynced = synced.concat(newOrders.map(o => o.orderId));
+            localStorage.setItem('synced_orders', JSON.stringify(allSynced));
+        }
+
         // Load orders from cloud storage
         function loadOrders() {
             document.getElementById('lastRefresh').textContent = 'Updated: ' + new Date().toLocaleTimeString();
@@ -682,6 +732,7 @@
                         if (saved) order.status = saved;
                         return order;
                     });
+                    syncOrdersToInventoryAndAccounting(orders);
                     renderOrders(orders);
                 })
                 .catch(err => {
