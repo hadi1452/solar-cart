@@ -182,7 +182,6 @@ function createProductCard(product) {
                 </div>`}
                 ${cartBtnHTML}
                 <div class="verified-stamp">&#10003; Genuine Product | Official Warranty</div>
-                <label class="compare-check"><input type="checkbox" data-pid="${product.id}" onchange="toggleCompare(${product.id})"> Compare</label>
                 <button class="price-alert-btn ${(JSON.parse(localStorage.getItem('price_alerts')||'[]')).includes(product.id)?'active':''}" onclick="event.stopPropagation(); togglePriceAlert(${product.id}, this)">${(JSON.parse(localStorage.getItem('price_alerts')||'[]')).includes(product.id)?'&#128277; Alert Set':'&#128276; Price Alert'}</button>
             </div>
         </div>
