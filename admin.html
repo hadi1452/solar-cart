@@ -828,10 +828,14 @@
             <div class="tab-content" id="tab-social">
                 <h2 style="margin-bottom:20px;">Social Media Post Generator</h2>
                 <div class="social-controls">
-                    <select id="socialPlatform" onchange="generateSocialPosts()">
+                    <select id="socialPlatform" onchange="updateContentTypeOptions(); generateSocialPosts()">
                         <option value="instagram">Instagram</option>
                         <option value="facebook">Facebook</option>
                         <option value="whatsapp">WhatsApp</option>
+                    </select>
+                    <select id="socialContentType" onchange="generateSocialPosts()">
+                        <option value="post">Post</option>
+                        <option value="story">Story</option>
                     </select>
                     <select id="socialCategory" onchange="generateSocialPosts()">
                         <option value="all">All Products</option>

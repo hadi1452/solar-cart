@@ -636,21 +636,35 @@ const counterObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.stats-section').forEach(s => counterObserver.observe(s));
 
 // ==================== SOCIAL MEDIA DASHBOARD ====================
+function updateContentTypeOptions() {
+    const platform = document.getElementById('socialPlatform').value;
+    const contentTypeSelect = document.getElementById('socialContentType');
+    if (platform === 'whatsapp') {
+        contentTypeSelect.innerHTML = '<option value="status">Status</option>';
+    } else {
+        contentTypeSelect.innerHTML = '<option value="post">Post</option><option value="story">Story</option>';
+    }
+}
+
 function generateSocialPosts() {
     const platform = document.getElementById('socialPlatform').value;
+    const contentType = document.getElementById('socialContentType').value;
     const category = document.getElementById('socialCategory').value;
     const container = document.getElementById('socialPosts');
 
     let filtered = category === 'all' ? products : products.filter(p => p.category === category);
     if (filtered.length === 0) { container.innerHTML = '<p style="color:var(--gray-500);padding:20px;">No products in this category.</p>'; return; }
 
+    const typeLabel = platform === 'whatsapp' ? 'STATUS' : contentType.toUpperCase();
+    const platformLabel = platform.toUpperCase();
+
     container.innerHTML = filtered.map(p => {
-        const caption = generateCaption(p, platform);
+        const caption = generateCaption(p, platform, contentType);
         return `
             <div class="social-post-card">
                 <div class="post-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
                 <div class="post-body">
-                    <div class="post-platform">${platform.toUpperCase()}</div>
+                    <div class="post-platform">${platformLabel} ${typeLabel}</div>
                     <div class="post-caption" id="caption-${p.id}">${caption}</div>
                     <div class="post-actions">
                         <button class="btn-copy" onclick="copyCaption(${p.id}, this)">Copy Caption</button>
@@ -666,14 +680,20 @@ function generateSocialPosts() {
     }).join('');
 }
 
-function generateCaption(product, platform) {
+function generateCaption(product, platform, contentType) {
     const price = 'Rs. ' + product.price.toLocaleString();
     const specs = product.specs.map(s => s).join(' | ');
     const hashtags = getHashtags(product);
 
     if (platform === 'instagram') {
+        if (contentType === 'story') {
+            return `🔥 ${product.name}\n\n💰 ${price}\n📦 ${product.warranty}\n\n👆 Swipe Up To Order!\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
+        }
         return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
     } else if (platform === 'facebook') {
+        if (contentType === 'story') {
+            return `🔥 ${product.name}\n\n💰 ${price}\n📦 ${product.warranty}\n\n📲 Order Now!\nCall/WhatsApp: 0323-7927923\n🚚 Delivery In Karachi!`;
+        }
         return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder online: https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\nDelivery In Karachi!`;
     } else {
         return `*${product.name}*\n\nPrice: *${price}*\n${specs}\nWarranty: ${product.warranty}\n\nOrder now: https://solar-cart-apvs.vercel.app\nWhatsApp: 0323-7927923`;
