@@ -689,7 +689,7 @@ function generateCaption(product, platform, contentType) {
         if (contentType === 'story') {
             return `🔥 ${product.name}\n\n💰 ${price}\n📦 ${product.warranty}\n\n👆 Swipe Up To Order!\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
         }
-        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\nOrder now at https://solar-cart-apvs.vercel.app\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
+        return `${product.name}\n\nPrice: ${price}\n${specs}\nWarranty: ${product.warranty}\n\n🔗 Link In Bio\nCall/WhatsApp: 0323-7927923\n\n${hashtags}`;
     } else if (platform === 'facebook') {
         if (contentType === 'story') {
             return `🔥 ${product.name}\n\n💰 ${price}\n📦 ${product.warranty}\n\n📲 Order Now!\nCall/WhatsApp: 0323-7927923\n🚚 Delivery In Karachi!`;
