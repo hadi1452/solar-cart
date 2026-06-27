@@ -117,8 +117,13 @@
         .social-controls select { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-size:0.85rem; cursor:pointer; font-family:inherit; }
         .social-posts-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px; }
         .social-post-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-        .social-post-card .post-img { width:100%; height:180px; overflow:hidden; }
+        .social-post-card .post-img { width:100%; height:180px; overflow:hidden; position:relative; }
         .social-post-card .post-img img { width:100%; height:100%; object-fit:cover; }
+        .img-cycle-bar { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.58); display:flex; align-items:center; justify-content:space-between; padding:5px 10px; gap:6px; }
+        .img-date-badge { color:rgba(255,255,255,0.85); font-size:0.67rem; flex:1; }
+        .img-count { color:rgba(255,255,255,0.65); font-size:0.67rem; white-space:nowrap; }
+        .img-cycle-btn { background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.35); color:#fff; padding:3px 10px; border-radius:4px; cursor:pointer; font-size:0.72rem; font-weight:600; white-space:nowrap; transition:background 0.15s; font-family:inherit; }
+        .img-cycle-btn:hover { background:rgba(255,255,255,0.32); }
         .social-post-card .post-body { padding:14px; }
         .social-post-card .post-platform { font-size:0.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--orange); font-weight:700; margin-bottom:6px; }
         .social-post-card .post-caption { color:var(--dim); font-size:0.82rem; line-height:1.6; white-space:pre-wrap; margin-bottom:10px; max-height:180px; overflow-y:auto; }
@@ -317,6 +322,8 @@
             .social-post-card .post-actions { flex-direction:column; gap:6px; }
             .social-post-card .post-actions button { padding:8px; font-size:0.72rem; }
             .social-post-card .post-img { height:140px; }
+            .img-date-badge { display:none; }
+            .img-cycle-bar { padding:4px 8px; }
             .refresh-btn { width:100%; text-align:center; padding:8px; font-size:0.75rem; }
             .recent-row { flex-direction:column; align-items:flex-start; gap:4px; padding:10px 12px; }
             .recent-row span { font-size:0.75rem; }

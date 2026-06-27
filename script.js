@@ -29,6 +29,48 @@ const products = [
     { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:535000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", localImage:"images/itel-bat-16kwh.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 }
 ];
 
+// ==================== SOCIAL MEDIA IMAGE POOL ====================
+const categoryImages = {
+    longi:    ['images/longi-645w.jpg', 'images/longi-610w.jpg'],
+    jinko:    ['images/jinko-585w.jpg'],
+    inverter: ['images/itel-3kw.jpg', 'images/itel-4kw.jpg', 'images/itel-6kw.jpg', 'images/itel-6k6-ip66.jpg', 'images/itel-6kw-ip66.jpg', 'images/itel-8kw.jpg', 'images/itel-12kw.jpg'],
+    battery:  ['images/itel-bat-100ah.jpg', 'images/itel-bat-256.jpg', 'images/itel-bat-512.jpg', 'images/itel-bat-14kwh.jpg', 'images/itel-bat-16kwh.jpg'],
+    ess:      ['images/itel-ess-500w.jpg', 'images/itel-ess-3k6.jpg', 'images/itel-ess-320.jpg']
+};
+const socialImageOffsets = {};
+
+function getCategoryImagePool(product) {
+    const base = categoryImages[product.category] ? [...categoryImages[product.category]] : [];
+    if (product.localImage && !base.includes(product.localImage)) base.unshift(product.localImage);
+    if (base.length === 0) base.push(product.image);
+    return base;
+}
+
+function getDailyImageSrc(product) {
+    const pool = getCategoryImagePool(product);
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const pIndex = products.indexOf(product);
+    const offset = socialImageOffsets[product.id] || 0;
+    return pool[(dayIndex + pIndex + offset) % pool.length];
+}
+
+function cycleImage(productId) {
+    socialImageOffsets[productId] = (socialImageOffsets[productId] || 0) + 1;
+    const product = products.find(p => p.id === productId);
+    const pool = getCategoryImagePool(product);
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const pIndex = products.indexOf(product);
+    const offset = socialImageOffsets[productId];
+    const idx = (dayIndex + pIndex + offset) % pool.length;
+    const imgEl = document.getElementById('post-img-' + productId);
+    if (imgEl) {
+        imgEl.style.opacity = '0';
+        setTimeout(() => { imgEl.src = pool[idx]; imgEl.style.opacity = '1'; }, 180);
+    }
+    const counter = document.getElementById('img-count-' + productId);
+    if (counter) counter.textContent = (idx + 1) + '/' + pool.length;
+}
+
 // ==================== CART ====================
 let cart = JSON.parse(localStorage.getItem('solarCart')) || [];
 
@@ -658,11 +700,26 @@ function generateSocialPosts() {
     const typeLabel = platform === 'whatsapp' ? 'STATUS' : contentType.toUpperCase();
     const platformLabel = platform.toUpperCase();
 
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const today = new Date().toLocaleDateString('en-PK', { day:'numeric', month:'short' });
+
     container.innerHTML = filtered.map(p => {
         const caption = generateCaption(p, platform, contentType);
+        const pool = getCategoryImagePool(p);
+        const pIndex = products.indexOf(p);
+        const offset = socialImageOffsets[p.id] || 0;
+        const imgIdx = (dayIndex + pIndex + offset) % pool.length;
+        const imgSrc = pool[imgIdx];
         return `
             <div class="social-post-card">
-                <div class="post-img"><img src="${p.image}" alt="${p.name}" loading="lazy"></div>
+                <div class="post-img">
+                    <img id="post-img-${p.id}" src="${imgSrc}" alt="${p.name}" loading="lazy" style="transition:opacity 0.18s;">
+                    <div class="img-cycle-bar">
+                        <span class="img-date-badge">📅 ${today}</span>
+                        <span id="img-count-${p.id}" class="img-count">${imgIdx + 1}/${pool.length}</span>
+                        <button class="img-cycle-btn" onclick="cycleImage(${p.id})">Next ›</button>
+                    </div>
+                </div>
                 <div class="post-body">
                     <div class="post-platform">${platformLabel} ${typeLabel}</div>
                     <div class="post-caption" id="caption-${p.id}">${caption}</div>
@@ -730,7 +787,8 @@ function shareToStatus(productId, platform, btn) {
     btn.textContent = 'Loading...';
     btn.disabled = true;
 
-    const imgUrl = product.localImage || product.image;
+    const imgEl = document.getElementById('post-img-' + product.id);
+    const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
 
     fetch(imgUrl)
         .then(r => r.blob())
