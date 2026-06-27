@@ -744,6 +744,17 @@ function shareToStatus(productId, platform, btn) {
         btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
     }
 
+    if (platform === 'facebook') {
+        const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://solar-cart-apvs.vercel.app') + '&quote=' + encodeURIComponent(caption);
+        window.open(fbUrl, '_blank', 'width=600,height=500');
+        navigator.clipboard.writeText(caption).catch(() => {});
+        showMsg('📋 Caption copy ho gaya! Facebook window mein paste karo');
+        btn.textContent = '✓ Opening...';
+        btn.style.background = '#2ecc71';
+        setTimeout(resetBtn, 2500);
+        return;
+    }
+
     if (isMobile) {
         btn.textContent = 'Loading...';
         const imgEl = document.getElementById('post-img-' + product.id);
