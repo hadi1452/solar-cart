@@ -731,52 +731,57 @@ function shareToStatus(productId, platform, btn) {
     if (!product) return;
 
     const origText = btn.textContent;
-    btn.textContent = 'Loading...';
     btn.disabled = true;
 
-    const imgEl = document.getElementById('post-img-' + product.id);
-    const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
+    const isMobile = navigator.maxTouchPoints > 0;
+    const platformLabels = { whatsapp: 'WhatsApp', instagram: 'Instagram', facebook: 'Facebook' };
+    const msg = document.getElementById('share-msg-' + productId);
 
-    function downloadAndCopy(blob) {
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = product.model + '-' + platform + '.jpg';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
-        navigator.clipboard.writeText(caption).catch(() => {});
+    function showMsg(text) {
+        if (msg) { msg.textContent = text; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
+    }
+    function resetBtn() {
+        btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
     }
 
-    fetch(imgUrl)
-        .then(r => r.blob())
-        .then(blob => {
-            const file = new File([blob], product.model + '.jpg', { type: blob.type || 'image/jpeg' });
-
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                navigator.share({ text: caption, files: [file] })
-                    .then(() => {
-                        btn.textContent = 'Done!';
-                        btn.style.background = '#2ecc71';
-                        setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2000);
-                    })
-                    .catch(() => { btn.textContent = origText; btn.disabled = false; });
-            } else {
-                downloadAndCopy(blob);
-                const labels = { whatsapp: 'WhatsApp pe paste karo', instagram: 'Instagram pe paste karo', facebook: 'Facebook pe paste karo' };
-                btn.textContent = '✓ Downloaded';
+    if (isMobile) {
+        btn.textContent = 'Loading...';
+        const imgEl = document.getElementById('post-img-' + product.id);
+        const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
+        fetch(imgUrl)
+            .then(r => r.blob())
+            .then(blob => {
+                const file = new File([blob], product.model + '.jpg', { type: blob.type || 'image/jpeg' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    return navigator.share({ text: caption, files: [file] });
+                }
+                throw new Error('no-share');
+            })
+            .then(() => {
+                btn.textContent = 'Done!';
                 btn.style.background = '#2ecc71';
-                const msg = document.getElementById('share-msg-' + productId);
-                if (msg) { msg.textContent = '📋 Caption copied! ' + (labels[platform] || 'Paste karo'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
-                setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2500);
-            }
-        })
-        .catch(() => {
-            btn.textContent = 'Failed ✗';
-            btn.style.background = '#e74c3c';
-            setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2000);
-        });
+                setTimeout(resetBtn, 2000);
+            })
+            .catch(() => {
+                navigator.clipboard.writeText(caption).catch(() => {});
+                showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' pe paste karo');
+                btn.textContent = '✓ Copied';
+                btn.style.background = '#2ecc71';
+                setTimeout(resetBtn, 2500);
+            });
+    } else {
+        navigator.clipboard.writeText(caption)
+            .then(() => {
+                showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
+                btn.textContent = '✓ Copied';
+                btn.style.background = '#2ecc71';
+                setTimeout(resetBtn, 2500);
+            })
+            .catch(() => {
+                showMsg('Caption manually copy karo aur ' + platformLabels[platform] + ' pe paste karo');
+                setTimeout(resetBtn, 2000);
+            });
+    }
 }
 
 // ==================== SOLAR ANIMATION ====================
