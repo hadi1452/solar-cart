@@ -829,36 +829,6 @@
             <div class="tab-content" id="tab-social">
                 <h2 style="margin-bottom:16px;">Social Media Post Generator</h2>
 
-                <!-- Facebook Page Setup -->
-                <div id="fbSetupBox" style="background:var(--card);border:1px solid #1877f2;border-radius:12px;padding:16px;margin-bottom:20px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:1.3rem;">&#128077;</span>
-                            <h3 style="font-size:0.95rem;color:#1877f2;">Facebook Page Auto-Post</h3>
-                        </div>
-                        <span id="fbStatusDot" style="width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block;"></span>
-                    </div>
-                    <div id="fbSetupForm">
-                        <div style="display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-bottom:8px;">
-                            <div>
-                                <label style="display:block;font-size:0.7rem;color:var(--dim);margin-bottom:4px;">PAGE ID</label>
-                                <input type="text" id="fbPageId" placeholder="e.g. 123456789" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--navy);color:var(--text);font-size:0.85rem;font-family:inherit;">
-                            </div>
-                            <div>
-                                <label style="display:block;font-size:0.7rem;color:var(--dim);margin-bottom:4px;">PAGE ACCESS TOKEN</label>
-                                <input type="password" id="fbPageToken" placeholder="Paste Page Access Token here..." style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--navy);color:var(--text);font-size:0.85rem;font-family:inherit;">
-                            </div>
-                        </div>
-                        <button onclick="saveFbCredentials()" style="width:100%;padding:9px;background:#1877f2;color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:inherit;">Connect Facebook Page</button>
-                    </div>
-                    <div id="fbConnectedInfo" style="display:none;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span style="font-size:0.85rem;color:var(--green);" id="fbConnectedText">✅ Facebook Page Connected!</span>
-                            <button onclick="disconnectFb()" style="background:none;border:1px solid var(--border);color:var(--dim);padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:inherit;">Disconnect</button>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="social-controls">
                     <select id="socialPlatform" onchange="updateContentTypeOptions(); generateSocialPosts()">
                         <option value="instagram">Instagram</option>

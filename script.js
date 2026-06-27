@@ -836,55 +836,32 @@ function updateFbStatus() {
     }
 }
 
-async function postToFacebookPage(productId, btn) {
-    const pageId = localStorage.getItem('fb_page_id');
-    const token = localStorage.getItem('fb_page_token');
+function postToFacebookPage(productId, btn) {
     const msg = document.getElementById('share-msg-' + productId);
     const caption = document.getElementById('caption-' + productId).textContent;
-    const product = products.find(p => p.id === productId);
 
     function showMsg(text) {
-        if (msg) { msg.textContent = text; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 5000); }
+        if (msg) { msg.textContent = text; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
     }
 
-    if (!pageId || !token) {
-        showMsg('⚠️ Pehle upar Facebook Page connect karo!');
-        return;
-    }
+    const shareUrl = 'https://solar-cart-apvs.vercel.app/api/share?id=' + productId;
+    const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+
+    const a = document.createElement('a');
+    a.href = fbUrl;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    navigator.clipboard.writeText(caption).catch(() => {});
+    showMsg('✅ Facebook khul gaya! Caption copy ho gaya — paste karo aur Post karo');
 
     const origText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '⏳ Posting...';
-
-    try {
-        const imageUrl = product.image; // public URL
-        const fullCaption = caption + '\n\n🛒 Order karo: https://solar-cart-apvs.vercel.app';
-
-        const res = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/photos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                url: imageUrl,
-                caption: fullCaption,
-                access_token: token
-            })
-        }).then(r => r.json());
-
-        if (res.error) {
-            showMsg('❌ Error: ' + res.error.message);
-            btn.textContent = origText;
-            btn.disabled = false;
-        } else {
-            showMsg('✅ Facebook pe post ho gaya!');
-            btn.textContent = '✓ Posted!';
-            btn.style.background = '#2ecc71';
-            setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 3000);
-        }
-    } catch(e) {
-        showMsg('❌ Network error. Internet check karo.');
-        btn.textContent = origText;
-        btn.disabled = false;
-    }
+    btn.textContent = '✓ Done!';
+    btn.style.background = '#2ecc71';
+    setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); }, 2500);
 }
 
 // ==================== SOLAR ANIMATION ====================
