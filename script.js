@@ -675,7 +675,7 @@ function generateSocialPosts() {
                     <div class="post-actions" style="margin-top:6px;">
                         <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
-                        <button class="btn-fb-share" onclick="shareToStatus(${p.id}, 'facebook', this)">Facebook</button>
+                        <button class="btn-fb-share" onclick="postToFacebookPage(${p.id}, this)">&#128077; Post to FB</button>
                     </div>
                     <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
@@ -798,6 +798,92 @@ function shareToStatus(productId, platform, btn) {
                 showMsg('Caption manually copy karo aur ' + platformLabels[platform] + ' pe paste karo');
                 setTimeout(resetBtn, 2000);
             });
+    }
+}
+
+// ==================== FACEBOOK PAGE AUTO-POST ====================
+function saveFbCredentials() {
+    const pageId = document.getElementById('fbPageId').value.trim();
+    const token = document.getElementById('fbPageToken').value.trim();
+    if (!pageId || !token) { alert('Page ID aur Token dono zaroori hain!'); return; }
+    localStorage.setItem('fb_page_id', pageId);
+    localStorage.setItem('fb_page_token', token);
+    updateFbStatus();
+}
+
+function disconnectFb() {
+    localStorage.removeItem('fb_page_id');
+    localStorage.removeItem('fb_page_token');
+    updateFbStatus();
+}
+
+function updateFbStatus() {
+    const pageId = localStorage.getItem('fb_page_id');
+    const token = localStorage.getItem('fb_page_token');
+    const dot = document.getElementById('fbStatusDot');
+    const form = document.getElementById('fbSetupForm');
+    const info = document.getElementById('fbConnectedInfo');
+    if (!dot) return;
+    if (pageId && token) {
+        dot.style.background = 'var(--green)';
+        form.style.display = 'none';
+        info.style.display = 'block';
+        document.getElementById('fbConnectedText').textContent = '✅ Facebook Page Connected! (ID: ' + pageId + ')';
+    } else {
+        dot.style.background = 'var(--red)';
+        form.style.display = 'block';
+        info.style.display = 'none';
+    }
+}
+
+async function postToFacebookPage(productId, btn) {
+    const pageId = localStorage.getItem('fb_page_id');
+    const token = localStorage.getItem('fb_page_token');
+    const msg = document.getElementById('share-msg-' + productId);
+    const caption = document.getElementById('caption-' + productId).textContent;
+    const product = products.find(p => p.id === productId);
+
+    function showMsg(text) {
+        if (msg) { msg.textContent = text; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 5000); }
+    }
+
+    if (!pageId || !token) {
+        showMsg('⚠️ Pehle upar Facebook Page connect karo!');
+        return;
+    }
+
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Posting...';
+
+    try {
+        const imageUrl = product.image; // public URL
+        const fullCaption = caption + '\n\n🛒 Order karo: https://solar-cart-apvs.vercel.app';
+
+        const res = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/photos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: imageUrl,
+                caption: fullCaption,
+                access_token: token
+            })
+        }).then(r => r.json());
+
+        if (res.error) {
+            showMsg('❌ Error: ' + res.error.message);
+            btn.textContent = origText;
+            btn.disabled = false;
+        } else {
+            showMsg('✅ Facebook pe post ho gaya!');
+            btn.textContent = '✓ Posted!';
+            btn.style.background = '#2ecc71';
+            setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 3000);
+        }
+    } catch(e) {
+        showMsg('❌ Network error. Internet check karo.');
+        btn.textContent = origText;
+        btn.disabled = false;
     }
 }
 
