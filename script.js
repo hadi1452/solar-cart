@@ -29,31 +29,6 @@ const products = [
     { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:535000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", localImage:"images/itel-bat-16kwh.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 }
 ];
 
-// ==================== SOCIAL MEDIA IMAGE POOL ====================
-const socialImageOffsets = {};
-
-function getCategoryImagePool(product) {
-    const pool = [];
-    if (product.localImage) pool.push(product.localImage);
-    if (product.image && !pool.includes(product.image)) pool.push(product.image);
-    return pool;
-}
-
-function cycleImage(productId) {
-    socialImageOffsets[productId] = (socialImageOffsets[productId] || 0) + 1;
-    const product = products.find(p => p.id === productId);
-    const pool = getCategoryImagePool(product);
-    const dayIndex = Math.floor(Date.now() / 86400000);
-    const offset = socialImageOffsets[productId];
-    const idx = (dayIndex + offset) % pool.length;
-    const imgEl = document.getElementById('post-img-' + productId);
-    if (imgEl) {
-        imgEl.style.opacity = '0';
-        setTimeout(() => { imgEl.src = pool[idx]; imgEl.style.opacity = '1'; }, 180);
-    }
-    const counter = document.getElementById('img-count-' + productId);
-    if (counter) counter.textContent = (idx + 1) + '/' + pool.length;
-}
 
 // ==================== CART ====================
 let cart = JSON.parse(localStorage.getItem('solarCart')) || [];
@@ -684,24 +659,12 @@ function generateSocialPosts() {
     const typeLabel = platform === 'whatsapp' ? 'STATUS' : contentType.toUpperCase();
     const platformLabel = platform.toUpperCase();
 
-    const dayIndex = Math.floor(Date.now() / 86400000);
-    const today = new Date().toLocaleDateString('en-PK', { day:'numeric', month:'short' });
-
     container.innerHTML = filtered.map(p => {
         const caption = generateCaption(p, platform, contentType);
-        const pool = getCategoryImagePool(p);
-        const offset = socialImageOffsets[p.id] || 0;
-        const imgIdx = (dayIndex + offset) % pool.length;
-        const imgSrc = pool[imgIdx];
         return `
             <div class="social-post-card">
                 <div class="post-img">
-                    <img id="post-img-${p.id}" src="${imgSrc}" alt="${p.name}" loading="lazy" style="transition:opacity 0.18s;">
-                    <div class="img-cycle-bar">
-                        <span class="img-date-badge">📅 ${today}</span>
-                        <span id="img-count-${p.id}" class="img-count">${imgIdx + 1}/${pool.length}</span>
-                        <button class="img-cycle-btn" onclick="cycleImage(${p.id})">Next ›</button>
-                    </div>
+                    <img id="post-img-${p.id}" src="${p.localImage || p.image}" alt="${p.name}" loading="lazy">
                 </div>
                 <div class="post-body">
                     <div class="post-platform">${platformLabel} ${typeLabel}</div>
@@ -714,6 +677,7 @@ function generateSocialPosts() {
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
                         <button class="btn-fb-share" onclick="shareToStatus(${p.id}, 'facebook', this)">Facebook</button>
                     </div>
+                    <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
             </div>
         `;
@@ -773,6 +737,18 @@ function shareToStatus(productId, platform, btn) {
     const imgEl = document.getElementById('post-img-' + product.id);
     const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
 
+    function downloadAndCopy(blob) {
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = product.model + '-' + platform + '.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+        navigator.clipboard.writeText(caption).catch(() => {});
+    }
+
     fetch(imgUrl)
         .then(r => r.blob())
         .then(blob => {
@@ -783,23 +759,24 @@ function shareToStatus(productId, platform, btn) {
                     .then(() => {
                         btn.textContent = 'Done!';
                         btn.style.background = '#2ecc71';
-                        setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2000);
+                        setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2000);
                     })
                     .catch(() => { btn.textContent = origText; btn.disabled = false; });
             } else {
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = product.model + '-' + platform + '.jpg';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                navigator.clipboard.writeText(caption).catch(() => {});
-                btn.textContent = 'Saved!';
+                downloadAndCopy(blob);
+                const labels = { whatsapp: 'WhatsApp pe paste karo', instagram: 'Instagram pe paste karo', facebook: 'Facebook pe paste karo' };
+                btn.textContent = '✓ Downloaded';
                 btn.style.background = '#2ecc71';
-                setTimeout(() => { btn.textContent = origText; btn.style.background = ''; btn.disabled = false; }, 2500);
+                const msg = document.getElementById('share-msg-' + productId);
+                if (msg) { msg.textContent = '📋 Caption copied! ' + (labels[platform] || 'Paste karo'); msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
+                setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2500);
             }
         })
-        .catch(() => { btn.textContent = origText; btn.disabled = false; });
+        .catch(() => {
+            btn.textContent = 'Failed ✗';
+            btn.style.background = '#e74c3c';
+            setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false; }, 2000);
+        });
 }
 
 // ==================== SOLAR ANIMATION ====================
