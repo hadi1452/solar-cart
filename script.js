@@ -30,28 +30,13 @@ const products = [
 ];
 
 // ==================== SOCIAL MEDIA IMAGE POOL ====================
-const categoryImages = {
-    longi:    ['images/longi-645w.jpg', 'images/longi-610w.jpg'],
-    jinko:    ['images/jinko-585w.jpg'],
-    inverter: ['images/itel-3kw.jpg', 'images/itel-4kw.jpg', 'images/itel-6kw.jpg', 'images/itel-6k6-ip66.jpg', 'images/itel-6kw-ip66.jpg', 'images/itel-8kw.jpg', 'images/itel-12kw.jpg'],
-    battery:  ['images/itel-bat-100ah.jpg', 'images/itel-bat-256.jpg', 'images/itel-bat-512.jpg', 'images/itel-bat-14kwh.jpg', 'images/itel-bat-16kwh.jpg'],
-    ess:      ['images/itel-ess-500w.jpg', 'images/itel-ess-3k6.jpg', 'images/itel-ess-320.jpg']
-};
 const socialImageOffsets = {};
 
 function getCategoryImagePool(product) {
-    const base = categoryImages[product.category] ? [...categoryImages[product.category]] : [];
-    if (product.localImage && !base.includes(product.localImage)) base.unshift(product.localImage);
-    if (base.length === 0) base.push(product.image);
-    return base;
-}
-
-function getDailyImageSrc(product) {
-    const pool = getCategoryImagePool(product);
-    const dayIndex = Math.floor(Date.now() / 86400000);
-    const pIndex = products.indexOf(product);
-    const offset = socialImageOffsets[product.id] || 0;
-    return pool[(dayIndex + pIndex + offset) % pool.length];
+    const pool = [];
+    if (product.localImage) pool.push(product.localImage);
+    if (product.image && !pool.includes(product.image)) pool.push(product.image);
+    return pool;
 }
 
 function cycleImage(productId) {
@@ -59,9 +44,8 @@ function cycleImage(productId) {
     const product = products.find(p => p.id === productId);
     const pool = getCategoryImagePool(product);
     const dayIndex = Math.floor(Date.now() / 86400000);
-    const pIndex = products.indexOf(product);
     const offset = socialImageOffsets[productId];
-    const idx = (dayIndex + pIndex + offset) % pool.length;
+    const idx = (dayIndex + offset) % pool.length;
     const imgEl = document.getElementById('post-img-' + productId);
     if (imgEl) {
         imgEl.style.opacity = '0';
@@ -706,9 +690,8 @@ function generateSocialPosts() {
     container.innerHTML = filtered.map(p => {
         const caption = generateCaption(p, platform, contentType);
         const pool = getCategoryImagePool(p);
-        const pIndex = products.indexOf(p);
         const offset = socialImageOffsets[p.id] || 0;
-        const imgIdx = (dayIndex + pIndex + offset) % pool.length;
+        const imgIdx = (dayIndex + offset) % pool.length;
         const imgSrc = pool[imgIdx];
         return `
             <div class="social-post-card">
