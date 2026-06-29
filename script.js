@@ -839,14 +839,28 @@ function updateFbStatus() {
 function postToFacebookPage(productId, btn) {
     const msg = document.getElementById('share-msg-' + productId);
     const caption = document.getElementById('caption-' + productId).textContent;
+    const origText = btn.textContent;
 
-    function showMsg(text) {
-        if (msg) { msg.textContent = text; msg.style.display = 'block'; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
+    function showMsg(text, isError) {
+        if (!msg) return;
+        msg.textContent = text;
+        msg.style.display = 'block';
+        msg.style.background = isError ? 'rgba(231,76,60,0.15)' : 'rgba(46,204,113,0.15)';
+        msg.style.borderColor = isError ? 'rgba(231,76,60,0.3)' : 'rgba(46,204,113,0.3)';
+        msg.style.color = isError ? '#e74c3c' : '#2ecc71';
+        msg.style.fontSize = '0.8rem';
+        msg.style.padding = '8px 12px';
+        setTimeout(() => { msg.style.display = 'none'; }, 7000);
+    }
+    function resetBtn() {
+        btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
     }
 
+    // Open Facebook with quote parameter (pre-fills caption in share dialog)
     const shareUrl = 'https://solar-cart-apvs.vercel.app/api/share?id=' + productId;
-    const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+    const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl) + '&quote=' + encodeURIComponent(caption);
 
+    // Must open synchronously in click handler to avoid popup blocker
     const a = document.createElement('a');
     a.href = fbUrl;
     a.target = '_blank';
@@ -855,13 +869,22 @@ function postToFacebookPage(productId, btn) {
     a.click();
     document.body.removeChild(a);
 
-    navigator.clipboard.writeText(caption).catch(() => {});
-    showMsg('✅ Facebook khul gaya! Caption copy ho gaya — paste karo aur Post karo');
+    btn.disabled = true;
+    btn.textContent = '📋 Copying...';
 
-    const origText = btn.textContent;
-    btn.textContent = '✓ Done!';
-    btn.style.background = '#2ecc71';
-    setTimeout(() => { btn.textContent = origText; btn.style.removeProperty('background'); }, 2500);
+    navigator.clipboard.writeText(caption)
+        .then(() => {
+            showMsg('📋 Caption clipboard mein copy ho gaya! Facebook tab mein click karo aur Ctrl+V (PC) ya long press → Paste (Mobile) se paste karo', false);
+            btn.textContent = '✓ Caption Copied!';
+            btn.style.background = '#2ecc71';
+            setTimeout(resetBtn, 3500);
+        })
+        .catch(() => {
+            showMsg('⚠️ Caption neeche se manually copy karo, phir Facebook mein paste karo', true);
+            btn.textContent = '✓ FB Opened';
+            btn.style.background = '#f39c12';
+            setTimeout(resetBtn, 3500);
+        });
 }
 
 // ==================== SOLAR ANIMATION ====================
