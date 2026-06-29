@@ -827,7 +827,7 @@ function updateFbStatus() {
     if (pageId && token) {
         dot.style.background = 'var(--green)';
         form.style.display = 'none';
-        info.style.display = 'block';
+        info.style.display = 'flex';
         document.getElementById('fbConnectedText').textContent = '✅ Facebook Page Connected! (ID: ' + pageId + ')';
     } else {
         dot.style.background = 'var(--red)';
@@ -836,9 +836,10 @@ function updateFbStatus() {
     }
 }
 
-function postToFacebookPage(productId, btn) {
+async function postToFacebookPage(productId, btn) {
     const msg = document.getElementById('share-msg-' + productId);
     const caption = document.getElementById('caption-' + productId).textContent;
+    const product = products.find(p => p.id === productId);
     const origText = btn.textContent;
 
     function showMsg(text, isError) {
@@ -850,41 +851,64 @@ function postToFacebookPage(productId, btn) {
         msg.style.color = isError ? '#e74c3c' : '#2ecc71';
         msg.style.fontSize = '0.8rem';
         msg.style.padding = '8px 12px';
-        setTimeout(() => { msg.style.display = 'none'; }, 7000);
+        setTimeout(() => { msg.style.display = 'none'; }, 6000);
     }
     function resetBtn() {
         btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
     }
 
-    // Open Facebook with quote parameter (pre-fills caption in share dialog)
-    const shareUrl = 'https://solar-cart-apvs.vercel.app/api/share?id=' + productId;
-    const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl) + '&quote=' + encodeURIComponent(caption);
+    const pageId = localStorage.getItem('fb_page_id');
+    const pageToken = localStorage.getItem('fb_page_token');
 
-    // Must open synchronously in click handler to avoid popup blocker
-    const a = document.createElement('a');
-    a.href = fbUrl;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (!pageId || !pageToken) {
+        showMsg('⚠️ Pehle upar Facebook Page ID aur Access Token save karo!', true);
+        return;
+    }
 
     btn.disabled = true;
-    btn.textContent = '📋 Copying...';
+    btn.textContent = '⏳ Posting...';
+    btn.style.background = '#1877f2';
 
-    navigator.clipboard.writeText(caption)
-        .then(() => {
-            showMsg('📋 Caption clipboard mein copy ho gaya! Facebook tab mein click karo aur Ctrl+V (PC) ya long press → Paste (Mobile) se paste karo', false);
-            btn.textContent = '✓ Caption Copied!';
+    try {
+        const imgEl = document.getElementById('post-img-' + productId);
+        const imageUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product ? product.image : null);
+
+        let response, data;
+
+        if (imageUrl) {
+            const params = new URLSearchParams({ url: imageUrl, caption: caption, access_token: pageToken });
+            response = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/photos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+        } else {
+            const params = new URLSearchParams({ message: caption, link: 'https://solar-cart-apvs.vercel.app', access_token: pageToken });
+            response = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/feed', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+        }
+
+        data = await response.json();
+
+        if (data.error) {
+            showMsg('❌ FB Error: ' + data.error.message, true);
+            btn.textContent = '✗ Failed';
+            btn.style.background = '#e74c3c';
+        } else {
+            showMsg('✅ Post Facebook Page pe successfully post ho gaya!', false);
+            btn.textContent = '✓ Posted!';
             btn.style.background = '#2ecc71';
-            setTimeout(resetBtn, 3500);
-        })
-        .catch(() => {
-            showMsg('⚠️ Caption neeche se manually copy karo, phir Facebook mein paste karo', true);
-            btn.textContent = '✓ FB Opened';
-            btn.style.background = '#f39c12';
-            setTimeout(resetBtn, 3500);
-        });
+        }
+    } catch (err) {
+        showMsg('❌ Network error — internet check karo aur dobara try karo', true);
+        btn.textContent = '✗ Error';
+        btn.style.background = '#e74c3c';
+    }
+
+    setTimeout(resetBtn, 4000);
 }
 
 // ==================== SOLAR ANIMATION ====================
