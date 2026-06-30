@@ -675,7 +675,6 @@ function generateSocialPosts() {
                     <div class="post-actions" style="margin-top:6px;">
                         <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
-                        <button class="btn-fb-share" onclick="postToFacebookPage(${p.id}, this)">&#128077; Post to FB</button>
                     </div>
                     <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
@@ -734,7 +733,7 @@ function shareToStatus(productId, platform, btn) {
     btn.disabled = true;
 
     const isMobile = navigator.maxTouchPoints > 0;
-    const platformLabels = { whatsapp: 'WhatsApp', instagram: 'Instagram', facebook: 'Facebook' };
+    const platformLabels = { whatsapp: 'WhatsApp', instagram: 'Instagram' };
     const msg = document.getElementById('share-msg-' + productId);
 
     function showMsg(text) {
@@ -742,23 +741,6 @@ function shareToStatus(productId, platform, btn) {
     }
     function resetBtn() {
         btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
-    }
-
-    if (platform === 'facebook') {
-        const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://solar-cart-apvs.vercel.app');
-        const a = document.createElement('a');
-        a.href = fbUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        navigator.clipboard.writeText(caption).catch(() => {});
-        showMsg('✅ Facebook share open ho gaya!');
-        btn.textContent = '✓ Shared!';
-        btn.style.background = '#2ecc71';
-        setTimeout(resetBtn, 2500);
-        return;
     }
 
     if (isMobile) {
@@ -799,116 +781,6 @@ function shareToStatus(productId, platform, btn) {
                 setTimeout(resetBtn, 2000);
             });
     }
-}
-
-// ==================== FACEBOOK PAGE AUTO-POST ====================
-function saveFbCredentials() {
-    const pageId = document.getElementById('fbPageId').value.trim();
-    const token = document.getElementById('fbPageToken').value.trim();
-    if (!pageId || !token) { alert('Page ID aur Token dono zaroori hain!'); return; }
-    localStorage.setItem('fb_page_id', pageId);
-    localStorage.setItem('fb_page_token', token);
-    updateFbStatus();
-}
-
-function disconnectFb() {
-    localStorage.removeItem('fb_page_id');
-    localStorage.removeItem('fb_page_token');
-    updateFbStatus();
-}
-
-function updateFbStatus() {
-    const pageId = localStorage.getItem('fb_page_id');
-    const token = localStorage.getItem('fb_page_token');
-    const dot = document.getElementById('fbStatusDot');
-    const form = document.getElementById('fbSetupForm');
-    const info = document.getElementById('fbConnectedInfo');
-    if (!dot) return;
-    if (pageId && token) {
-        dot.style.background = 'var(--green)';
-        form.style.display = 'none';
-        info.style.display = 'flex';
-        document.getElementById('fbConnectedText').textContent = '✅ Facebook Page Connected! (ID: ' + pageId + ')';
-    } else {
-        dot.style.background = 'var(--red)';
-        form.style.display = 'block';
-        info.style.display = 'none';
-    }
-}
-
-async function postToFacebookPage(productId, btn) {
-    const msg = document.getElementById('share-msg-' + productId);
-    const caption = document.getElementById('caption-' + productId).textContent;
-    const product = products.find(p => p.id === productId);
-    const origText = btn.textContent;
-
-    function showMsg(text, isError) {
-        if (!msg) return;
-        msg.textContent = text;
-        msg.style.display = 'block';
-        msg.style.background = isError ? 'rgba(231,76,60,0.15)' : 'rgba(46,204,113,0.15)';
-        msg.style.borderColor = isError ? 'rgba(231,76,60,0.3)' : 'rgba(46,204,113,0.3)';
-        msg.style.color = isError ? '#e74c3c' : '#2ecc71';
-        msg.style.fontSize = '0.8rem';
-        msg.style.padding = '8px 12px';
-        setTimeout(() => { msg.style.display = 'none'; }, 6000);
-    }
-    function resetBtn() {
-        btn.textContent = origText; btn.style.removeProperty('background'); btn.disabled = false;
-    }
-
-    const pageId = localStorage.getItem('fb_page_id');
-    const pageToken = localStorage.getItem('fb_page_token');
-
-    if (!pageId || !pageToken) {
-        showMsg('⚠️ Pehle upar Facebook Page ID aur Access Token save karo!', true);
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = '⏳ Posting...';
-    btn.style.background = '#1877f2';
-
-    try {
-        const imgEl = document.getElementById('post-img-' + productId);
-        const imageUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product ? product.image : null);
-
-        let response, data;
-
-        if (imageUrl) {
-            const params = new URLSearchParams({ url: imageUrl, caption: caption, access_token: pageToken });
-            response = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/photos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString()
-            });
-        } else {
-            const params = new URLSearchParams({ message: caption, link: 'https://solar-cart-apvs.vercel.app', access_token: pageToken });
-            response = await fetch('https://graph.facebook.com/v19.0/' + pageId + '/feed', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString()
-            });
-        }
-
-        data = await response.json();
-
-        if (data.error) {
-            showMsg('❌ FB Error: ' + data.error.message, true);
-            btn.textContent = '✗ Failed';
-            btn.style.background = '#e74c3c';
-        } else {
-            showMsg('✅ Post Facebook Page pe successfully post ho gaya!', false);
-            btn.textContent = '✓ Posted!';
-            btn.style.background = '#2ecc71';
-        }
-    } catch (err) {
-        showMsg('❌ Network error — internet check karo aur dobara try karo', true);
-        btn.textContent = '✗ Error';
-        btn.style.background = '#e74c3c';
-    }
-
-    setTimeout(resetBtn, 4000);
 }
 
 // ==================== SOLAR ANIMATION ====================

@@ -131,20 +131,9 @@
         .btn-whatsapp-share:hover { background:#1da851; }
         .btn-insta-share { background:linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color:#fff; }
         .btn-insta-share:hover { opacity:0.9; }
-        .btn-fb-share { background:#1877f2; color:#fff; }
-        .btn-fb-share:hover { background:#1565c0; }
         .btn-share { background:var(--navy); color:var(--dim); border:1px solid var(--border) !important; }
         .btn-share:hover { color:var(--orange); border-color:var(--orange) !important; }
         .share-msg { margin-top:8px; padding:6px 10px; background:rgba(46,204,113,0.15); border:1px solid rgba(46,204,113,0.3); border-radius:6px; color:#2ecc71; font-size:0.75rem; text-align:center; }
-        .fb-setup-card { background:var(--card); border:1px solid #1877f2; border-radius:12px; padding:16px 20px; margin-bottom:20px; }
-        .fb-setup-header { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
-        .fb-status-dot { width:10px; height:10px; border-radius:50%; background:var(--red); flex-shrink:0; }
-        .fb-setup-card input { padding:9px 12px; border-radius:8px; border:1px solid var(--border); background:var(--navy); color:var(--text); font-family:inherit; font-size:0.85rem; width:100%; box-sizing:border-box; }
-        .fb-setup-card input:focus { outline:none; border-color:#1877f2; }
-        .fb-setup-btn { padding:9px 18px; background:#1877f2; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-family:inherit; font-size:0.85rem; white-space:nowrap; }
-        .fb-setup-btn:hover { background:#1565c0; }
-        .fb-disconnect-btn { padding:5px 12px; background:transparent; border:1px solid var(--red); color:var(--red); border-radius:6px; cursor:pointer; font-size:0.75rem; font-family:inherit; }
-        .fb-disconnect-btn:hover { background:rgba(231,76,60,0.1); }
 
         /* Inventory */
         .inv-controls { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
@@ -838,29 +827,6 @@
             <div class="tab-content" id="tab-social">
                 <h2 style="margin-bottom:16px;">Social Media Post Generator</h2>
 
-                <!-- Facebook Page Auto-Post Setup -->
-                <div class="fb-setup-card">
-                    <div class="fb-setup-header">
-                        <span class="fb-status-dot" id="fbStatusDot"></span>
-                        <strong style="font-size:0.9rem;">Facebook Page Auto-Post</strong>
-                    </div>
-                    <div id="fbSetupForm">
-                        <p style="color:var(--dim);font-size:0.78rem;margin:6px 0 12px;">Page ID aur Page Access Token enter karo — phir directly post hoga bina manually kuch kiye.</p>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <input type="text" id="fbPageId" placeholder="Facebook Page ID (e.g. 123456789)" style="flex:1;min-width:160px;">
-                            <input type="password" id="fbPageToken" placeholder="Page Access Token" style="flex:2;min-width:220px;">
-                            <button class="fb-setup-btn" onclick="saveFbCredentials()">Save & Connect</button>
-                        </div>
-                        <p style="color:var(--dim);font-size:0.72rem;margin-top:8px;">
-                            Token kaise milega: <strong style="color:var(--orange);">developers.facebook.com</strong> → My Apps → Graph API Explorer → Page Access Token generate karo (pages_manage_posts permission ke saath)
-                        </p>
-                    </div>
-                    <div id="fbConnectedInfo" style="display:none;margin-top:8px;align-items:center;gap:12px;">
-                        <span id="fbConnectedText" style="color:#2ecc71;font-size:0.85rem;flex:1;"></span>
-                        <button class="fb-disconnect-btn" onclick="disconnectFb()">Disconnect</button>
-                    </div>
-                </div>
-
                 <div class="social-controls">
                     <select id="socialPlatform" onchange="updateContentTypeOptions(); generateSocialPosts()">
                         <option value="instagram">Instagram</option>
@@ -1236,7 +1202,7 @@
             document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
-            if (tab === 'social') { generateSocialPosts(); updateFbStatus(); }
+            if (tab === 'social') { generateSocialPosts(); }
             if (tab === 'orders') loadOrders();
             if (tab === 'products') renderAdminProducts();
             if (tab === 'inventory') renderInventory();
