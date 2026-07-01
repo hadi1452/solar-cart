@@ -771,18 +771,43 @@ function shareToStatus(productId, platform, btn) {
     } else {
         navigator.clipboard.writeText(caption)
             .then(() => {
-                btn.textContent = '✓ Copied';
+                btn.textContent = '⬇ Saving...';
                 btn.style.background = '#2ecc71';
+
                 if (platform === 'instagram') {
-                    showMsg('📋 Caption copy ho gaya! Instagram tab mein paste karo');
-                    setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 300);
+                    const imgEl = document.getElementById('post-img-' + product.id);
+                    const imgUrl = (imgEl && imgEl.src) ? imgEl.src : (product.localImage || product.image);
+                    fetch(imgUrl)
+                        .then(r => r.blob())
+                        .then(blob => {
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = product.model + '.jpg';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                            btn.textContent = '✓ Done';
+                            showMsg('✅ Image save ho gayi + caption copy hua! Instagram pe image upload karo aur caption paste karo');
+                            setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
+                        })
+                        .catch(() => {
+                            btn.textContent = '✓ Copied';
+                            showMsg('📋 Caption copy ho gaya! Instagram pe manually image upload karo aur paste karo');
+                            setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 300);
+                        })
+                        .finally(() => setTimeout(resetBtn, 3000));
                 } else if (platform === 'whatsapp') {
+                    btn.textContent = '✓ Copied';
                     showMsg('📋 Caption copy ho gaya! WhatsApp Web mein paste karo');
                     setTimeout(() => window.open('https://web.whatsapp.com/', '_blank'), 300);
+                    setTimeout(resetBtn, 2500);
                 } else {
+                    btn.textContent = '✓ Copied';
                     showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
+                    setTimeout(resetBtn, 2500);
                 }
-                setTimeout(resetBtn, 2500);
             })
             .catch(() => {
                 showMsg('Caption manually copy karo aur ' + platformLabels[platform] + ' pe paste karo');
