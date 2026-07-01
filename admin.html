@@ -826,36 +826,6 @@
             <!-- Social Media Tab -->
             <div class="tab-content" id="tab-social">
                 <h2 style="margin-bottom:16px;">Social Media Post Generator</h2>
-
-                <!-- Instagram Auto-Post Setup -->
-                <div id="igSetupSection" style="margin-bottom:20px;background:#fff5f8;border:1px solid #f0a0b8;border-radius:10px;padding:16px;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                        <strong style="color:#E1306C;font-size:15px;">📸 Instagram Auto-Post Setup</strong>
-                        <button onclick="toggleIgSetup()" id="igSetupToggle" style="background:none;border:1px solid #ccc;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;color:#666;">Hide</button>
-                    </div>
-                    <div id="igSetupBody">
-                        <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px;margin-bottom:12px;font-size:13px;line-height:1.6;">
-                            ⚠️ <strong>Zarori steps:</strong><br>
-                            1. <a href="https://developers.facebook.com" target="_blank" style="color:#0066cc;">developers.facebook.com</a> pe app banao → Instagram Graph API enable karo<br>
-                            2. Instagram Business/Creator account hona chahiye + Facebook Page se linked<br>
-                            3. Permissions chahiye: <code>instagram_basic</code>, <code>instagram_content_publish</code><br>
-                            4. <strong>Instagram User ID</strong> aur <strong>Long-lived Access Token</strong> neeche dalo
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 2fr auto;gap:10px;align-items:end;">
-                            <div>
-                                <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Instagram User ID</label>
-                                <input type="text" id="igUserId" placeholder="e.g. 17841400455970203" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
-                            </div>
-                            <div>
-                                <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Access Token</label>
-                                <input type="password" id="igAccessToken" placeholder="EAAxxxxx..." style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;box-sizing:border-box;">
-                            </div>
-                            <button onclick="saveIgCredentials()" style="background:#E1306C;color:white;border:none;padding:9px 18px;border-radius:6px;cursor:pointer;white-space:nowrap;font-weight:600;">Save</button>
-                        </div>
-                        <div id="igCredStatus" style="margin-top:8px;font-size:12px;"></div>
-                    </div>
-                </div>
-
                 <div class="social-controls">
                     <select id="socialPlatform" onchange="updateContentTypeOptions(); generateSocialPosts()">
                         <option value="instagram">Instagram</option>
@@ -1231,7 +1201,6 @@
             document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
-            if (tab === 'social') { loadIgCredentials(); generateSocialPosts(); }
             if (tab === 'orders') loadOrders();
             if (tab === 'products') renderAdminProducts();
             if (tab === 'inventory') renderInventory();
@@ -1240,6 +1209,7 @@
             if (tab === 'reports') renderReports('monthly', document.querySelector('.report-toggle button'));
             if (tab === 'coupons') renderCoupons();
             if (tab === 'services') showServiceType('bookings', document.querySelector('#tab-services .dash-tab'));
+            if (tab === 'social') generateSocialPosts();
         }
 
         // ==================== INVENTORY MANAGEMENT ====================

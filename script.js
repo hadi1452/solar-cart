@@ -1,4 +1,4 @@
-// ==================== PRODUCT DATA ====================
+﻿// ==================== PRODUCT DATA ====================
 const products = [
     // Solar Panels - Longi
     { id:1, name:"LONGi Hi-MO X10 645W Monofacial Panel", model:"LR7-72HVH-645M", category:"longi", price:32250, badge:"New", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://sunsolar.pk/wp-content/uploads/2025/05/Design-ohne-Titel-35-3.png", localImage:"images/longi-645w.jpg", specs:["Power: 645W","Type: N-Type HPBC 2.0","Efficiency: 24.1%"], perWatt:"~Rs. 50/Watt", featured:true, rating:4.9, reviewCount:34 },
@@ -659,14 +659,8 @@ function generateSocialPosts() {
     const typeLabel = platform === 'whatsapp' ? 'STATUS' : contentType.toUpperCase();
     const platformLabel = platform.toUpperCase();
 
-    const igCreds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
-    const hasIgCreds = !!(igCreds.userId && igCreds.token);
-
     container.innerHTML = filtered.map(p => {
         const caption = generateCaption(p, platform, contentType);
-        const autoPostBtn = (platform === 'instagram')
-            ? `<button class="btn-ig-autopost" onclick="autoPostInstagram(${p.id}, this)" style="margin-top:8px;width:100%;padding:9px;background:${hasIgCreds ? '#E1306C' : '#aaa'};color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">${hasIgCreds ? '🚀 Auto Post to Instagram' : '🔒 Setup Credentials First'}</button>`
-            : '';
         return `
             <div class="social-post-card">
                 <div class="post-img">
@@ -682,7 +676,6 @@ function generateSocialPosts() {
                         <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
                     </div>
-                    ${autoPostBtn}
                     <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
             </div>
@@ -729,108 +722,6 @@ function copyCaption(productId, btn) {
         btn.classList.add('copied');
         setTimeout(() => { btn.textContent = 'Copy Caption'; btn.classList.remove('copied'); }, 2000);
     });
-}
-
-// ── Instagram Graph API Auto-Post ──────────────────────────────────────────
-
-function saveIgCredentials() {
-    const userId = (document.getElementById('igUserId') || {}).value || '';
-    const token = (document.getElementById('igAccessToken') || {}).value || '';
-    const status = document.getElementById('igCredStatus');
-    if (!userId.trim() || !token.trim()) {
-        if (status) { status.textContent = '❌ User ID aur Access Token dono required hain.'; status.style.color = '#e74c3c'; }
-        return;
-    }
-    localStorage.setItem('ig_credentials', JSON.stringify({ userId: userId.trim(), token: token.trim() }));
-    if (status) { status.textContent = '✅ Credentials save ho gaye! Ab "Auto Post to Instagram" button active ho gaya.'; status.style.color = '#27ae60'; }
-    generateSocialPosts();
-}
-
-function loadIgCredentials() {
-    const creds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
-    const userIdEl = document.getElementById('igUserId');
-    const tokenEl = document.getElementById('igAccessToken');
-    const status = document.getElementById('igCredStatus');
-    if (creds.userId && userIdEl) userIdEl.value = creds.userId;
-    if (creds.token && tokenEl) tokenEl.value = creds.token;
-    if (creds.userId && status) {
-        status.textContent = '✅ Credentials saved hain — Auto Post ready hai.';
-        status.style.color = '#27ae60';
-    }
-}
-
-function toggleIgSetup() {
-    const body = document.getElementById('igSetupBody');
-    const btn = document.getElementById('igSetupToggle');
-    if (!body) return;
-    const hidden = body.style.display === 'none';
-    body.style.display = hidden ? '' : 'none';
-    if (btn) btn.textContent = hidden ? 'Hide' : 'Show';
-}
-
-async function autoPostInstagram(productId, btn) {
-    const creds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
-    if (!creds.userId || !creds.token) {
-        const setup = document.getElementById('igSetupBody');
-        if (setup) setup.style.display = '';
-        const tog = document.getElementById('igSetupToggle');
-        if (tog) tog.textContent = 'Hide';
-        alert('Pehle Instagram credentials save karo! Upar "Instagram Auto-Post Setup" section mein User ID aur Access Token dalo.');
-        return;
-    }
-
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-
-    const caption = document.getElementById('caption-' + productId).textContent;
-    const siteBase = 'https://solar-cart-apvs.vercel.app/';
-    const imageUrl = product.localImage ? (siteBase + product.localImage) : product.image;
-    const msg = document.getElementById('share-msg-' + productId);
-
-    function showMsg(text, color) {
-        if (msg) { msg.textContent = text; msg.style.display = 'block'; msg.style.color = color || '#333'; setTimeout(() => { msg.style.display = 'none'; }, 8000); }
-    }
-
-    const origText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '⏳ Container bana raha hai...';
-    btn.style.background = '#888';
-
-    try {
-        // Step 1: Create media container
-        const step1 = await fetch(
-            `https://graph.facebook.com/v18.0/${creds.userId}/media?image_url=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${creds.token}`,
-            { method: 'POST' }
-        );
-        const d1 = await step1.json();
-        if (d1.error) throw new Error(d1.error.message);
-
-        btn.textContent = '⏳ Publish ho raha hai...';
-
-        // Step 2: Publish
-        const step2 = await fetch(
-            `https://graph.facebook.com/v18.0/${creds.userId}/media_publish?creation_id=${d1.id}&access_token=${creds.token}`,
-            { method: 'POST' }
-        );
-        const d2 = await step2.json();
-        if (d2.error) throw new Error(d2.error.message);
-
-        btn.textContent = '✅ Posted!';
-        btn.style.background = '#2ecc71';
-        showMsg('✅ Instagram pe post ho gaya! Post ID: ' + d2.id, '#27ae60');
-
-    } catch (err) {
-        btn.textContent = '❌ Failed';
-        btn.style.background = '#e74c3c';
-        showMsg('❌ Error: ' + err.message, '#e74c3c');
-        console.error('Instagram auto-post error:', err);
-    }
-
-    setTimeout(() => {
-        btn.textContent = origText;
-        btn.style.background = '';
-        btn.disabled = false;
-    }, 5000);
 }
 
 function shareToStatus(productId, platform, btn) {
@@ -880,43 +771,10 @@ function shareToStatus(productId, platform, btn) {
     } else {
         navigator.clipboard.writeText(caption)
             .then(() => {
-                btn.textContent = '⬇ Saving...';
+                showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
+                btn.textContent = '✓ Copied';
                 btn.style.background = '#2ecc71';
-
-                if (platform === 'instagram') {
-                    const imgEl = document.getElementById('post-img-' + product.id);
-                    const imgUrl = (imgEl && imgEl.src) ? imgEl.src : (product.localImage || product.image);
-                    fetch(imgUrl)
-                        .then(r => r.blob())
-                        .then(blob => {
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = product.model + '.jpg';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                            btn.textContent = '✓ Done';
-                            showMsg('✅ Image save ho gayi + caption copy hua! Instagram pe image upload karo aur caption paste karo');
-                            setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
-                        })
-                        .catch(() => {
-                            btn.textContent = '✓ Copied';
-                            showMsg('📋 Caption copy ho gaya! Instagram pe manually image upload karo aur paste karo');
-                            setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 300);
-                        })
-                        .finally(() => setTimeout(resetBtn, 3000));
-                } else if (platform === 'whatsapp') {
-                    btn.textContent = '✓ Copied';
-                    showMsg('📋 Caption copy ho gaya! WhatsApp Web mein paste karo');
-                    setTimeout(() => window.open('https://web.whatsapp.com/', '_blank'), 300);
-                    setTimeout(resetBtn, 2500);
-                } else {
-                    btn.textContent = '✓ Copied';
-                    showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
-                    setTimeout(resetBtn, 2500);
-                }
+                setTimeout(resetBtn, 2500);
             })
             .catch(() => {
                 showMsg('Caption manually copy karo aur ' + platformLabels[platform] + ' pe paste karo');
@@ -1429,11 +1287,11 @@ function orderPackage(inverterId, batteryId, panelCount) {
 
 // ==================== BLOG ====================
 const blogArticles = [
-    { id:1, title:'5 Benefits Of Going Solar In Pakistan', tag:'Guide', date:'June 2026', img:'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400', excerpt:'Discover why thousands of Pakistani households are switching to solar energy and how it can save you money.', content:'<h3>1. Slash Your Electricity Bills</h3><p>With electricity rates rising every year in Pakistan, solar energy offers a way to reduce your monthly bill by 70-100%. A 5kW system can generate enough power for an average household.</p><h3>2. Beat Load Shedding</h3><p>Combined with a lithium battery, solar provides uninterrupted power during load shedding — no more sweltering summers without AC or fans.</p><h3>3. Earn From Net Metering</h3><p>Export excess solar electricity to WAPDA and earn credits on your bill. Many homeowners generate more than they consume during sunny months.</p><h3>4. Increase Property Value</h3><p>Homes with solar systems sell for 4-6% more than comparable homes without solar. It is an investment that pays for itself.</p><h3>5. Protect The Environment</h3><p>A typical 5kW solar system prevents approximately 6 tons of CO2 emissions per year — equivalent to planting 100 trees annually.</p>' },
-    { id:2, title:'How To Choose The Right Solar Panels', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400', excerpt:'N-Type vs P-Type, Mono vs Poly — learn which solar panel technology is best for your needs.', content:'<h3>Panel Types</h3><p>Modern solar panels come in two main types: N-Type (newer, more efficient) and P-Type (older, cheaper). For Pakistan\'s hot climate, N-Type panels perform significantly better as they have lower temperature coefficients.</p><h3>Wattage Matters</h3><p>Higher wattage panels (550W-645W) mean fewer panels on your roof for the same system size. This saves installation costs and roof space.</p><h3>Brand Selection</h3><p>Stick with Tier-1 brands like Longi and Jinko. They offer 25-30 year performance warranties and have been tested globally.</p><h3>Efficiency Rating</h3><p>Look for panels with 21%+ efficiency. Higher efficiency means more power from the same surface area.</p>' },
+    { id:1, title:'5 Benefits Of Going Solar In Pakistan', tag:'Guide', date:'June 2026', img:'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400', excerpt:'Discover why thousands of Pakistani households are switching to solar energy and how it can save you money.', content:'<h3>1. Slash Your Electricity Bills</h3><p>With electricity rates rising every year in Pakistan, solar energy offers a way to reduce your monthly bill by 70-100%. A 5kW system can generate enough power for an average household.</p><h3>2. Beat Load Shedding</h3><p>Combined with a lithium battery, solar provides uninterrupted power during load shedding â€” no more sweltering summers without AC or fans.</p><h3>3. Earn From Net Metering</h3><p>Export excess solar electricity to WAPDA and earn credits on your bill. Many homeowners generate more than they consume during sunny months.</p><h3>4. Increase Property Value</h3><p>Homes with solar systems sell for 4-6% more than comparable homes without solar. It is an investment that pays for itself.</p><h3>5. Protect The Environment</h3><p>A typical 5kW solar system prevents approximately 6 tons of CO2 emissions per year â€” equivalent to planting 100 trees annually.</p>' },
+    { id:2, title:'How To Choose The Right Solar Panels', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400', excerpt:'N-Type vs P-Type, Mono vs Poly â€” learn which solar panel technology is best for your needs.', content:'<h3>Panel Types</h3><p>Modern solar panels come in two main types: N-Type (newer, more efficient) and P-Type (older, cheaper). For Pakistan\'s hot climate, N-Type panels perform significantly better as they have lower temperature coefficients.</p><h3>Wattage Matters</h3><p>Higher wattage panels (550W-645W) mean fewer panels on your roof for the same system size. This saves installation costs and roof space.</p><h3>Brand Selection</h3><p>Stick with Tier-1 brands like Longi and Jinko. They offer 25-30 year performance warranties and have been tested globally.</p><h3>Efficiency Rating</h3><p>Look for panels with 21%+ efficiency. Higher efficiency means more power from the same surface area.</p>' },
     { id:3, title:'Complete Guide To Net Metering In Pakistan', tag:'Guide', date:'June 2026', img:'https://images.unsplash.com/photo-1595437193398-f24279553f4f?w=400', excerpt:'Everything you need to know about selling excess solar electricity back to WAPDA.', content:'<h3>What Is Net Metering?</h3><p>Net metering allows you to export excess solar electricity to the national grid (WAPDA/KESC) and receive credits on your electricity bill.</p><h3>How It Works</h3><p>A bidirectional meter measures both electricity consumed from the grid and electricity exported to the grid. At the end of the billing cycle, you only pay for the net consumption.</p><h3>Requirements</h3><p>You need: a grid-tied or hybrid inverter, a solar system of 1kW or more, application to your DISCO (KESC/HESCO etc.), and approval from NEPRA.</p><h3>Current Rates</h3><p>Export rates in Pakistan are approximately Rs. 19-25 per unit depending on your distribution company and time of year.</p>' },
-    { id:4, title:'Battery Backup: LiFePO4 vs Lead Acid', tag:'Comparison', date:'June 2026', img:'https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=400', excerpt:'Why LiFePO4 lithium batteries are the future of solar energy storage in Pakistan.', content:'<h3>LiFePO4 Advantages</h3><p>Lithium Iron Phosphate (LiFePO4) batteries last 6000+ cycles vs 300-500 for lead acid. That means 15+ years vs 2-3 years of service life.</p><h3>Safety</h3><p>LiFePO4 is the safest lithium chemistry — no risk of thermal runaway, fire, or explosion. Lead acid batteries release toxic gases during charging.</p><h3>Weight & Size</h3><p>A 5kWh LiFePO4 battery weighs about 45kg vs 150kg+ for equivalent lead acid batteries. They also take up 70% less space.</p><h3>Cost Analysis</h3><p>While LiFePO4 costs more upfront, the cost per cycle is 5-8x lower than lead acid. Over 10 years, lithium saves you significantly more money.</p>' },
-    { id:5, title:'Solar System Maintenance Tips', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400', excerpt:'Keep your solar system running at peak performance with these simple maintenance tips.', content:'<h3>Panel Cleaning</h3><p>Clean your panels every 2-4 weeks with water and a soft cloth. Dust and bird droppings can reduce output by 15-25% in Karachi\'s dusty environment.</p><h3>Inverter Monitoring</h3><p>Check your inverter display or WiFi app weekly. Look for error codes, unusual power drops, or fan noise. Most iTel inverters have built-in WiFi monitoring.</p><h3>Battery Care</h3><p>LiFePO4 batteries require minimal maintenance. Keep them in a ventilated area between 15-35°C. Avoid deep discharge below 20% regularly.</p><h3>Annual Inspection</h3><p>Have a professional inspect wiring, connections, and mounting structures annually. Pakistan\'s monsoon season can loosen roof mounts.</p>' }
+    { id:4, title:'Battery Backup: LiFePO4 vs Lead Acid', tag:'Comparison', date:'June 2026', img:'https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=400', excerpt:'Why LiFePO4 lithium batteries are the future of solar energy storage in Pakistan.', content:'<h3>LiFePO4 Advantages</h3><p>Lithium Iron Phosphate (LiFePO4) batteries last 6000+ cycles vs 300-500 for lead acid. That means 15+ years vs 2-3 years of service life.</p><h3>Safety</h3><p>LiFePO4 is the safest lithium chemistry â€” no risk of thermal runaway, fire, or explosion. Lead acid batteries release toxic gases during charging.</p><h3>Weight & Size</h3><p>A 5kWh LiFePO4 battery weighs about 45kg vs 150kg+ for equivalent lead acid batteries. They also take up 70% less space.</p><h3>Cost Analysis</h3><p>While LiFePO4 costs more upfront, the cost per cycle is 5-8x lower than lead acid. Over 10 years, lithium saves you significantly more money.</p>' },
+    { id:5, title:'Solar System Maintenance Tips', tag:'Tips', date:'June 2026', img:'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400', excerpt:'Keep your solar system running at peak performance with these simple maintenance tips.', content:'<h3>Panel Cleaning</h3><p>Clean your panels every 2-4 weeks with water and a soft cloth. Dust and bird droppings can reduce output by 15-25% in Karachi\'s dusty environment.</p><h3>Inverter Monitoring</h3><p>Check your inverter display or WiFi app weekly. Look for error codes, unusual power drops, or fan noise. Most iTel inverters have built-in WiFi monitoring.</p><h3>Battery Care</h3><p>LiFePO4 batteries require minimal maintenance. Keep them in a ventilated area between 15-35Â°C. Avoid deep discharge below 20% regularly.</p><h3>Annual Inspection</h3><p>Have a professional inspect wiring, connections, and mounting structures annually. Pakistan\'s monsoon season can loosen roof mounts.</p>' }
 ];
 
 function renderBlog() {
@@ -1591,14 +1449,14 @@ function initTheme() {
 
 // ==================== URDU LANGUAGE ====================
 const urduTranslations = {
-    'Home': 'ہوم', 'Solar Panels': 'سولر پینلز', 'Inverters': 'انورٹرز', 'Batteries': 'بیٹریاں',
-    'ESS Solution': 'ای ایس ایس', 'More': 'مزید', 'Reviews': 'ریویوز', 'Solar Calculator': 'سولر کیلکولیٹر',
-    'FAQ': 'سوالات', 'Track Order': 'آرڈر ٹریک', 'Packages': 'پیکجز', 'Blog': 'بلاگ',
-    'Wishlist': 'پسندیدہ', 'Contact': 'رابطہ', 'Add To Cart': 'کارٹ میں شامل کریں',
-    'Compare': 'موازنہ', 'Search products...': 'مصنوعات تلاش کریں...', 'Place Order': 'آرڈر دیں',
-    'Shopping Cart': 'شاپنگ کارٹ', 'Your cart is empty': 'آپ کا کارٹ خالی ہے',
-    'Proceed to Checkout': 'چیک آؤٹ', 'Continue Shopping': 'خریداری جاری رکھیں',
-    'Checkout': 'چیک آؤٹ', 'Send Message': 'پیغام بھیجیں'
+    'Home': 'ÛÙˆÙ…', 'Solar Panels': 'Ø³ÙˆÙ„Ø± Ù¾ÛŒÙ†Ù„Ø²', 'Inverters': 'Ø§Ù†ÙˆØ±Ù¹Ø±Ø²', 'Batteries': 'Ø¨ÛŒÙ¹Ø±ÛŒØ§Úº',
+    'ESS Solution': 'Ø§ÛŒ Ø§ÛŒØ³ Ø§ÛŒØ³', 'More': 'Ù…Ø²ÛŒØ¯', 'Reviews': 'Ø±ÛŒÙˆÛŒÙˆØ²', 'Solar Calculator': 'Ø³ÙˆÙ„Ø± Ú©ÛŒÙ„Ú©ÙˆÙ„ÛŒÙ¹Ø±',
+    'FAQ': 'Ø³ÙˆØ§Ù„Ø§Øª', 'Track Order': 'Ø¢Ø±ÚˆØ± Ù¹Ø±ÛŒÚ©', 'Packages': 'Ù¾ÛŒÚ©Ø¬Ø²', 'Blog': 'Ø¨Ù„Ø§Ú¯',
+    'Wishlist': 'Ù¾Ø³Ù†Ø¯ÛŒØ¯Û', 'Contact': 'Ø±Ø§Ø¨Ø·Û', 'Add To Cart': 'Ú©Ø§Ø±Ù¹ Ù…ÛŒÚº Ø´Ø§Ù…Ù„ Ú©Ø±ÛŒÚº',
+    'Compare': 'Ù…ÙˆØ§Ø²Ù†Û', 'Search products...': 'Ù…ØµÙ†ÙˆØ¹Ø§Øª ØªÙ„Ø§Ø´ Ú©Ø±ÛŒÚº...', 'Place Order': 'Ø¢Ø±ÚˆØ± Ø¯ÛŒÚº',
+    'Shopping Cart': 'Ø´Ø§Ù¾Ù†Ú¯ Ú©Ø§Ø±Ù¹', 'Your cart is empty': 'Ø¢Ù¾ Ú©Ø§ Ú©Ø§Ø±Ù¹ Ø®Ø§Ù„ÛŒ ÛÛ’',
+    'Proceed to Checkout': 'Ú†ÛŒÚ© Ø¢Ø¤Ù¹', 'Continue Shopping': 'Ø®Ø±ÛŒØ¯Ø§Ø±ÛŒ Ø¬Ø§Ø±ÛŒ Ø±Ú©Ú¾ÛŒÚº',
+    'Checkout': 'Ú†ÛŒÚ© Ø¢Ø¤Ù¹', 'Send Message': 'Ù¾ÛŒØºØ§Ù… Ø¨Ú¾ÛŒØ¬ÛŒÚº'
 };
 
 function toggleLanguage() {
@@ -1650,7 +1508,7 @@ function toggleChatbot() {
 }
 
 const chatResponses = {
-    system_size: "For most homes in Karachi:\n\n- Rs. 10,000-15,000 bill → 3kW system\n- Rs. 15,000-25,000 bill → 5kW system\n- Rs. 25,000-40,000 bill → 8kW system\n- Rs. 40,000+ bill → 10kW+ system\n\nUse our Solar Calculator for a precise recommendation!",
+    system_size: "For most homes in Karachi:\n\n- Rs. 10,000-15,000 bill â†’ 3kW system\n- Rs. 15,000-25,000 bill â†’ 5kW system\n- Rs. 25,000-40,000 bill â†’ 8kW system\n- Rs. 40,000+ bill â†’ 10kW+ system\n\nUse our Solar Calculator for a precise recommendation!",
     pricing: "Our price range:\n\n- Solar Panels: Rs. 27,450 - 32,250\n- Inverters: Rs. 80,000 - 525,000\n- Batteries: Rs. 35,000 - 535,000\n- Complete Packages: Rs. 3.5 Lac - 15 Lac\n\nAll prices include official warranty!",
     delivery: "We deliver within Karachi only.\n\n- Delivery Time: 2-5 business days\n- Delivery Charges: Depending on location\n- We call before delivery to schedule\n- Heavy items delivered to ground floor",
     warranty: "All products come with official manufacturer warranty:\n\n- Solar Panels: 12 Year Product + 30 Year Performance\n- Inverters: 3-5 Years\n- Batteries: 5-10 Years\n- ESS Solutions: 2-5 Years\n\nWarranty card included with every product!",
@@ -2028,27 +1886,27 @@ function renderTracker() {
 const solarTips = [
     'Clean your solar panels every 2 weeks for maximum efficiency.',
     'A 5kW system can save up to Rs. 15,000/month on electricity.',
-    'LiFePO4 batteries last 6000+ cycles — 10x more than lead acid.',
+    'LiFePO4 batteries last 6000+ cycles â€” 10x more than lead acid.',
     'Solar panels work even on cloudy days, just at reduced output.',
     'Net metering lets you sell excess electricity back to WAPDA.',
     'Hybrid inverters can work with both solar and grid power.',
     'Solar panels have a 25-30 year performance warranty.',
     'A 1kW solar system generates about 4-5 units per day in Karachi.',
-    'Summer is the best time for solar — longer days mean more power.',
-    'Dust can reduce solar panel output by 15-25% — keep them clean.',
+    'Summer is the best time for solar â€” longer days mean more power.',
+    'Dust can reduce solar panel output by 15-25% â€” keep them clean.',
     'Solar energy is the cheapest source of electricity in Pakistan.',
     'A properly sized battery can provide 8-12 hours of backup.',
     'N-Type solar panels perform better in hot climates like Karachi.',
     'Solar panels add 4-6% value to your property.',
     'The payback period for solar in Pakistan is typically 3-4 years.',
     'Solar systems require almost zero maintenance after installation.',
-    'Inverter efficiency matters — look for 97%+ efficiency rating.',
+    'Inverter efficiency matters â€” look for 97%+ efficiency rating.',
     'Bifacial panels can generate up to 10% more power from reflected light.',
     'Solar energy reduces your carbon footprint by 6 tons CO2 per year.',
     'Peak solar generation in Karachi is between 10 AM and 3 PM.',
     'Always buy Tier-1 certified solar panels for reliability.',
     'WiFi-enabled inverters let you monitor power generation on your phone.',
-    'Solar panel angle matters — 25-30 degrees is ideal for Karachi.',
+    'Solar panel angle matters â€” 25-30 degrees is ideal for Karachi.',
     'DC wiring should be done by certified professionals only.',
     'Solar panels are rated to withstand winds up to 140 km/h.',
     'A 10kW system can power a large villa with 3-4 ACs.',
