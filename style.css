@@ -78,8 +78,8 @@ a { text-decoration:none; color:inherit; }
 .nav-container { display:flex; align-items:center; justify-content:space-between; gap:20px; }
 .logo { display:flex; align-items:center; }
 .logo-img { height:40px; width:auto; }
-.nav-links { display:flex; list-style:none; gap:4px; }
-.nav-links a { color:var(--text-dim); padding:8px 16px; border-radius:8px; font-size:0.88rem; font-weight:500; transition:var(--transition); }
+.nav-links { display:flex; list-style:none; gap:4px; flex-wrap:wrap; }
+.nav-links a { color:var(--text-dim); padding:8px 16px; border-radius:8px; font-size:0.88rem; font-weight:500; transition:var(--transition); white-space:nowrap; }
 .nav-links a:hover, .nav-links a.active { color:var(--orange); background:rgba(232,122,30,0.06); }
 .nav-right { display:flex; align-items:center; gap:12px; }
 .search-box input { background:#fff; border:1px solid var(--card-border); color:var(--text); padding:9px 18px; border-radius:50px; font-size:0.85rem; width:200px; font-family:inherit; transition:var(--transition); }
