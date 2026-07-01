@@ -1559,32 +1559,6 @@ function renderRecentlyViewed() {
     updateWishlistHearts();
 }
 
-// ==================== FLASH SALE COUNTDOWN ====================
-function initFlashSale() {
-    const saleEnd = new Date();
-    saleEnd.setDate(saleEnd.getDate() + 3);
-    saleEnd.setHours(23, 59, 59);
-    const banner = document.getElementById('flashSaleBanner');
-    if (!banner) return;
-
-    function updateTimer() {
-        const now = new Date();
-        const diff = saleEnd - now;
-        if (diff <= 0) { banner.style.display = 'none'; return; }
-        banner.style.display = 'block';
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        document.getElementById('flashDays').textContent = String(d).padStart(2, '0');
-        document.getElementById('flashHours').textContent = String(h).padStart(2, '0');
-        document.getElementById('flashMins').textContent = String(m).padStart(2, '0');
-        document.getElementById('flashSecs').textContent = String(s).padStart(2, '0');
-    }
-    updateTimer();
-    setInterval(updateTimer, 1000);
-}
-
 // ==================== LIVE ORDER TICKER ====================
 const tickerOrders = [
     'Ahmed from DHA ordered iTel 6kW Inverter', 'Bilal from Gulshan ordered 2x Longi 645W Panels',
@@ -1963,4 +1937,3 @@ renderTracker();
 startOrderTicker();
 initLeadPopup();
 initCartReminder();
-initFlashSale();
