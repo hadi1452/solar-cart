@@ -659,8 +659,14 @@ function generateSocialPosts() {
     const typeLabel = platform === 'whatsapp' ? 'STATUS' : contentType.toUpperCase();
     const platformLabel = platform.toUpperCase();
 
+    const igCreds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
+    const hasIgCreds = !!(igCreds.userId && igCreds.token);
+
     container.innerHTML = filtered.map(p => {
         const caption = generateCaption(p, platform, contentType);
+        const autoPostBtn = (platform === 'instagram')
+            ? `<button class="btn-ig-autopost" onclick="autoPostInstagram(${p.id}, this)" style="margin-top:8px;width:100%;padding:9px;background:${hasIgCreds ? '#E1306C' : '#aaa'};color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">${hasIgCreds ? '🚀 Auto Post to Instagram' : '🔒 Setup Credentials First'}</button>`
+            : '';
         return `
             <div class="social-post-card">
                 <div class="post-img">
@@ -676,6 +682,7 @@ function generateSocialPosts() {
                         <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
                     </div>
+                    ${autoPostBtn}
                     <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
             </div>
@@ -722,6 +729,108 @@ function copyCaption(productId, btn) {
         btn.classList.add('copied');
         setTimeout(() => { btn.textContent = 'Copy Caption'; btn.classList.remove('copied'); }, 2000);
     });
+}
+
+// ── Instagram Graph API Auto-Post ──────────────────────────────────────────
+
+function saveIgCredentials() {
+    const userId = (document.getElementById('igUserId') || {}).value || '';
+    const token = (document.getElementById('igAccessToken') || {}).value || '';
+    const status = document.getElementById('igCredStatus');
+    if (!userId.trim() || !token.trim()) {
+        if (status) { status.textContent = '❌ User ID aur Access Token dono required hain.'; status.style.color = '#e74c3c'; }
+        return;
+    }
+    localStorage.setItem('ig_credentials', JSON.stringify({ userId: userId.trim(), token: token.trim() }));
+    if (status) { status.textContent = '✅ Credentials save ho gaye! Ab "Auto Post to Instagram" button active ho gaya.'; status.style.color = '#27ae60'; }
+    generateSocialPosts();
+}
+
+function loadIgCredentials() {
+    const creds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
+    const userIdEl = document.getElementById('igUserId');
+    const tokenEl = document.getElementById('igAccessToken');
+    const status = document.getElementById('igCredStatus');
+    if (creds.userId && userIdEl) userIdEl.value = creds.userId;
+    if (creds.token && tokenEl) tokenEl.value = creds.token;
+    if (creds.userId && status) {
+        status.textContent = '✅ Credentials saved hain — Auto Post ready hai.';
+        status.style.color = '#27ae60';
+    }
+}
+
+function toggleIgSetup() {
+    const body = document.getElementById('igSetupBody');
+    const btn = document.getElementById('igSetupToggle');
+    if (!body) return;
+    const hidden = body.style.display === 'none';
+    body.style.display = hidden ? '' : 'none';
+    if (btn) btn.textContent = hidden ? 'Hide' : 'Show';
+}
+
+async function autoPostInstagram(productId, btn) {
+    const creds = JSON.parse(localStorage.getItem('ig_credentials') || '{}');
+    if (!creds.userId || !creds.token) {
+        const setup = document.getElementById('igSetupBody');
+        if (setup) setup.style.display = '';
+        const tog = document.getElementById('igSetupToggle');
+        if (tog) tog.textContent = 'Hide';
+        alert('Pehle Instagram credentials save karo! Upar "Instagram Auto-Post Setup" section mein User ID aur Access Token dalo.');
+        return;
+    }
+
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const caption = document.getElementById('caption-' + productId).textContent;
+    const siteBase = 'https://solar-cart-apvs.vercel.app/';
+    const imageUrl = product.localImage ? (siteBase + product.localImage) : product.image;
+    const msg = document.getElementById('share-msg-' + productId);
+
+    function showMsg(text, color) {
+        if (msg) { msg.textContent = text; msg.style.display = 'block'; msg.style.color = color || '#333'; setTimeout(() => { msg.style.display = 'none'; }, 8000); }
+    }
+
+    const origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Container bana raha hai...';
+    btn.style.background = '#888';
+
+    try {
+        // Step 1: Create media container
+        const step1 = await fetch(
+            `https://graph.facebook.com/v18.0/${creds.userId}/media?image_url=${encodeURIComponent(imageUrl)}&caption=${encodeURIComponent(caption)}&access_token=${creds.token}`,
+            { method: 'POST' }
+        );
+        const d1 = await step1.json();
+        if (d1.error) throw new Error(d1.error.message);
+
+        btn.textContent = '⏳ Publish ho raha hai...';
+
+        // Step 2: Publish
+        const step2 = await fetch(
+            `https://graph.facebook.com/v18.0/${creds.userId}/media_publish?creation_id=${d1.id}&access_token=${creds.token}`,
+            { method: 'POST' }
+        );
+        const d2 = await step2.json();
+        if (d2.error) throw new Error(d2.error.message);
+
+        btn.textContent = '✅ Posted!';
+        btn.style.background = '#2ecc71';
+        showMsg('✅ Instagram pe post ho gaya! Post ID: ' + d2.id, '#27ae60');
+
+    } catch (err) {
+        btn.textContent = '❌ Failed';
+        btn.style.background = '#e74c3c';
+        showMsg('❌ Error: ' + err.message, '#e74c3c');
+        console.error('Instagram auto-post error:', err);
+    }
+
+    setTimeout(() => {
+        btn.textContent = origText;
+        btn.style.background = '';
+        btn.disabled = false;
+    }, 5000);
 }
 
 function shareToStatus(productId, platform, btn) {
