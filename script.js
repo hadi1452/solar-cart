@@ -771,9 +771,17 @@ function shareToStatus(productId, platform, btn) {
     } else {
         navigator.clipboard.writeText(caption)
             .then(() => {
-                showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
                 btn.textContent = '✓ Copied';
                 btn.style.background = '#2ecc71';
+                if (platform === 'instagram') {
+                    showMsg('📋 Caption copy ho gaya! Instagram tab mein paste karo');
+                    setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 300);
+                } else if (platform === 'whatsapp') {
+                    showMsg('📋 Caption copy ho gaya! WhatsApp Web mein paste karo');
+                    setTimeout(() => window.open('https://web.whatsapp.com/', '_blank'), 300);
+                } else {
+                    showMsg('📋 Caption copy ho gaya! ' + platformLabels[platform] + ' kholo aur paste karo');
+                }
                 setTimeout(resetBtn, 2500);
             })
             .catch(() => {
