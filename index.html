@@ -43,6 +43,22 @@
         </div>
     </div>
 
+    <!-- Flash Sale Banner -->
+    <div class="flash-sale-bar" id="flashSaleBanner" style="display:none;">
+        <div class="container">
+            <div class="flash-sale-inner">
+                <strong>&#128293; Special Offer - Order Now & Save!</strong>
+                <div class="flash-timer">
+                    <div class="flash-timer-unit" id="flashDays">00</div>d
+                    <div class="flash-timer-unit" id="flashHours">00</div>h
+                    <div class="flash-timer-unit" id="flashMins">00</div>m
+                    <div class="flash-timer-unit" id="flashSecs">00</div>s
+                </div>
+                <a href="#" class="btn" onclick="showPage('panels')">Shop Now</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -115,6 +131,10 @@
     <div id="page-home" class="page active">
         <!-- Hero - Cinematic Centered -->
         <section class="hero">
+            <canvas id="solarCanvas"></canvas>
+            <div class="hero-grid-bg"></div>
+            <div class="hero-glow-1"></div>
+            <div class="hero-glow-2"></div>
             <div class="container">
                 <!-- Solar Widget -->
                 <div class="solar-widget" id="solarWidget">
@@ -237,6 +257,14 @@
                 </div>
             </div>
         </section>
+
+        <!-- Tip of Day -->
+        <div class="container" style="padding-top:10px;padding-bottom:10px;">
+            <div class="tip-banner">
+                <div class="tip-icon">&#128161;</div>
+                <div class="tip-text" id="tipText"></div>
+            </div>
+        </div>
 
         <!-- Featured Products - Horizontal Scroll -->
         <section class="featured">
@@ -568,12 +596,12 @@
         <section class="shop-section">
             <div class="container">
                 <div class="search-filters">
-                    <button class="filter-btn active" onclick="filterSearch('all')">All</button>
-                    <button class="filter-btn" onclick="filterSearch('longi')">Longi Panels</button>
-                    <button class="filter-btn" onclick="filterSearch('jinko')">Jinko Panels</button>
-                    <button class="filter-btn" onclick="filterSearch('inverter')">Inverters</button>
-                    <button class="filter-btn" onclick="filterSearch('battery')">Batteries</button>
-                    <button class="filter-btn" onclick="filterSearch('ess')">ESS Solution</button>
+                    <button class="filter-btn active" onclick="filterSearch('all', this)">All</button>
+                    <button class="filter-btn" onclick="filterSearch('longi', this)">Longi Panels</button>
+                    <button class="filter-btn" onclick="filterSearch('jinko', this)">Jinko Panels</button>
+                    <button class="filter-btn" onclick="filterSearch('inverter', this)">Inverters</button>
+                    <button class="filter-btn" onclick="filterSearch('battery', this)">Batteries</button>
+                    <button class="filter-btn" onclick="filterSearch('ess', this)">ESS Solution</button>
                 </div>
                 <div class="products-grid" id="searchResults"></div>
                 <div class="search-empty" id="searchEmpty" style="display:none;">
@@ -1151,6 +1179,24 @@
         </section>
     </div>
 
+    <!-- ============ COMPARE PAGE ============ -->
+    <div id="page-compare" class="page">
+        <section class="page-header">
+            <div class="container">
+                <h1>Compare Products</h1>
+                <p>Compare Up To 3 Products Side By Side</p>
+            </div>
+        </section>
+        <section class="compare-section">
+            <div class="container">
+                <div id="compareContent"></div>
+                <div style="text-align:center;margin-top:20px;">
+                    <button class="btn btn-outline" onclick="clearCompare(); showPage('panels')">&#8592; Back To Products</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <!-- ============ AFFILIATE PAGE ============ -->
     <div id="page-affiliate" class="page">
         <section class="page-header"><div class="container"><h1>Affiliate Program</h1><p>Earn Commission By Referring Customers</p></div></section>
@@ -1403,6 +1449,20 @@
         <span class="wa-icon">W</span>
         <span class="wa-text">WhatsApp</span>
     </a>
+
+    <!-- Compare Bar -->
+    <div class="compare-bar" id="compareBar" style="display:none;">
+        <div class="container">
+            <div class="compare-bar-inner">
+                <span id="compareCount">0 Products Selected</span>
+                <div class="compare-bar-thumbs" id="compareBarThumbs"></div>
+                <div class="compare-bar-actions">
+                    <button class="btn btn-primary btn-sm" onclick="showComparison()">Compare Now</button>
+                    <button class="btn btn-outline btn-sm" onclick="clearCompare()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

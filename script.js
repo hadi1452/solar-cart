@@ -460,9 +460,9 @@ function renderSearchResults(results) {
     }
 }
 
-function filterSearch(category) {
+function filterSearch(category, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    if (btn) btn.classList.add('active');
 
     if (category === 'all') {
         renderSearchResults(lastSearchResults);
@@ -1963,3 +1963,4 @@ renderTracker();
 startOrderTicker();
 initLeadPopup();
 initCartReminder();
+initFlashSale();
