@@ -739,27 +739,23 @@ function composeImageWithLogo(imgUrl) {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                const badgeSize = Math.round(canvas.width * 0.16);
-                const pad = Math.round(canvas.width * 0.03);
-                const r = 10 * (canvas.width / 400);
+                const badgeSize = Math.round(canvas.width * 0.13);
+                const pad = Math.round(canvas.width * 0.035);
+                const cx = canvas.width - pad - badgeSize / 2;
+                const cy = canvas.height - pad - badgeSize / 2;
                 ctx.save();
                 ctx.beginPath();
-                ctx.moveTo(pad + r, pad);
-                ctx.arcTo(pad + badgeSize, pad, pad + badgeSize, pad + badgeSize, r);
-                ctx.arcTo(pad + badgeSize, pad + badgeSize, pad, pad + badgeSize, r);
-                ctx.arcTo(pad, pad + badgeSize, pad, pad, r);
-                ctx.arcTo(pad, pad, pad + badgeSize, pad, r);
-                ctx.closePath();
-                ctx.fillStyle = '#ffffff';
+                ctx.arc(cx, cy, badgeSize / 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.88)';
                 ctx.shadowColor = 'rgba(0,0,0,0.4)';
                 ctx.shadowBlur = badgeSize * 0.1;
                 ctx.fill();
                 ctx.shadowColor = 'transparent';
                 ctx.clip();
-                const logoPad = badgeSize * 0.12;
+                const logoPad = badgeSize * 0.16;
                 const logoW = badgeSize - logoPad * 2;
                 const logoH = logoW * (logo.naturalHeight / logo.naturalWidth);
-                ctx.drawImage(logo, pad + logoPad, pad + (badgeSize - logoH) / 2, logoW, logoH);
+                ctx.drawImage(logo, cx - logoW / 2, cy - logoH / 2, logoW, logoH);
                 ctx.restore();
 
                 canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/jpeg', 0.92);
