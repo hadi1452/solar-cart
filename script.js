@@ -1,13 +1,14 @@
 ﻿// ==================== PRODUCT DATA ====================
 const products = [
     // Solar Panels - Longi
-    { id:1, name:"LONGi Hi-MO X10 645W Monofacial Panel", model:"LR7-72HVH-645M", category:"longi", price:32250, badge:"New", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://sunsolar.pk/wp-content/uploads/2025/05/Design-ohne-Titel-35-3.png", localImage:"images/longi-645w.jpg", specs:["Power: 645W","Type: N-Type HPBC 2.0","Efficiency: 24.1%"], perWatt:"~Rs. 50/Watt", featured:true, rating:4.9, reviewCount:34 },
-    { id:2, name:"Longi 610W Hi-MO 7 Bifacial Series Solar Panel", model:"LR8-66HGD-610M", category:"longi", price:27450, badge:"Popular", badgeClass:"", warranty:"12 Yr Product / 30 Yr Performance", image:"https://cdn11.bigcommerce.com/s-o8a7xpro4o/images/stencil/760x760/products/987/4078/1__55057.1705069390.png?c=1", localImage:"images/longi-610w.jpg", specs:["Power: 610W","Type: N-Type HPDC Bifacial","Efficiency: 22.8%"], perWatt:"~Rs. 45/Watt", featured:true, rating:4.8, reviewCount:52 },
+    { id:1, name:"LONGi Hi-MO X10 645W Monofacial Panel", model:"LR7-72HVH-645M", category:"longi", price:45000, badge:"New", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://sunsolar.pk/wp-content/uploads/2025/05/Design-ohne-Titel-35-3.png", localImage:"images/longi-645w.jpg", specs:["Power: 645W","Type: N-Type HPBC 2.0","Efficiency: 24.1%"], perWatt:"~Rs. 50/Watt", featured:true, rating:4.9, reviewCount:34 },
+    { id:2, name:"Longi 610W Hi-MO 7 Bifacial Series Solar Panel", model:"LR8-66HGD-610M", category:"longi", price:45000, badge:"Popular", badgeClass:"", warranty:"12 Yr Product / 30 Yr Performance", image:"https://cdn11.bigcommerce.com/s-o8a7xpro4o/images/stencil/760x760/products/987/4078/1__55057.1705069390.png?c=1", localImage:"images/longi-610w.jpg", specs:["Power: 610W","Type: N-Type HPDC Bifacial","Efficiency: 22.8%"], perWatt:"~Rs. 45/Watt", featured:true, rating:4.8, reviewCount:52 },
 
     // Solar Panels - Jinko
-    { id:3, name:"Jinko 585W N-Type Bifacial Solar Panel", model:"JKM585N-72HL4-BDV", category:"jinko", price:29250, badge:"Tier 1", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://www.sunevosolar.com/uploadfile/202402/26/f0645231480db88bfff1bdee41323bf7_medium.jpg", localImage:"images/jinko-585w.jpg", specs:["Power: 585W","Type: N-Type Bifacial","Efficiency: 22.6%"], perWatt:"~Rs. 50/Watt", featured:true, rating:4.7, reviewCount:28 },
+    { id:3, name:"Jinko 585W N-Type Bifacial Solar Panel", model:"JKM585N-72HL4-BDV", category:"jinko", price:45000, badge:"Tier 1", badgeClass:"best", warranty:"12 Yr Product / 30 Yr Performance", image:"https://www.sunevosolar.com/uploadfile/202402/26/f0645231480db88bfff1bdee41323bf7_medium.jpg", localImage:"images/jinko-585w.jpg", specs:["Power: 585W","Type: N-Type Bifacial","Efficiency: 22.6%"], perWatt:"~Rs. 50/Watt", featured:true, rating:4.7, reviewCount:28 },
 
     // Inverters (Official iTel images from itelsolar.com)
+    { id:19, name:"itel 1.6kW Hybrid Solar Inverter", model:"IPV-1K512U", category:"inverter", price:43000, badge:"", warranty:"3 Years", image:"images/itel-1k6-template.jpg", localImage:"images/itel-1k6-template.jpg", specs:["Capacity: 1.5kW / 1.8kVA","Type: Hybrid IP54","PV Input: 650W Max"], featured:false, rating:4.5, reviewCount:6 },
     { id:4, name:"iTel 3kW Pro IP54 Hybrid Solar Inverter", model:"IPV-3K24UPRO", category:"inverter", price:72000, badge:"", warranty:"3 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-3kW-Hybrid-Solar-Inverter-%E2%80%93-24V-Pure-Sine-Wave-Powers-ACs-TVs-Fridge-1.jpg", localImage:"images/itel-3kw.jpg", specs:["Capacity: 3kW / 4.5kVA","Type: Hybrid IP54","Voltage: 24V"], featured:false, rating:4.5, reviewCount:18 },
     { id:5, name:"IPV-4K24U Pro iTel Inverter 4kW 24V SP Hybrid", model:"IPV-4K24UPRO", category:"inverter", price:113000, badge:"Popular", badgeClass:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-4kW-Hybrid-Solar-Inverter-%E2%80%93-Powers-ACs-Fridges-TVs-24V-IP54-Rated-1.jpg", localImage:"images/itel-4kw.jpg", specs:["Capacity: 4kW","Type: Hybrid IP54","MPPT: Dual + WiFi"], featured:true, rating:4.8, reviewCount:41 },
     { id:6, name:"iTel 6kW Inverter Hybrid 48V IP54 IPV-6K48UPRO With WiFi", model:"IPV-6K48UPRO", category:"inverter", price:138000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-6kW-Hybrid-Solar-Inverter-%E2%80%93-Dual-AC-Output-for-Homes-Clinics-48V-IP54-Rated-2.jpg", localImage:"images/itel-6kw.jpg", specs:["Capacity: 6kW","Type: Hybrid IP54","MPPT: 8kW PV + WiFi"], featured:true, rating:4.9, reviewCount:67 },
@@ -1319,7 +1320,7 @@ function renderPackages() {
 }
 
 function orderPackage(inverterId, batteryId, panelCount) {
-    const panelProduct = products.find(p => p.category === 'longi' && p.price === 27450);
+    const panelProduct = products.find(p => p.model === 'LR8-66HGD-610M');
     if (panelProduct) { cart.push({ id: panelProduct.id, qty: panelCount }); }
     cart.push({ id: inverterId, qty: 1 });
     cart.push({ id: batteryId, qty: 1 });
