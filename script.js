@@ -675,6 +675,7 @@ function generateSocialPosts() {
                     <div class="post-actions" style="margin-top:6px;">
                         <button class="btn-whatsapp-share" onclick="shareToStatus(${p.id}, 'whatsapp', this)">WhatsApp</button>
                         <button class="btn-insta-share" onclick="shareToStatus(${p.id}, 'instagram', this)">Instagram</button>
+                        <button class="btn-facebook-share" onclick="shareToStatus(${p.id}, 'facebook', this)">Facebook</button>
                     </div>
                     <div id="share-msg-${p.id}" class="share-msg" style="display:none;"></div>
                 </div>
@@ -780,7 +781,7 @@ function shareToStatus(productId, platform, btn) {
     btn.disabled = true;
 
     const isMobile = navigator.maxTouchPoints > 0;
-    const platformLabels = { whatsapp: 'WhatsApp', instagram: 'Instagram' };
+    const platformLabels = { whatsapp: 'WhatsApp', instagram: 'Instagram', facebook: 'Facebook' };
     const msg = document.getElementById('share-msg-' + productId);
 
     function showMsg(text) {
