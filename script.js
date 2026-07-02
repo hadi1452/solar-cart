@@ -741,7 +741,7 @@ function composeImageWithLogo(imgUrl) {
 
                 const badgeSize = Math.round(canvas.width * 0.13);
                 const pad = Math.round(canvas.width * 0.035);
-                const cx = canvas.width - pad - badgeSize / 2;
+                const cx = pad + badgeSize / 2;
                 const cy = canvas.height - pad - badgeSize / 2;
                 ctx.save();
                 ctx.beginPath();
