@@ -724,6 +724,45 @@ function copyCaption(productId, btn) {
     });
 }
 
+function composeImageWithLogo(imgUrl) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+            const logo = new Image();
+            logo.crossOrigin = 'anonymous';
+            logo.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                const logoSize = Math.round(canvas.width * 0.12);
+                const pad = Math.round(canvas.width * 0.03);
+                ctx.save();
+                ctx.beginPath();
+                const r = 8 * (canvas.width / 400);
+                ctx.moveTo(pad + r, pad);
+                ctx.arcTo(pad + logoSize, pad, pad + logoSize, pad + logoSize, r);
+                ctx.arcTo(pad + logoSize, pad + logoSize, pad, pad + logoSize, r);
+                ctx.arcTo(pad, pad + logoSize, pad, pad, r);
+                ctx.arcTo(pad, pad, pad + logoSize, pad, r);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(logo, pad, pad, logoSize, logoSize);
+                ctx.restore();
+
+                canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/jpeg', 0.92);
+            };
+            logo.onerror = reject;
+            logo.src = 'logo.png';
+        };
+        img.onerror = reject;
+        img.src = imgUrl;
+    });
+}
+
 function shareToStatus(productId, platform, btn) {
     const product = products.find(p => p.id === productId);
     const caption = document.getElementById('caption-' + productId).textContent;
@@ -747,8 +786,7 @@ function shareToStatus(productId, platform, btn) {
         btn.textContent = 'Loading...';
         const imgEl = document.getElementById('post-img-' + product.id);
         const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
-        fetch(imgUrl)
-            .then(r => r.blob())
+        composeImageWithLogo(imgUrl)
             .then(blob => {
                 const file = new File([blob], product.model + '.jpg', { type: blob.type || 'image/jpeg' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
