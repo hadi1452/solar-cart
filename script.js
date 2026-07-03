@@ -1338,7 +1338,7 @@ function calculateNetMetering() {
 // ==================== PACKAGES ====================
 const solarPackages = [
     { size:'3kW', label:'Small Home', panels:5, panelName:'Longi 610W', inverterId:4, batteryId:11, popular:false, wiringPrice:55000 },
-    { size:'4kW', label:'Growing Home', panels:7, panelName:'Longi 610W', inverterId:5, batteryId:12, popular:false },
+    { size:'4kW', label:'Growing Home', panels:7, panelName:'Longi 610W', inverterId:5, batteryId:12, popular:false, wiringPrice:65000 },
     { size:'6kW', label:'Medium Home', panels:10, panelName:'Longi 610W', inverterId:6, batteryId:13, popular:true, wiringPrice:75000 },
     { size:'8kW', label:'Large Home', panels:13, panelName:'Longi 610W', inverterId:8, batteryId:13, popular:false, wiringPrice:85000 },
     { size:'12kW', label:'Villa / Office', panels:20, panelName:'Longi 610W', inverterId:9, batteryId:14, popular:false, wiringPrice:95000 }
