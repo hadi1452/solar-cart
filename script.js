@@ -1553,56 +1553,6 @@ function initTheme() {
     }
 }
 
-// ==================== URDU LANGUAGE ====================
-const urduTranslations = {
-    'Home': 'ÛÙˆÙ…', 'Solar Panels': 'Ø³ÙˆÙ„Ø± Ù¾ÛŒÙ†Ù„Ø²', 'Inverters': 'Ø§Ù†ÙˆØ±Ù¹Ø±Ø²', 'Batteries': 'Ø¨ÛŒÙ¹Ø±ÛŒØ§Úº',
-    'ESS Solution': 'Ø§ÛŒ Ø§ÛŒØ³ Ø§ÛŒØ³', 'More': 'Ù…Ø²ÛŒØ¯', 'Reviews': 'Ø±ÛŒÙˆÛŒÙˆØ²', 'Solar Calculator': 'Ø³ÙˆÙ„Ø± Ú©ÛŒÙ„Ú©ÙˆÙ„ÛŒÙ¹Ø±',
-    'FAQ': 'Ø³ÙˆØ§Ù„Ø§Øª', 'Track Order': 'Ø¢Ø±ÚˆØ± Ù¹Ø±ÛŒÚ©', 'Packages': 'Ù¾ÛŒÚ©Ø¬Ø²', 'Blog': 'Ø¨Ù„Ø§Ú¯',
-    'Wishlist': 'Ù¾Ø³Ù†Ø¯ÛŒØ¯Û', 'Contact': 'Ø±Ø§Ø¨Ø·Û', 'Add To Cart': 'Ú©Ø§Ø±Ù¹ Ù…ÛŒÚº Ø´Ø§Ù…Ù„ Ú©Ø±ÛŒÚº',
-    'Compare': 'Ù…ÙˆØ§Ø²Ù†Û', 'Search products...': 'Ù…ØµÙ†ÙˆØ¹Ø§Øª ØªÙ„Ø§Ø´ Ú©Ø±ÛŒÚº...', 'Place Order': 'Ø¢Ø±ÚˆØ± Ø¯ÛŒÚº',
-    'Shopping Cart': 'Ø´Ø§Ù¾Ù†Ú¯ Ú©Ø§Ø±Ù¹', 'Your cart is empty': 'Ø¢Ù¾ Ú©Ø§ Ú©Ø§Ø±Ù¹ Ø®Ø§Ù„ÛŒ ÛÛ’',
-    'Proceed to Checkout': 'Ú†ÛŒÚ© Ø¢Ø¤Ù¹', 'Continue Shopping': 'Ø®Ø±ÛŒØ¯Ø§Ø±ÛŒ Ø¬Ø§Ø±ÛŒ Ø±Ú©Ú¾ÛŒÚº',
-    'Checkout': 'Ú†ÛŒÚ© Ø¢Ø¤Ù¹', 'Send Message': 'Ù¾ÛŒØºØ§Ù… Ø¨Ú¾ÛŒØ¬ÛŒÚº'
-};
-
-function toggleLanguage() {
-    const current = localStorage.getItem('language') || 'en';
-    const newLang = current === 'en' ? 'ur' : 'en';
-    localStorage.setItem('language', newLang);
-    applyLanguage(newLang);
-}
-
-function applyLanguage(lang) {
-    const btn = document.getElementById('langBtn');
-    if (btn) btn.textContent = lang === 'en' ? 'UR' : 'EN';
-    document.body.style.direction = lang === 'ur' ? 'rtl' : 'ltr';
-
-    document.querySelectorAll('[data-ur]').forEach(el => {
-        if (lang === 'ur') {
-            if (!el.dataset.en) el.dataset.en = el.textContent;
-            el.textContent = el.dataset.ur;
-        } else {
-            if (el.dataset.en) el.textContent = el.dataset.en;
-        }
-    });
-
-    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
-        const text = a.textContent.trim();
-        if (lang === 'ur') {
-            if (!a.dataset.enText) a.dataset.enText = text;
-            const key = a.dataset.enText || text;
-            if (urduTranslations[key]) a.textContent = urduTranslations[key];
-        } else {
-            if (a.dataset.enText) a.textContent = a.dataset.enText;
-        }
-    });
-}
-
-function initLanguage() {
-    const saved = localStorage.getItem('language');
-    if (saved === 'ur') applyLanguage('ur');
-}
-
 // ==================== PWA ====================
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -2040,7 +1990,6 @@ populateReviewProducts();
 renderCustomerReviews();
 selectStar(5);
 initTheme();
-initLanguage();
 updateWishlistHearts();
 renderRecentlyViewed();
 populateWarrantyProducts();
