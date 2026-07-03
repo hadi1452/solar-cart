@@ -26,13 +26,13 @@ const products = [
     { id:11, name:"iTel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:59000, badge:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-Energy-1280Wh-12V-Lithium-Battery-LiFePO%E2%82%84-%E2%80%93-Smart-Solar-Storage-Solution.webp", localImage:"images/itel-bat-100ah.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false, rating:4.6, reviewCount:14 },
     { id:12, name:"IPW-25100 iTel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", model:"IPW-25100", category:"battery", price:129000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-2.56kWh-Lithium-Battery-Wall-Mounted-Backup-for-Homes-Shops-25.6V-LiFePO4-2-1.jpg", localImage:"images/itel-bat-256.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"], featured:true, rating:4.9, reviewCount:56 },
     { id:13, name:"IPL-51100 iTel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:230000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg", localImage:"images/itel-bat-512.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true, rating:4.8, reviewCount:33 },
-    { id:14, name:"iTel IPL-51280 51.2V 280Ah (14.5kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:445000, badge:"", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-14.3kWh-Silent-Power-Battery-%E2%80%93-Long-Backup-for-Big-Homes-Offices-48V-2.jpg", localImage:"images/itel-bat-14kwh.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false, rating:4.7, reviewCount:8 },
+    { id:14, name:"iTel IPL-51280 51.2V 280Ah (14.33kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:445000, badge:"", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-14.3kWh-Silent-Power-Battery-%E2%80%93-Long-Backup-for-Big-Homes-Offices-48V-2.jpg", localImage:"images/itel-bat-14kwh.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false, rating:4.7, reviewCount:8 },
     { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:603000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", localImage:"images/itel-bat-16kwh.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 }
 ];
 
 
 // ==================== CART ====================
-let cart = JSON.parse(localStorage.getItem('solarCart')) || [];
+let cart = (JSON.parse(localStorage.getItem('solarCart')) || []).filter(item => products.some(p => p.id === item.id));
 
 function saveCart() {
     localStorage.setItem('solarCart', JSON.stringify(cart));
@@ -45,6 +45,7 @@ function addToCart(productId, qty) {
         return;
     }
     qty = qty || parseInt(document.getElementById('qty-' + productId)?.value) || 1;
+    qty = Math.min(99, Math.max(1, qty));
     const existing = cart.find(item => item.id === productId);
     if (existing) {
         existing.qty += qty;
@@ -63,7 +64,7 @@ function removeFromCart(productId) {
 function updateCartQty(productId, change) {
     const item = cart.find(i => i.id === productId);
     if (item) {
-        item.qty += change;
+        item.qty = Math.min(99, item.qty + change);
         if (item.qty <= 0) {
             removeFromCart(productId);
             return;
@@ -138,6 +139,20 @@ if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') 
     initInventory();
     localStorage.setItem('inv_version', '101');
 }
+
+// Pull latest admin-set stock/coupons from the shared backend so every
+// visitor sees the same values instead of only what's in their own browser.
+fetch('/api/store-config').then(r => r.json()).then(cfg => {
+    if (cfg.inventory && Object.keys(cfg.inventory).length) {
+        const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
+        Object.assign(inv, cfg.inventory);
+        localStorage.setItem('solar_inventory', JSON.stringify(inv));
+    }
+    if (cfg.coupons) {
+        localStorage.setItem('solar_coupons', JSON.stringify(cfg.coupons));
+    }
+    if (typeof renderProducts === 'function') renderProducts();
+}).catch(() => {});
 
 function getProductStock(productId) {
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
@@ -214,7 +229,8 @@ function addToCartBtn(btn, productId) {
         return;
     }
     const input = btn.parentElement.querySelector('.qty-input');
-    const qty = parseInt(input.value) || 1;
+    let qty = parseInt(input.value) || 1;
+    qty = Math.min(99, Math.max(1, qty));
     const existing = cart.find(item => item.id === productId);
     if (existing) {
         existing.qty += qty;
@@ -242,6 +258,17 @@ function renderProducts() {
     const ess = document.getElementById('essProducts');
     if (ess) ess.innerHTML = products.filter(p => p.category === 'ess').map(createProductCard).join('');
     if (batteries) batteries.innerHTML = products.filter(p => p.category === 'battery').map(createProductCard).join('');
+
+    const heroPanel = document.getElementById('heroTrioPanelPrice');
+    const heroInverter = document.getElementById('heroTrioInverterPrice');
+    const heroBattery = document.getElementById('heroTrioBatteryPrice');
+    const minPrice = category => {
+        const prices = products.filter(p => p.category === category).map(p => p.price);
+        return prices.length ? Math.min(...prices) : 0;
+    };
+    if (heroPanel) heroPanel.textContent = 'From Rs. ' + Math.min(minPrice('longi'), minPrice('jinko')).toLocaleString();
+    if (heroInverter) heroInverter.textContent = 'From Rs. ' + minPrice('inverter').toLocaleString();
+    if (heroBattery) heroBattery.textContent = 'From Rs. ' + minPrice('battery').toLocaleString();
 }
 
 // ==================== PAGE NAVIGATION ====================
@@ -1652,19 +1679,20 @@ function renderRecentlyViewed() {
 // ==================== LIVE ORDER TICKER ====================
 const tickerOrders = [
     'Ahmed from DHA ordered iTel 6kW Inverter', 'Bilal from Gulshan ordered 2x Longi 645W Panels',
-    'Saad from Clifton ordered iTel 5.12kWh Battery', 'Fahad from PECHS ordered 5kW Package',
+    'Saad from Clifton ordered iTel 5.12kWh Battery', 'Fahad from PECHS ordered 8kW Package',
     'Usman from Bahria Town ordered iTel 8kW Inverter', 'Hamza from Korangi ordered Power Go 320Wh',
-    'Kashif from North Nazimabad ordered 3kW Package', 'Zubair from Malir ordered iTel Combo System',
+    'Kashif from North Nazimabad ordered 3kW Package', 'Zubair from Malir ordered iTel 6.6kW Inverter',
     'Imran from Nazimabad ordered Jinko 585W Panel', 'Rehan from Tariq Road ordered iTel 3kW Inverter'
 ];
 let tickerDismissed = false;
 
 function startOrderTicker() {
-    if (tickerDismissed) return;
+    if (tickerDismissed || !document.getElementById('orderTicker')) return;
     let idx = 0;
     function showTicker() {
         if (tickerDismissed) return;
         const ticker = document.getElementById('orderTicker');
+        if (!ticker) return;
         document.getElementById('tickerText').textContent = tickerOrders[idx % tickerOrders.length];
         ticker.classList.add('show');
         setTimeout(() => { ticker.classList.remove('show'); }, 4000);
@@ -1681,9 +1709,10 @@ function dismissTicker() {
 
 // ==================== LEAD COLLECTION POPUP ====================
 function initLeadPopup() {
-    if (localStorage.getItem('lead_collected')) return;
+    if (localStorage.getItem('lead_collected') || !document.getElementById('leadPopup')) return;
     setTimeout(() => {
-        document.getElementById('leadPopup').classList.add('show');
+        const popup = document.getElementById('leadPopup');
+        if (popup) popup.classList.add('show');
     }, 10000);
 }
 
