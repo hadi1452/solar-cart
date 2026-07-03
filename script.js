@@ -184,7 +184,7 @@ function createProductCard(product) {
                 <ul class="product-specs">${specsHTML}</ul>
                 <div class="product-price">
                     <span class="price">Rs. ${product.price.toLocaleString()}</span>
-                    ${product.category === 'panel' ? '<span class="price-unit"> / panel</span>' : ''}
+                    ${(product.category === 'longi' || product.category === 'jinko') ? '<span class="price-unit"> / panel</span>' : ''}
                 </div>
                 ${perWattHTML}
                 ${isOutOfStock ? '' : `<div class="qty-row">
