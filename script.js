@@ -1750,30 +1750,6 @@ function submitLead() {
     showToast('Thank You! You Will Receive Exclusive Offers!');
 }
 
-// ==================== VOICE SEARCH ====================
-function startVoiceSearch() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        showToast('Voice Search Not Supported In This Browser');
-        return;
-    }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.continuous = false;
-    const btn = document.getElementById('voiceBtn');
-    btn.classList.add('listening');
-
-    recognition.onresult = function(e) {
-        const text = e.results[0][0].transcript;
-        document.getElementById('searchInput').value = text;
-        searchProducts();
-        btn.classList.remove('listening');
-    };
-    recognition.onerror = function() { btn.classList.remove('listening'); };
-    recognition.onend = function() { btn.classList.remove('listening'); };
-    recognition.start();
-}
-
 // ==================== CART ABANDONMENT REMINDER ====================
 let cartReminderDismissed = false;
 function initCartReminder() {

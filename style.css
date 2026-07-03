@@ -496,12 +496,6 @@ a { text-decoration:none; color:inherit; }
 .lead-popup input:focus { outline:none; border-color:var(--orange); }
 .lead-popup-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-dim); }
 
-/* ===== VOICE SEARCH ===== */
-.voice-btn { background:none; border:none; cursor:pointer; font-size:1.1rem; color:var(--text-dim); padding:8px; transition:var(--transition); }
-.voice-btn:hover, .voice-btn.listening { color:var(--orange); }
-.voice-btn.listening { animation:voicePulse 1s infinite; }
-@keyframes voicePulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-
 /* ===== CART REMINDER ===== */
 .cart-reminder { position:fixed; bottom:20px; right:80px; background:var(--card-bg); border:2px solid var(--orange); border-radius:var(--radius); padding:20px; box-shadow:0 12px 40px rgba(232,122,30,0.2); z-index:97; display:none; max-width:300px; text-align:center; }
 .cart-reminder.show { display:block; }
