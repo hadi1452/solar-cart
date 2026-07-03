@@ -857,10 +857,10 @@
     <!-- Invoice Print Template -->
     <div id="invoicePrint"></div>
 
-    <script src="script.js?v=20260703k"></script>
+    <script src="script.js?v=20260703l"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
-        const ORDERS_URL = 'orders.json';
+        const ORDERS_URL = '/api/orders';
 
         // Login
         function adminLogin() {
@@ -972,6 +972,11 @@
             const statuses = JSON.parse(localStorage.getItem('order_statuses') || '{}');
             statuses[orderId] = status;
             localStorage.setItem('order_statuses', JSON.stringify(statuses));
+            fetch(ORDERS_URL, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, status })
+            }).catch(() => {});
         }
 
         function renderOrders(orders) {
@@ -1717,7 +1722,11 @@
             };
 
             localStorage.setItem('order_edits', JSON.stringify(edits));
-            loadOrders();
+            fetch(ORDERS_URL, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, fields: edits[orderId] })
+            }).catch(() => {}).finally(loadOrders);
         }
 
         // Apply edits when loading orders

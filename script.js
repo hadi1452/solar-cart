@@ -379,17 +379,11 @@ function placeOrder(e) {
 
     // Save order to cloud for admin dashboard
     orderData.timestamp = Date.now();
-    const BLOB_ID = '019ee599-7990-7f2c-ac68-f9eb2bf47601';
-    fetch('https://jsonblob.com/api/jsonBlob/' + BLOB_ID)
-        .then(r => r.json())
-        .then(data => {
-            data.orders.unshift(orderData);
-            return fetch('https://jsonblob.com/api/jsonBlob/' + BLOB_ID, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-        }).catch(() => {});
+    fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    }).catch(() => {});
 
     // Update Inventory - reduce stock for each ordered item
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
@@ -1131,7 +1125,7 @@ function trackOrder() {
     const container = document.getElementById('trackResult');
     container.innerHTML = '<p style="text-align:center;padding:20px;color:var(--text-dim);">Searching...</p>';
 
-    fetch('orders.json')
+    fetch('/api/orders')
         .then(r => r.json())
         .then(data => {
             const orders = data.orders || [];
@@ -1141,8 +1135,7 @@ function trackOrder() {
                 return;
             }
 
-            const statuses = JSON.parse(localStorage.getItem('order_statuses') || '{}');
-            const status = statuses[order.orderId] || order.status || 'new';
+            const status = order.status || 'new';
             const statusFlow = ['new', 'confirmed', 'shipped', 'delivered'];
             const currentIdx = statusFlow.indexOf(status);
             const statusLabels = ['New', 'Confirmed', 'Shipped', 'Delivered'];
