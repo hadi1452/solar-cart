@@ -1328,7 +1328,7 @@ function renderPackages() {
                 '<li>' + (inv ? inv.name : 'Inverter') + ' <span class="package-item-price">Rs. ' + (inv ? inv.price.toLocaleString() : '0') + '</span></li>' +
                 '<li>' + (bat ? bat.name : 'Battery') + ' <span class="package-item-price">Rs. ' + (bat ? bat.price.toLocaleString() : '0') + '</span></li>' +
                 '<li>Complete Wiring & Setup</li>' +
-                '<li>Free Delivery In Karachi</li>' +
+                '<li>Delivery Charges Depend On Location</li>' +
             '</ul>' +
             '<div class="package-price">Rs. ' + packagePrice.toLocaleString() + '</div>' +
             '<div class="package-save">Save Rs. ' + savings.toLocaleString() + ' (5% Off)</div>' +
