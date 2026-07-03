@@ -857,7 +857,7 @@
     <!-- Invoice Print Template -->
     <div id="invoicePrint"></div>
 
-    <script src="script.js?v=20260703u"></script>
+    <script src="script.js?v=20260703v"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
         const ADMIN_API_TOKEN = '96b73efb5c87948c52498750f79219c7b7d4367d04e6f83d';
@@ -1227,18 +1227,8 @@
         }
 
         // ==================== INVENTORY MANAGEMENT ====================
-        function initInventory() {
-            const inv = {};
-            products.forEach(p => { inv[p.id] = 100; });
-            localStorage.setItem('solar_inventory', JSON.stringify(inv));
-        }
-        if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '100v2') {
-            initInventory();
-            localStorage.removeItem('synced_orders');
-            localStorage.removeItem('solar_accounting');
-            localStorage.setItem('inv_version', '100v2');
-        }
-
+        // Inventory is initialized once by script.js (shared with the storefront);
+        // admin.html only reads/writes the same 'solar_inventory' key from here on.
         function getInventory() {
             return JSON.parse(localStorage.getItem('solar_inventory') || '{}');
         }
