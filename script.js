@@ -254,6 +254,8 @@ function showPage(page) {
 
     const navLinksEl = document.getElementById('navLinks');
     if (navLinksEl) navLinksEl.classList.remove('active');
+    const moreWrapEl = document.querySelector('.nav-more-wrap');
+    if (moreWrapEl) moreWrapEl.classList.remove('open');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (page === 'checkout') renderCheckout();
