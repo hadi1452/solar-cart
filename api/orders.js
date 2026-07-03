@@ -1,19 +1,16 @@
-import { list, put } from '@vercel/blob';
+import { get, put } from '@vercel/blob';
 
 const ORDERS_PATHNAME = 'orders-data.json';
 
 async function readOrders() {
-  const { blobs } = await list({ prefix: ORDERS_PATHNAME, limit: 1 });
-  const existing = blobs.find(b => b.pathname === ORDERS_PATHNAME);
-  if (!existing) return { orders: [] };
-  const r = await fetch(existing.url);
-  if (!r.ok) return { orders: [] };
-  return r.json();
+  const result = await get(ORDERS_PATHNAME, { access: 'private' });
+  if (!result || !result.stream) return { orders: [] };
+  return new Response(result.stream).json();
 }
 
 async function writeOrders(data) {
   await put(ORDERS_PATHNAME, JSON.stringify(data), {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'application/json'
