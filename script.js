@@ -1324,9 +1324,9 @@ function renderPackages() {
             '<div class="package-size">' + pkg.size + '</div>' +
             '<div class="package-label">' + pkg.label + '</div>' +
             '<ul class="package-items">' +
-                '<li>' + pkg.panels + 'x ' + pkg.panelName + ' Panels</li>' +
-                '<li>' + (inv ? inv.name : 'Inverter') + '</li>' +
-                '<li>' + (bat ? bat.name : 'Battery') + '</li>' +
+                '<li>' + pkg.panels + 'x ' + pkg.panelName + ' Panels <span class="package-item-price">Rs. ' + (pkg.panels * panelPrice).toLocaleString() + '</span></li>' +
+                '<li>' + (inv ? inv.name : 'Inverter') + ' <span class="package-item-price">Rs. ' + (inv ? inv.price.toLocaleString() : '0') + '</span></li>' +
+                '<li>' + (bat ? bat.name : 'Battery') + ' <span class="package-item-price">Rs. ' + (bat ? bat.price.toLocaleString() : '0') + '</span></li>' +
                 '<li>Complete Wiring & Setup</li>' +
                 '<li>Free Delivery In Karachi</li>' +
             '</ul>' +
