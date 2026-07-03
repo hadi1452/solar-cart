@@ -857,7 +857,7 @@
     <!-- Invoice Print Template -->
     <div id="invoicePrint"></div>
 
-    <script src="script.js?v=20260703v"></script>
+    <script src="script.js?v=20260703w"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
         const ADMIN_API_TOKEN = '96b73efb5c87948c52498750f79219c7b7d4367d04e6f83d';
@@ -889,8 +889,9 @@
         if (sessionStorage.getItem('admin_logged') === 'true') {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-            loadOrders();
-            startLiveListener();
+            // Deferred so this runs after loadOrders() is reassigned further down the script
+            // (otherwise a page refresh briefly renders orders without edits/notes/invoice button).
+            setTimeout(() => { loadOrders(); startLiveListener(); }, 0);
         }
 
         // Sync orders to inventory & accounting
@@ -1633,6 +1634,7 @@
 
             if (!code) { alert('Enter A Coupon Code'); return; }
             if (!amount || amount < 1) { alert('Enter A Valid Amount'); return; }
+            if (type === 'percent' && amount > 100) { alert('Percent Discount Cannot Exceed 100'); return; }
 
             const coupons = getCoupons();
             if (coupons.find(c => c.code === code)) { alert('This Code Already Exists'); return; }
@@ -1657,7 +1659,11 @@
                 method: 'PUT',
                 headers: Object.assign({ 'Content-Type': 'application/json' }, ADMIN_HEADERS),
                 body: JSON.stringify({ coupons })
-            }).catch(() => {});
+            }).then(r => {
+                if (!r.ok) throw new Error('save failed');
+            }).catch(() => {
+                alert('Could not save this coupon change to the server -- it is only visible in this browser until you retry.');
+            });
         }
 
         function renderCoupons() {

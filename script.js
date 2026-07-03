@@ -156,7 +156,7 @@ fetch('/api/store-config').then(r => r.json()).then(cfg => {
         Object.assign(inv, cfg.inventory);
         localStorage.setItem('solar_inventory', JSON.stringify(inv));
     }
-    if (cfg.coupons && cfg.coupons.length) {
+    if (cfg.coupons) {
         localStorage.setItem('solar_coupons', JSON.stringify(cfg.coupons));
     }
     if (typeof renderProducts === 'function') renderProducts();
