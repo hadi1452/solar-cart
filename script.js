@@ -40,6 +40,10 @@ function saveCart() {
 }
 
 function addToCart(productId, qty) {
+    if (getProductStock(productId) === 0) {
+        showToast('This product is out of stock');
+        return;
+    }
     qty = qty || parseInt(document.getElementById('qty-' + productId)?.value) || 1;
     const existing = cart.find(item => item.id === productId);
     if (existing) {
@@ -96,11 +100,13 @@ function updateCartUI() {
     cart.forEach(item => {
         const product = products.find(p => p.id === item.id);
         if (!product) return;
+        const outOfStock = getProductStock(product.id) === 0;
         html += `
-            <div class="cart-item">
+            <div class="cart-item${outOfStock ? ' cart-item-oos' : ''}">
                 <div class="cart-item-img"><img src="${product.image}" alt="${product.name}"></div>
                 <div class="cart-item-details">
                     <h4>${product.name}</h4>
+                    ${outOfStock ? '<div class="cart-item-oos-label">Out Of Stock &mdash; please remove</div>' : ''}
                     <div class="cart-item-price">Rs. ${(product.price * item.qty).toLocaleString()}</div>
                     <div class="cart-item-qty">
                         <button onclick="updateCartQty(${product.id}, -1)">-</button>
@@ -122,17 +128,17 @@ function toggleCart() {
 }
 
 // ==================== INVENTORY ====================
+const DEFAULT_OUT_OF_STOCK_IDS = [17];
 function initInventory() {
     const inv = {};
-    products.forEach(p => { inv[p.id] = 100; });
+    products.forEach(p => { inv[p.id] = DEFAULT_OUT_OF_STOCK_IDS.includes(p.id) ? 0 : 100; });
     localStorage.setItem('solar_inventory', JSON.stringify(inv));
 }
-if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '100') {
+if (!localStorage.getItem('inv_version') || localStorage.getItem('inv_version') !== '101') {
     initInventory();
-    localStorage.setItem('inv_version', '100');
+    localStorage.setItem('inv_version', '101');
 }
 
-const DEFAULT_OUT_OF_STOCK_IDS = [17];
 function getProductStock(productId) {
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
     if (inv[productId] !== undefined) return inv[productId];
@@ -201,6 +207,10 @@ function changeQtyBtn(btn, change) {
 }
 
 function addToCartBtn(btn, productId) {
+    if (getProductStock(productId) === 0) {
+        showToast('This product is out of stock');
+        return;
+    }
     const input = btn.parentElement.querySelector('.qty-input');
     const qty = parseInt(input.value) || 1;
     const existing = cart.find(item => item.id === productId);
@@ -303,6 +313,11 @@ function placeOrder(e) {
     e.preventDefault();
     if (cart.length === 0) {
         alert('Your cart is empty!');
+        return;
+    }
+    const oosItem = cart.map(item => products.find(p => p.id === item.id)).find(p => p && getProductStock(p.id) === 0);
+    if (oosItem) {
+        alert(oosItem.name + ' is out of stock. Please remove it from your cart before checking out.');
         return;
     }
 
