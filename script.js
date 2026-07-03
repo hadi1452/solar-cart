@@ -1312,7 +1312,8 @@ function renderPackages() {
     grid.innerHTML = solarPackages.map(pkg => {
         const inv = products.find(p => p.id === pkg.inverterId);
         const bat = products.find(p => p.id === pkg.batteryId);
-        const panelPrice = 27450;
+        const panel = products.find(p => p.model === 'LR8-66HGD-610M');
+        const panelPrice = panel ? panel.price : 0;
         const totalPrice = (pkg.panels * panelPrice) + (inv ? inv.price : 0) + (bat ? bat.price : 0);
         const individualTotal = totalPrice;
         const packagePrice = Math.round(individualTotal * 0.95);
@@ -1570,7 +1571,7 @@ function toggleChatbot() {
 
 const chatResponses = {
     system_size: "For most homes in Karachi:\n\n- Rs. 10,000-15,000 bill â†’ 3kW system\n- Rs. 15,000-25,000 bill â†’ 5kW system\n- Rs. 25,000-40,000 bill â†’ 8kW system\n- Rs. 40,000+ bill â†’ 10kW+ system\n\nUse our Solar Calculator for a precise recommendation!",
-    pricing: "Our price range:\n\n- Solar Panels: Rs. 27,450 - 32,250\n- Inverters: Rs. 80,000 - 525,000\n- Batteries: Rs. 35,000 - 535,000\n- Complete Packages: Rs. 3.5 Lac - 15 Lac\n\nAll prices include official warranty!",
+    pricing: "Our price range:\n\n- Solar Panels: Rs. 45,000\n- Inverters: Rs. 43,000 - 263,000\n- Batteries: Rs. 59,000 - 603,000\n- Complete Packages: Rs. 3.5 Lac - 15 Lac\n\nAll prices include official warranty!",
     delivery: "We deliver within Karachi only.\n\n- Delivery Time: 2-5 business days\n- Delivery Charges: Depending on location\n- We call before delivery to schedule\n- Heavy items delivered to ground floor",
     warranty: "All products come with official manufacturer warranty:\n\n- Solar Panels: 12 Year Product + 30 Year Performance\n- Inverters: 3-5 Years\n- Batteries: 5-10 Years\n- ESS Solutions: 2-5 Years\n\nWarranty card included with every product!",
     payment: "We accept Bank Transfer only:\n\nNATIONAL TRADERS\nA/C: PK72 ASCM 0000 6004 2000 2328\nAskari Bank Ltd, Korangi Industrial Area, Karachi\n\nSend transaction ID after payment.",
