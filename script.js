@@ -32,7 +32,15 @@ const products = [
 
 
 // ==================== CART ====================
-let cart = (JSON.parse(localStorage.getItem('solarCart')) || []).filter(item => products.some(p => p.id === item.id));
+function loadCart() {
+    try {
+        const parsed = JSON.parse(localStorage.getItem('solarCart'));
+        return Array.isArray(parsed) ? parsed.filter(item => products.some(p => p.id === item.id)) : [];
+    } catch (e) {
+        return [];
+    }
+}
+let cart = loadCart();
 
 function saveCart() {
     localStorage.setItem('solarCart', JSON.stringify(cart));
@@ -48,7 +56,7 @@ function addToCart(productId, qty) {
     qty = Math.min(99, Math.max(1, qty));
     const existing = cart.find(item => item.id === productId);
     if (existing) {
-        existing.qty += qty;
+        existing.qty = Math.min(99, existing.qty + qty);
     } else {
         cart.push({ id: productId, qty: qty });
     }
@@ -148,7 +156,7 @@ fetch('/api/store-config').then(r => r.json()).then(cfg => {
         Object.assign(inv, cfg.inventory);
         localStorage.setItem('solar_inventory', JSON.stringify(inv));
     }
-    if (cfg.coupons) {
+    if (cfg.coupons && cfg.coupons.length) {
         localStorage.setItem('solar_coupons', JSON.stringify(cfg.coupons));
     }
     if (typeof renderProducts === 'function') renderProducts();
@@ -233,7 +241,7 @@ function addToCartBtn(btn, productId) {
     qty = Math.min(99, Math.max(1, qty));
     const existing = cart.find(item => item.id === productId);
     if (existing) {
-        existing.qty += qty;
+        existing.qty = Math.min(99, existing.qty + qty);
     } else {
         cart.push({ id: productId, qty: qty });
     }
@@ -410,7 +418,11 @@ function placeOrder(e) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
-    }).catch(() => {});
+    }).then(r => {
+        if (!r.ok) throw new Error('save failed');
+    }).catch(() => {
+        showToast('Order sent via WhatsApp, but we could not save it online -- please keep your WhatsApp message as proof.');
+    });
 
     // Update Inventory - reduce stock for each ordered item
     const inv = JSON.parse(localStorage.getItem('solar_inventory') || '{}');
@@ -1448,10 +1460,10 @@ function renderWishlist() {
 }
 
 function addAllWishlistToCart() {
-    const wl = getWishlist();
+    const wl = getWishlist().filter(id => getProductStock(id) > 0);
     wl.forEach(id => { if (!cart.find(i => i.id === id)) cart.push({ id, qty: 1 }); });
     saveCart();
-    showToast('All Wishlist Items Added To Cart!');
+    showToast('All Available Wishlist Items Added To Cart!');
 }
 
 function clearWishlist() {

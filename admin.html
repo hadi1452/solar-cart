@@ -857,9 +857,11 @@
     <!-- Invoice Print Template -->
     <div id="invoicePrint"></div>
 
-    <script src="script.js?v=20260703m"></script>
+    <script src="script.js?v=20260703n"></script>
     <script>
         const ADMIN_PASSWORD = 'solarcart2026';
+        const ADMIN_API_TOKEN = '96b73efb5c87948c52498750f79219c7b7d4367d04e6f83d';
+        const ADMIN_HEADERS = { 'x-admin-token': ADMIN_API_TOKEN };
         const ORDERS_URL = '/api/orders';
 
         // Login
@@ -945,7 +947,7 @@
         function loadOrders() {
             document.getElementById('lastRefresh').textContent = 'Updated: ' + new Date().toLocaleTimeString();
 
-            fetch(ORDERS_URL)
+            fetch(ORDERS_URL, { headers: ADMIN_HEADERS })
                 .then(r => r.json())
                 .then(data => {
                     const orders = (data.orders || []).map(order => {
@@ -974,9 +976,13 @@
             localStorage.setItem('order_statuses', JSON.stringify(statuses));
             fetch(ORDERS_URL, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: Object.assign({ 'Content-Type': 'application/json' }, ADMIN_HEADERS),
                 body: JSON.stringify({ orderId, status })
-            }).catch(() => {});
+            }).then(r => {
+                if (!r.ok) throw new Error('save failed');
+            }).catch(() => {
+                alert('Could not save this status change to the server -- it is only visible in this browser until you retry.');
+            });
         }
 
         function renderOrders(orders) {
@@ -1252,7 +1258,7 @@
             saveInventory(inv);
             fetch('/api/store-config', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: Object.assign({ 'Content-Type': 'application/json' }, ADMIN_HEADERS),
                 body: JSON.stringify({ inventory: inv })
             }).catch(() => {});
             renderInventory();
@@ -1659,7 +1665,7 @@
         function syncCoupons(coupons) {
             fetch('/api/store-config', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: Object.assign({ 'Content-Type': 'application/json' }, ADMIN_HEADERS),
                 body: JSON.stringify({ coupons })
             }).catch(() => {});
         }
@@ -1739,16 +1745,20 @@
             localStorage.setItem('order_edits', JSON.stringify(edits));
             fetch(ORDERS_URL, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: Object.assign({ 'Content-Type': 'application/json' }, ADMIN_HEADERS),
                 body: JSON.stringify({ orderId, fields: edits[orderId] })
-            }).catch(() => {}).finally(loadOrders);
+            }).then(r => {
+                if (!r.ok) throw new Error('save failed');
+            }).catch(() => {
+                alert('Could not save this edit to the server -- it is only visible in this browser until you retry.');
+            }).finally(loadOrders);
         }
 
         // Apply edits when loading orders
         const _origLoadOrders = loadOrders;
         loadOrders = function() {
             document.getElementById('lastRefresh').textContent = 'Updated: ' + new Date().toLocaleTimeString();
-            fetch(ORDERS_URL)
+            fetch(ORDERS_URL, { headers: ADMIN_HEADERS })
                 .then(r => r.json())
                 .then(data => {
                     const edits = JSON.parse(localStorage.getItem('order_edits') || '{}');
@@ -1898,7 +1908,7 @@
         let lastOrderCount = 0;
         function startLiveListener() {
             setInterval(() => {
-                fetch(ORDERS_URL)
+                fetch(ORDERS_URL, { headers: ADMIN_HEADERS })
                     .then(r => r.json())
                     .then(data => {
                         const count = (data.orders || []).length;

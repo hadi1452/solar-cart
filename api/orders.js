@@ -32,8 +32,20 @@ async function readAllOrders() {
   return orders.filter(Boolean).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 }
 
+function isAdmin(req) {
+  const secret = process.env.ADMIN_API_SECRET;
+  return !!secret && req.headers['x-admin-token'] === secret;
+}
+
 export default async function handler(req, res) {
   try {
+    // GET (list all orders/PII) and PATCH (mutate any order) are admin-only.
+    // POST stays open -- customers placing an order have no admin token.
+    if (req.method !== 'POST' && !isAdmin(req)) {
+      res.status(401).json({ error: 'unauthorized' });
+      return;
+    }
+
     if (req.method === 'GET') {
       const orders = await readAllOrders();
       res.setHeader('Cache-Control', 'no-store');
