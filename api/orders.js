@@ -17,7 +17,8 @@ async function writeOrder(order) {
     access: 'private',
     addRandomSuffix: false,
     allowOverwrite: true,
-    contentType: 'application/json'
+    contentType: 'application/json',
+    cacheControlMaxAge: 60
   });
 }
 
