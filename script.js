@@ -1302,9 +1302,9 @@ function calculateNetMetering() {
 
 // ==================== PACKAGES ====================
 const solarPackages = [
-    { size:'3kW', label:'Small Home', panels:6, panelName:'Longi 550W', inverterId:4, batteryId:11, popular:false },
+    { size:'3kW', label:'Small Home', panels:6, panelName:'Longi 550W', inverterId:4, batteryId:11, popular:false, wiringPrice:55000 },
     { size:'5kW', label:'Medium Home', panels:10, panelName:'Longi 550W', inverterId:6, batteryId:13, popular:true },
-    { size:'8kW', label:'Large Home', panels:15, panelName:'Longi 550W', inverterId:8, batteryId:13, popular:false },
+    { size:'8kW', label:'Large Home', panels:15, panelName:'Longi 550W', inverterId:8, batteryId:13, popular:false, wiringPrice:85000 },
     { size:'10kW', label:'Villa / Office', panels:18, panelName:'Longi 550W', inverterId:9, batteryId:14, popular:false }
 ];
 
@@ -1316,10 +1316,13 @@ function renderPackages() {
         const bat = products.find(p => p.id === pkg.batteryId);
         const panel = products.find(p => p.model === 'LR8-66HGD-610M');
         const panelPrice = panel ? panel.price : 0;
-        const totalPrice = (pkg.panels * panelPrice) + (inv ? inv.price : 0) + (bat ? bat.price : 0);
+        const totalPrice = (pkg.panels * panelPrice) + (inv ? inv.price : 0) + (bat ? bat.price : 0) + (pkg.wiringPrice || 0);
         const individualTotal = totalPrice;
         const packagePrice = Math.round(individualTotal * 0.95);
         const savings = individualTotal - packagePrice;
+        const wiringLine = pkg.wiringPrice
+            ? '<li>Complete Wiring & Setup <span class="package-item-price">Rs. ' + pkg.wiringPrice.toLocaleString() + '</span></li>'
+            : '<li>Complete Wiring & Setup</li>';
 
         return '<div class="package-card' + (pkg.popular ? ' popular' : '') + '">' +
             (pkg.popular ? '<div class="package-badge">Most Popular</div>' : '') +
@@ -1329,7 +1332,7 @@ function renderPackages() {
                 '<li>' + pkg.panels + 'x ' + pkg.panelName + ' Panels <span class="package-item-price">Rs. ' + (pkg.panels * panelPrice).toLocaleString() + '</span></li>' +
                 '<li>' + (inv ? inv.name : 'Inverter') + ' <span class="package-item-price">Rs. ' + (inv ? inv.price.toLocaleString() : '0') + '</span></li>' +
                 '<li>' + (bat ? bat.name : 'Battery') + ' <span class="package-item-price">Rs. ' + (bat ? bat.price.toLocaleString() : '0') + '</span></li>' +
-                '<li>Complete Wiring & Setup</li>' +
+                wiringLine +
                 '<li>Delivery Charges Depend On Location</li>' +
             '</ul>' +
             '<div class="package-price">Rs. ' + packagePrice.toLocaleString() + '</div>' +
