@@ -155,7 +155,9 @@ function createProductCard(product) {
         : (product.badge ? `<div class="product-badge ${product.badgeClass || ''}">${product.badge}</div>` : '');
     const topSpecs = product.specs.slice(0, 3);
     const specsHTML = topSpecs.map(s => `<li><strong>${s.split(':')[0]}:</strong>${s.split(':')[1]}</li>`).join('');
-    const perWattHTML = product.perWatt ? `<span class="price-per-watt">${product.perWatt}</span>` : '';
+    const wattMatch = product.specs[0] && product.specs[0].match(/Power:\s*(\d+\.?\d*)W/);
+    const computedPerWatt = wattMatch ? 'Rs. ' + Math.round(product.price / parseFloat(wattMatch[1])).toLocaleString() + '/Watt' : product.perWatt;
+    const perWattHTML = computedPerWatt ? `<span class="price-per-watt">${computedPerWatt}</span>` : '';
     const warrantyHTML = product.warranty ? `<div class="warranty-badge">&#128737; ${product.warranty} Official Warranty</div>` : '';
     const disabledClass = isOutOfStock ? ' out-of-stock-card' : '';
     const cartBtnHTML = isOutOfStock
@@ -1018,7 +1020,8 @@ function calculateSolar() {
     const ratePerUnit = 65;
     const unitsConsumed = Math.round(bill / ratePerUnit);
     const systemSizeKW = Math.round((unitsConsumed / 120) * 10) / 10;
-    const panelWatt = 550;
+    const panel = products.find(p => p.model === 'LR8-66HGD-610M');
+    const panelWatt = panel ? parseFloat(panel.specs[0].match(/(\d+\.?\d*)W/)?.[1] || 610) : 610;
     const panelsNeeded = Math.ceil(systemSizeKW * 1000 / panelWatt);
     const backupHours = parseInt(document.getElementById('calcBackup').value);
 
@@ -1050,13 +1053,13 @@ function calculateSolar() {
         batteryText = recBattery.name;
     }
 
-    const panelPrice = 27450;
+    const panelPrice = panel ? panel.price : 0;
     const totalCost = (panelsNeeded * panelPrice) + recInverter.price + (recBattery ? recBattery.price : 0);
     const monthlySavings = bill;
     const paybackYears = Math.round((totalCost / (monthlySavings * 12)) * 10) / 10;
 
     document.getElementById('calcSystemSize').textContent = systemSizeKW + ' kW';
-    document.getElementById('calcPanels').textContent = panelsNeeded + ' x 550W Panels';
+    document.getElementById('calcPanels').textContent = panelsNeeded + ' x ' + panelWatt + 'W Panels';
     document.getElementById('calcInverter').textContent = recInverter.name;
     document.getElementById('calcBattery').textContent = batteryText;
     document.getElementById('calcCost').textContent = 'Rs. ' + totalCost.toLocaleString();
@@ -1065,7 +1068,7 @@ function calculateSolar() {
 
     document.getElementById('calcResult').style.display = 'block';
 
-    window._lastCalcResult = { systemSizeKW, panelsNeeded, recInverter, recBattery, totalCost, monthlySavings };
+    window._lastCalcResult = { systemSizeKW, panelsNeeded, panelWatt, recInverter, recBattery, totalCost, monthlySavings };
 }
 
 function getQuoteWhatsApp() {
@@ -1073,7 +1076,7 @@ function getQuoteWhatsApp() {
     let msg = '*Solar Cart - Quote Request*%0A%0A';
     if (r) {
         msg += '*System Size:* ' + r.systemSizeKW + ' kW%0A';
-        msg += '*Panels:* ' + r.panelsNeeded + ' x 550W%0A';
+        msg += '*Panels:* ' + r.panelsNeeded + ' x ' + r.panelWatt + 'W%0A';
         msg += '*Inverter:* ' + r.recInverter.name + '%0A';
         msg += '*Battery:* ' + (r.recBattery ? r.recBattery.name : 'None') + '%0A';
         msg += '*Est. Cost:* Rs. ' + r.totalCost.toLocaleString() + '%0A%0A';
@@ -1572,9 +1575,38 @@ function toggleChatbot() {
     document.getElementById('chatbotPopup').classList.toggle('open');
 }
 
+function getPriceRange(category) {
+    const prices = products.filter(p => p.category === category).map(p => p.price);
+    if (!prices.length) return 'N/A';
+    const min = Math.min(...prices), max = Math.max(...prices);
+    return min === max ? 'Rs. ' + min.toLocaleString() : 'Rs. ' + min.toLocaleString() + ' - ' + max.toLocaleString();
+}
+function getPanelPerWattRange() {
+    const rates = products.filter(p => p.category === 'longi' || p.category === 'jinko').map(p => {
+        const m = p.specs[0] && p.specs[0].match(/Power:\s*(\d+\.?\d*)W/);
+        return m ? Math.round(p.price / parseFloat(m[1])) : null;
+    }).filter(r => r !== null);
+    if (!rates.length) return 'N/A';
+    const min = Math.min(...rates), max = Math.max(...rates);
+    return (min === max ? 'Rs. ' + min.toLocaleString() : 'Rs. ' + min.toLocaleString() + ' - ' + max.toLocaleString()) + '/Watt';
+}
+function getPackagePriceRange() {
+    if (!solarPackages || !solarPackages.length) return 'N/A';
+    const panel = products.find(p => p.model === 'LR8-66HGD-610M');
+    const panelPrice = panel ? panel.price : 0;
+    const prices = solarPackages.map(pkg => {
+        const inv = products.find(p => p.id === pkg.inverterId);
+        const bat = products.find(p => p.id === pkg.batteryId);
+        const total = (pkg.panels * panelPrice) + (inv ? inv.price : 0) + (bat ? bat.price : 0) + (pkg.wiringPrice || 0);
+        return Math.round(total * 0.95);
+    });
+    const min = Math.min(...prices), max = Math.max(...prices);
+    return min === max ? 'Rs. ' + min.toLocaleString() : 'Rs. ' + min.toLocaleString() + ' - ' + max.toLocaleString();
+}
+
 const chatResponses = {
     system_size: "For most homes in Karachi:\n\n- Rs. 10,000-15,000 bill â†’ 3kW system\n- Rs. 15,000-25,000 bill â†’ 5kW system\n- Rs. 25,000-40,000 bill â†’ 8kW system\n- Rs. 40,000+ bill â†’ 10kW+ system\n\nUse our Solar Calculator for a precise recommendation!",
-    pricing: "Our price range:\n\n- Solar Panels: Rs. 45,000/Watt\n- Inverters: Rs. 43,000 - 263,000\n- Batteries: Rs. 59,000 - 603,000\n- Complete Packages: Rs. 3.5 Lac - 15 Lac\n\nAll prices include official warranty!",
+    pricing: "Our price range:\n\n- Solar Panels: " + getPanelPerWattRange() + "\n- Inverters: " + getPriceRange('inverter') + "\n- Batteries: " + getPriceRange('battery') + "\n- Complete Packages: " + getPackagePriceRange() + "\n\nAll prices include official warranty!",
     delivery: "We deliver within Karachi only.\n\n- Delivery Time: 2-5 business days\n- Delivery Charges: Depending on location\n- We call before delivery to schedule\n- Heavy items delivered to ground floor",
     warranty: "All products come with official manufacturer warranty:\n\n- Solar Panels: 12 Year Product + 30 Year Performance\n- Inverters: 3-5 Years\n- Batteries: 5-10 Years\n- ESS Solutions: 2-5 Years\n\nWarranty card included with every product!",
     payment: "We accept Bank Transfer only:\n\nNATIONAL TRADERS\nA/C: PK72 ASCM 0000 6004 2000 2328\nAskari Bank Ltd, Korangi Industrial Area, Karachi\n\nSend transaction ID after payment.",
