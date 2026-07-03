@@ -374,7 +374,7 @@ a { text-decoration:none; color:inherit; }
 
 /* ===== PACKAGES ===== */
 .packages-section { padding:60px 0; }
-.packages-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; max-width:800px; margin:0 auto; }
+.packages-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .package-card { background:var(--card-bg); border:2px solid var(--card-border); border-radius:var(--radius); padding:28px 24px; text-align:center; transition:var(--transition); position:relative; }
 .package-card:hover { border-color:var(--orange); transform:translateY(-4px); box-shadow:0 12px 30px rgba(232,122,30,0.1); }
 .package-card.popular { border-color:var(--orange); }
