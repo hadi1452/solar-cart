@@ -23,11 +23,11 @@ const products = [
     { id:18, name:"iTel Power Go 320Wh Portable Power Station", model:"IESS-320T", category:"ess", price:23000, badge:"Portable", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-130W-Portable-Power-Station-%E2%80%93-320Wh-Smart-Backup-Power-Solution-IESS-320T.webp", localImage:"images/itel-ess-320.jpg", specs:["Output: 130W / 320Wh","Battery: 100,000mAh LiFePO4","USB-C: 65W Fast Charge"], featured:true, rating:4.8, reviewCount:45 },
 
     // Batteries (Official iTel images from itelsolar.com)
-    { id:11, name:"iTel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:59000, badge:"", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-Energy-1280Wh-12V-Lithium-Battery-LiFePO%E2%82%84-%E2%80%93-Smart-Solar-Storage-Solution.webp", localImage:"images/itel-bat-100ah.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false, rating:4.6, reviewCount:14 },
-    { id:12, name:"IPW-25100 iTel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", model:"IPW-25100", category:"battery", price:129000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-2.56kWh-Lithium-Battery-Wall-Mounted-Backup-for-Homes-Shops-25.6V-LiFePO4-2-1.jpg", localImage:"images/itel-bat-256.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"], featured:true, rating:4.9, reviewCount:56 },
-    { id:13, name:"IPL-51100 iTel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:230000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-5.12kWh-Lithium-Battery-%E2%80%93-Long-Backup-for-Homes-Clinics-Offices-48V-LiFePO4-2.jpg", localImage:"images/itel-bat-512.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true, rating:4.8, reviewCount:33 },
-    { id:14, name:"iTel IPL-51280 51.2V 280Ah (14.33kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:445000, badge:"", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-14.3kWh-Silent-Power-Battery-%E2%80%93-Long-Backup-for-Big-Homes-Offices-48V-2.jpg", localImage:"images/itel-bat-14kwh.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false, rating:4.7, reviewCount:8 },
-    { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:603000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-10240Wh-Lithium-Battery-Standing-48V-200Ah-10.24kWh-IPL-51200.webp", localImage:"images/itel-bat-16kwh.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 }
+    { id:11, name:"iTel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:59000, badge:"", warranty:"5 Years", image:"images/itel-bat100ah-v1.jpg", localImage:"images/itel-bat100ah-v1.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false, rating:4.6, reviewCount:14 },
+    { id:12, name:"IPW-25100 iTel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", model:"IPW-25100", category:"battery", price:129000, badge:"Best Seller", badgeClass:"best", warranty:"5 Years", image:"images/itel-bat256-v1.jpg", localImage:"images/itel-bat256-v1.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"], featured:true, rating:4.9, reviewCount:56 },
+    { id:13, name:"IPL-51100 iTel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:230000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"images/itel-bat512-v1.jpg", localImage:"images/itel-bat512-v1.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true, rating:4.8, reviewCount:33 },
+    { id:14, name:"iTel IPL-51280 51.2V 280Ah (14.33kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:445000, badge:"", warranty:"10 Years", image:"images/itel-bat14kwh-v1.jpg", localImage:"images/itel-bat14kwh-v1.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false, rating:4.7, reviewCount:8 },
+    { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:603000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"images/itel-bat16kwh-v1.jpg", localImage:"images/itel-bat16kwh-v1.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 }
 ];
 
 
@@ -718,7 +718,7 @@ function generateSocialPosts() {
         const caption = generateCaption(p, platform, contentType);
         return `
             <div class="social-post-card">
-                <div class="post-img${p.category === 'inverter' ? ' has-own-logo' : ''}" onclick="window.open('${p.localImage || p.image}', '_blank')" title="Click to open full image">
+                <div class="post-img${(p.category === 'inverter' || p.category === 'battery') ? ' has-own-logo' : ''}" onclick="window.open('${p.localImage || p.image}', '_blank')" title="Click to open full image">
                     <img id="post-img-${p.id}" src="${p.localImage || p.image}" alt="${p.name}" loading="lazy">
                 </div>
                 <div class="post-body">
@@ -846,7 +846,7 @@ function shareToStatus(productId, platform, btn) {
         btn.textContent = 'Loading...';
         const imgEl = document.getElementById('post-img-' + product.id);
         const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
-        const imgReady = product.category === 'inverter'
+        const imgReady = (product.category === 'inverter' || product.category === 'battery')
             ? fetch(imgUrl).then(r => r.blob())
             : composeImageWithLogo(imgUrl);
         imgReady
