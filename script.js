@@ -718,7 +718,7 @@ function generateSocialPosts() {
         const caption = generateCaption(p, platform, contentType);
         return `
             <div class="social-post-card">
-                <div class="post-img${p.category === 'inverter' ? ' has-own-logo' : ''}">
+                <div class="post-img${p.category === 'inverter' ? ' has-own-logo' : ''}" onclick="window.open('${p.localImage || p.image}', '_blank')" title="Click to open full image">
                     <img id="post-img-${p.id}" src="${p.localImage || p.image}" alt="${p.name}" loading="lazy">
                 </div>
                 <div class="post-body">
