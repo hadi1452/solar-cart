@@ -718,7 +718,7 @@ function generateSocialPosts() {
         const caption = generateCaption(p, platform, contentType);
         return `
             <div class="social-post-card">
-                <div class="post-img">
+                <div class="post-img${p.category === 'inverter' ? ' has-own-logo' : ''}">
                     <img id="post-img-${p.id}" src="${p.localImage || p.image}" alt="${p.name}" loading="lazy">
                 </div>
                 <div class="post-body">
@@ -846,7 +846,10 @@ function shareToStatus(productId, platform, btn) {
         btn.textContent = 'Loading...';
         const imgEl = document.getElementById('post-img-' + product.id);
         const imgUrl = (imgEl && imgEl.src && !imgEl.src.startsWith('data:')) ? imgEl.src : (product.localImage || product.image);
-        composeImageWithLogo(imgUrl)
+        const imgReady = product.category === 'inverter'
+            ? fetch(imgUrl).then(r => r.blob())
+            : composeImageWithLogo(imgUrl);
+        imgReady
             .then(blob => {
                 const file = new File([blob], product.model + '.jpg', { type: blob.type || 'image/jpeg' });
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
