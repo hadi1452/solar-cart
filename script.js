@@ -371,7 +371,7 @@ function placeOrder(e) {
     const paymentNames = { bank:'Bank Transfer' };
 
     // Build WhatsApp message
-    let msg = `*New Order - Solar Cart*%0A`;
+    let msg = `*New Order - National Traders*%0A`;
     msg += `Order ID: ${orderId}%0A%0A`;
     msg += `*Customer:* ${name}%0A`;
     msg += `*Phone:* ${phone}%0A`;
@@ -1109,7 +1109,7 @@ function calculateSolar() {
 
 function getQuoteWhatsApp() {
     const r = window._lastCalcResult;
-    let msg = '*Solar Cart - Quote Request*%0A%0A';
+    let msg = '*National Traders - Quote Request*%0A%0A';
     if (r) {
         msg += '*System Size:* ' + r.systemSizeKW + ' kW%0A';
         msg += '*Panels:* ' + r.panelsNeeded + ' x ' + r.panelWatt + 'W%0A';
@@ -1743,34 +1743,34 @@ function togglePriceAlert(productId, btn) {
 
 // ==================== SEO - DYNAMIC PAGE TITLES ====================
 const pageTitles = {
-    home: 'Solar Cart - iTel Solar Products | Shop Online',
-    panels: 'Solar Panels - Longi & Jinko | Solar Cart',
-    inverters: 'iTel Hybrid Solar Inverters | Solar Cart',
-    batteries: 'iTel LiFePO4 Lithium Batteries | Solar Cart',
-    ess: 'Energy Storage Solutions | Solar Cart',
-    reviews: 'Customer Reviews & Gallery | Solar Cart',
-    calculator: 'Solar Calculator & EMI | Solar Cart',
-    faq: 'Frequently Asked Questions | Solar Cart',
-    tracking: 'Track Your Order | Solar Cart',
-    contact: 'Contact Us | Solar Cart',
-    packages: 'Complete Solar System Packages | Solar Cart',
-    blog: 'Solar Energy Blog & Articles | Solar Cart',
-    wishlist: 'My Wishlist | Solar Cart',
-    compare: 'Compare Products | Solar Cart',
-    checkout: 'Checkout | Solar Cart',
-    privacy: 'Privacy Policy | Solar Cart',
-    about: 'About Us | Solar Cart',
-    installation: 'Book Installation | Solar Cart',
-    maintenance: 'Maintenance Packages | Solar Cart',
-    survey: 'Site Survey Request | Solar Cart',
-    netmetering: 'Net Metering Service | Solar Cart',
-    warranty: 'Warranty Registration | Solar Cart',
-    careers: 'Careers | Solar Cart',
-    dealer: 'Dealer Portal | Solar Cart',
-    affiliate: 'Affiliate Program | Solar Cart',
-    quiz: 'Solar System Quiz | Solar Cart',
-    rates: 'Electricity Rate Calculator | Solar Cart',
-    tracker: 'Savings Tracker | Solar Cart'
+    home: 'National Traders - iTel Solar Products | Shop Online',
+    panels: 'Solar Panels - Longi & Jinko | National Traders',
+    inverters: 'iTel Hybrid Solar Inverters | National Traders',
+    batteries: 'iTel LiFePO4 Lithium Batteries | National Traders',
+    ess: 'Energy Storage Solutions | National Traders',
+    reviews: 'Customer Reviews & Gallery | National Traders',
+    calculator: 'Solar Calculator & EMI | National Traders',
+    faq: 'Frequently Asked Questions | National Traders',
+    tracking: 'Track Your Order | National Traders',
+    contact: 'Contact Us | National Traders',
+    packages: 'Complete Solar System Packages | National Traders',
+    blog: 'Solar Energy Blog & Articles | National Traders',
+    wishlist: 'My Wishlist | National Traders',
+    compare: 'Compare Products | National Traders',
+    checkout: 'Checkout | National Traders',
+    privacy: 'Privacy Policy | National Traders',
+    about: 'About Us | National Traders',
+    installation: 'Book Installation | National Traders',
+    maintenance: 'Maintenance Packages | National Traders',
+    survey: 'Site Survey Request | National Traders',
+    netmetering: 'Net Metering Service | National Traders',
+    warranty: 'Warranty Registration | National Traders',
+    careers: 'Careers | National Traders',
+    dealer: 'Dealer Portal | National Traders',
+    affiliate: 'Affiliate Program | National Traders',
+    quiz: 'Solar System Quiz | National Traders',
+    rates: 'Electricity Rate Calculator | National Traders',
+    tracker: 'Savings Tracker | National Traders'
 };
 
 const _origShowPage = showPage;

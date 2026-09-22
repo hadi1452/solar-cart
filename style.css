@@ -78,6 +78,9 @@ a { text-decoration:none; color:inherit; }
 .nav-container { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:nowrap; }
 .logo { display:flex; align-items:center; flex-shrink:0; }
 .logo-img { height:44px; width:auto; }
+.logo-text { font-size:1.35rem; font-weight:800; color:var(--navy); letter-spacing:-0.02em; white-space:nowrap; }
+.logo-text span { color:var(--orange); }
+[data-theme="dark"] .logo-text { color:var(--text); }
 .nav-links { display:flex; list-style:none; gap:2px; flex-wrap:nowrap; }
 .nav-links a { color:var(--text-dim); padding:8px 16px; border-radius:8px; font-size:0.88rem; font-weight:500; transition:var(--transition); white-space:nowrap; display:block; }
 .nav-links a:hover, .nav-links a.active { color:var(--orange); background:rgba(232,122,30,0.06); }

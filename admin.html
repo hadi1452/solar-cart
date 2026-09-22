@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar Cart - Admin Dashboard</title>
+    <title>National Traders - Admin Dashboard</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="manifest" href="admin-manifest.json">
     <meta name="theme-color" content="#e87a1e">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="SC Admin">
+    <meta name="apple-mobile-web-app-title" content="NT Admin">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --orange:#e87a1e; --navy:#0c1a32; --card:#0e1b30; --border:rgba(255,255,255,0.06); --text:#e2e8f0; --dim:#8892a4; --green:#2ecc71; --red:#ef4444; --yellow:#f59e0b; --blue:#3b82f6; }
@@ -19,6 +19,8 @@
         .login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
         .login-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:40px; max-width:400px; width:100%; text-align:center; }
         .login-box img { height:50px; margin:0 auto 20px; }
+        .admin-logo-text { display:block; font-size:1.4rem; font-weight:800; letter-spacing:-0.02em; margin:0 auto 20px; color:var(--text); }
+        .admin-logo-text span { color:var(--orange); }
         .login-box h2 { font-size:1.3rem; margin-bottom:8px; }
         .login-box p { font-size:0.85rem; color:var(--dim); margin-bottom:24px; }
         .login-box input { width:100%; padding:12px 16px; background:var(--navy); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:0.9rem; font-family:inherit; margin-bottom:14px; }
@@ -394,7 +396,7 @@
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-box">
-            <img src="logo.png" alt="Solar Cart">
+            <span class="admin-logo-text">National <span>Traders</span></span>
             <h2>Admin Dashboard</h2>
             <p>Enter password to access orders</p>
             <div class="login-error" id="loginError">Wrong password. Try again.</div>
@@ -409,7 +411,7 @@
     <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="dash-header">
-            <img src="logo.png" alt="Solar Cart">
+            <span class="admin-logo-text" style="margin:0;">National <span>Traders</span></span>
             <div class="dash-header-right">
                 <div class="notif-indicator">
                     <span class="notif-dot"></span> Live
@@ -1911,7 +1913,7 @@
                         const count = (data.orders || []).length;
                         if (count > lastOrderCount && lastOrderCount > 0) {
                             if (Notification.permission === 'granted') {
-                                new Notification('Solar Cart - New Order!', { body: 'A new order has been placed.', icon: 'logo.png' });
+                                new Notification('National Traders - New Order!', { body: 'A new order has been placed.', icon: 'logo.png' });
                             }
                             loadOrders();
                         }

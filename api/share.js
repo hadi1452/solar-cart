@@ -30,7 +30,7 @@ export default function handler(req, res) {
     return;
   }
 
-  const title = product.name + ' - Rs. ' + product.price.toLocaleString() + ' | Solar Cart';
+  const title = product.name + ' - Rs. ' + product.price.toLocaleString() + ' | National Traders';
   const description = product.specs.join(' | ') + ' | Warranty: ' + product.warranty + ' | Delivery In Karachi | Call/WhatsApp: 0323-7927923';
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -41,7 +41,7 @@ export default function handler(req, res) {
   <meta charset="UTF-8">
   <title>${title}</title>
   <meta property="og:type" content="product">
-  <meta property="og:site_name" content="Solar Cart">
+  <meta property="og:site_name" content="National Traders">
   <meta property="og:url" content="${siteUrl}">
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${description}">

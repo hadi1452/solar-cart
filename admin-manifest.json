@@ -1,7 +1,7 @@
 {
-  "name": "Solar Cart - Admin Dashboard",
+  "name": "National Traders - Admin Dashboard",
   "short_name": "SC Admin",
-  "description": "Solar Cart Admin Dashboard - Orders, Inventory, Accounting",
+  "description": "National Traders Admin Dashboard - Orders, Inventory, Accounting",
   "start_url": "/admin.html",
   "scope": "/",
   "id": "/admin.html",
