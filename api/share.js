@@ -12,7 +12,7 @@ const products = [
   { id:10, name:"IP66-Rated 6.6kW Hybrid iTel Inverter", price:195000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-6k6-v6.jpg", specs:["Capacity: 6.6kW","Type: Hybrid IP66","AI SmartGo + WiFi"] },
   { id:20, name:"iTel 8kW IP66 Hybrid Solar Inverter", price:385000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-8kw-ip66-v6.jpg", specs:["Capacity: 8kW","Type: Hybrid IP66","PV Input: 16kW Max"] },
   { id:21, name:"iTel 12kW IP66 Hybrid Solar Inverter", price:592000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-12kw-ip66-v6.jpg", specs:["Capacity: 12kW","Type: Hybrid IP66","MPPT: Dual + WiFi"] },
-  { id:25, name:"iTel 50kW Hybrid Solar Inverter", price:1360000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-50kw-v6.jpg", specs:["Capacity: 50kW","Type: Hybrid","Commercial Grade"] },
+  { id:25, name:"iTel 50kW Hybrid Solar Inverter", price:1360000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-50kw-v6.jpg", specs:["Capacity: 50kW","Type: Hybrid","Grade: Commercial"] },
   { id:26, name:"iTel IC-H60X Switch Gear", price:300000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-switchgear-v6.jpg", specs:["Type: Switch Gear","For: iTel Inverter Systems"] },
   { id:11, name:"iTel 100Ah 12V Lithium Battery 1.28kWh", price:65000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-bat100ah-v1.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"] },
   { id:12, name:"IPW-25100 iTel LiFePO4 Battery 25.6V 100Ah - 2.56kWh IP21", price:132000, warranty:"5 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-bat256-v1.jpg", specs:["Capacity: 2.56 kWh","Voltage: 25.6V","Type: LiFePO4 Wall Mounted"] },
@@ -24,7 +24,7 @@ const products = [
   { id:16, name:"iTel Energy 500W Power Tank + 1kWh LiFePO4 All-In-One", price:72990, warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-Energy-500W-Inverter-1kWh-LifePo4-Battery-All-in-One-Solar-Power-System-1.jpg", specs:["Output: 500W / 1kWh","Battery: LiFePO4 6000+ Cycles","Ports: AC, USB-C, USB-A"] },
   { id:17, name:"iTel Combo 3.6kW Hybrid + 8kWh Li-Battery", price:360000, warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-3.6kW-All-in-One-Solar-Power-System-with-8kWh-Battery-Complete-Home-Energy-Storage-Solution-1.jpg", specs:["Inverter: 3.6kW Pure Sine","Battery: 8kWh LiFePO4","UPS Switchover: <16ms"] },
   { id:18, name:"iTel Power Go 320Wh Portable Power Station", price:29999, warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-130W-Portable-Power-Station-%E2%80%93-320Wh-Smart-Backup-Power-Solution-IESS-320T.webp", specs:["Output: 130W / 320Wh","Battery: 100,000mAh LiFePO4","USB-C: 65W Fast Charge"] },
-  { id:22, name:"iTel Power Rover Portable Power Station", price:74990, warranty:"2 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-ess-500w.jpg", specs:["Battery: LiFePO4","Portable Power Station"] }
+  { id:22, name:"iTel Power Rover Portable Power Station", price:74990, warranty:"2 Years", image:"https://solar-cart-apvs.vercel.app/images/itel-ess-500w.jpg", specs:["Battery: LiFePO4","Style: Portable"] }
 ];
 
 export default function handler(req, res) {
