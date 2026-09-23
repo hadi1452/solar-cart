@@ -23,9 +23,8 @@ const products = [
 
     // ESS Solution (Official iTel images from itelsolar.com)
     { id:16, name:"iTel Energy 500W Power Tank + 1kWh LiFePO4 All-In-One", model:"IESS-05K10N", category:"ess", price:72990, badge:"All-In-One", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/04/itel-Energy-500W-Inverter-1kWh-LifePo4-Battery-All-in-One-Solar-Power-System-1.jpg", localImage:"images/itel-ess-500w.jpg", specs:["Output: 500W / 1kWh","Battery: LiFePO4 6000+ Cycles","Ports: AC, USB-C, USB-A"], featured:true, rating:4.9, reviewCount:38 },
-    { id:17, name:"iTel Combo 3.6kW Hybrid + 8kWh Li-Battery", model:"IESS-3K680N", category:"ess", price:360000, badge:"Complete System", badgeClass:"premium", warranty:"5 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2025/07/itel-3.6kW-All-in-One-Solar-Power-System-with-8kWh-Battery-Complete-Home-Energy-Storage-Solution-1.jpg", localImage:"images/itel-ess-3k6.jpg", specs:["Inverter: 3.6kW Pure Sine","Battery: 8kWh LiFePO4","UPS Switchover: <16ms"], featured:true, rating:4.7, reviewCount:19 },
     { id:18, name:"iTel Power Go 320Wh Portable Power Station", model:"IESS-320T", category:"ess", price:29999, badge:"Portable", badgeClass:"best", warranty:"2 Years", image:"https://i0.wp.com/itelsolar.com/wp-content/uploads/2026/01/itel-130W-Portable-Power-Station-%E2%80%93-320Wh-Smart-Backup-Power-Solution-IESS-320T.webp", localImage:"images/itel-ess-320.jpg", specs:["Output: 130W / 320Wh","Battery: 100,000mAh LiFePO4","USB-C: 65W Fast Charge"], featured:true, rating:4.8, reviewCount:45 },
-    { id:22, name:"iTel Power Rover Portable Power Station", model:"IESS-ROVER", category:"ess", price:74990, badge:"New", badgeClass:"best", warranty:"2 Years", image:"images/itel-ess-500w.jpg", localImage:"images/itel-ess-500w.jpg", specs:["Battery: LiFePO4","Style: Portable"], featured:false, rating:4.5, reviewCount:0 },
+    { id:22, name:"iTel Power Rover Portable Power Station", model:"IESS-ROVER", category:"ess", price:74990, badge:"New", badgeClass:"best", warranty:"2 Years", image:"images/itel-ess-rover-v6.jpg", localImage:"images/itel-ess-rover-v6.jpg", specs:["Battery: LiFePO4","Style: Portable"], featured:false, rating:4.5, reviewCount:0 },
 
     // Batteries (Official iTel images from itelsolar.com)
     { id:11, name:"iTel 100Ah 12V Lithium Battery 1.28kWh", model:"IPB-12100", category:"battery", price:65000, badge:"", warranty:"5 Years", image:"images/itel-bat100ah-v1.jpg", localImage:"images/itel-bat100ah-v1.jpg", specs:["Capacity: 1.28 kWh","Voltage: 12.8V","Type: LiFePO4 IP54"], featured:false, rating:4.6, reviewCount:14 },
@@ -33,7 +32,7 @@ const products = [
     { id:13, name:"IPL-51100 iTel LiFePO4 Battery 51.2V 100Ah - 5.12kWh IP20", model:"IPL-51100", category:"battery", price:227000, badge:"Popular", badgeClass:"", warranty:"7 Years", image:"images/itel-bat512-v1.jpg", localImage:"images/itel-bat512-v1.jpg", specs:["Capacity: 5.12 kWh","Voltage: 51.2V","Type: LiFePO4 Stackable"], featured:true, rating:4.8, reviewCount:33 },
     { id:14, name:"iTel IPL-51280 51.2V 280Ah (14.33kWh) Lithium Battery", model:"IPL-51280", category:"battery", price:445000, badge:"", warranty:"10 Years", image:"images/itel-bat14kwh-v1.jpg", localImage:"images/itel-bat14kwh-v1.jpg", specs:["Capacity: 14.33 kWh","Voltage: 51.2V","Type: LiFePO4 Standing"], featured:false, rating:4.7, reviewCount:8 },
     { id:15, name:"iTel IPL-51314Y 51.2V 16kWh Lithium Battery", model:"IPL-51314Y", category:"battery", price:590000, badge:"Premium", badgeClass:"premium", warranty:"10 Years", image:"images/itel-bat16kwh-v1.jpg", localImage:"images/itel-bat16kwh-v1.jpg", specs:["Capacity: 16 kWh","Voltage: 51.2V","Type: LiFePO4 Outdoor IP65"], featured:false, rating:4.5, reviewCount:6 },
-    { id:23, name:"iTel IPL-25200X LiFePO4 Battery 2.5kWh", model:"IPL-25200X", category:"battery", price:227000, badge:"New", badgeClass:"best", warranty:"5 Years", image:"images/itel-bat256-v1.jpg", localImage:"images/itel-bat256-v1.jpg", specs:["Capacity: 2.5 kWh","Type: LiFePO4"], featured:false, rating:4.5, reviewCount:0 },
+    { id:23, name:"iTel IPL-25200X LiFePO4 Battery 2.5kWh", model:"IPL-25200X", category:"battery", price:227000, badge:"New", badgeClass:"best", warranty:"5 Years", image:"images/itel-bat25-v1.jpg", localImage:"images/itel-bat25-v1.jpg", specs:["Capacity: 2.5 kWh","Type: LiFePO4"], featured:false, rating:4.5, reviewCount:0 },
     { id:24, name:"iTel Battery-51100 X-G1 51.2V Lithium Battery", model:"51100-X-G1", category:"battery", price:245000, badge:"New", badgeClass:"best", warranty:"7 Years", image:"images/itel-bat512-v1.jpg", localImage:"images/itel-bat512-v1.jpg", specs:["Voltage: 51.2V","Type: LiFePO4"], featured:false, rating:4.5, reviewCount:0 }
 ];
 
@@ -144,7 +143,7 @@ function toggleCart() {
 }
 
 // ==================== INVENTORY ====================
-const DEFAULT_OUT_OF_STOCK_IDS = [17];
+const DEFAULT_OUT_OF_STOCK_IDS = [];
 function initInventory() {
     const inv = {};
     products.forEach(p => { inv[p.id] = DEFAULT_OUT_OF_STOCK_IDS.includes(p.id) ? 0 : 100; });
